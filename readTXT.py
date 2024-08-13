@@ -12,7 +12,9 @@ files = []
 filenames = []
 for key in os.listdir(filepath):
     # if '.txt' in key.lower() and '12#' in key and '150gr' in key and '60s' in key and 'PurehBN' not in key:
-    if '.txt' in key.lower() and '15#' in key and '(' not in key:
+    # if '.txt' in key.lower() and '12#' in key and '100P' in key and '(' not in key:
+    # if '.txt' in key.lower() and '15#' in key and '100P' in key:
+    if '.txt' in key.lower() and 'wse2' in key.lower():
         filenames.append(key)
         files.append(os.path.join(filepath, key))
 
@@ -26,13 +28,21 @@ for file, filename in zip(files, filenames):
         print("The file now is: "+file)
         wavelength = sp[:, 0]
         intensity = sp[:, 1]
-        intensity = intensity/max(intensity)
 
+        try:
+            expose_time_pattern = r'(?<=\D)\d+(?=s)'
+            matches = re.findall(expose_time_pattern, filename)
+            expose_time = matches[-1]
+            expose_time = int(expose_time)
+            print(expose_time)
+            intensity /= expose_time
+        except Exception as e:
+            print(f"Error normalizing: {e}")
         # 如果wavelength从大到小，就翻转
         if wavelength[1] > wavelength[0]:
             wavelength = wavelength.reverse()
             intensity = intensity.reverse()
-
+        intensity = intensity/max(intensity)
         x = wavelength
         y = intensity
         plt.plot(x, y, linewidth=0.5)
@@ -41,7 +51,7 @@ for file, filename in zip(files, filenames):
         plt.xlabel('Wavelength(nm)', fontsize=8)
         plt.ylabel('Normalized its', fontsize=8)
         le.append(filename)
-plt.legend(le)
+plt.legend(le, loc='upper right')
 plt.show()
 # particles.sort(key=lambda i: int(re.search(r'(\d+)', i).group()) if re.search(r'(\d+)', i) else float('inf'))
 # filepath

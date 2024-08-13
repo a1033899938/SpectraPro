@@ -14,6 +14,7 @@ from PyQt5.QtGui import QColor, QPainter
 import json
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from threading import Thread
+from PyQt5.QtGui import QCloseEvent
 
 
 class MyMainWindow(QMainWindow):
@@ -24,28 +25,29 @@ class MyMainWindow(QMainWindow):
         self.menubar = None
         self.fileMenu = None
         self.colorMenu = None
-        self.menuActions = None
 
         """Main window objects"""
         self.spectrumFileLabel = None
         self.spectrumFileTextEdit = None
         self.spectrumFolderLabel = None
         self.spectrumFolderTextEdit = None
-
         self.treeView = None
-        self.treeManager = None
-
         self.treeCollapseButton = None
         self.allItemUncheckButton = None
 
-        # self.spectrumFolder = None
+        """Signals and slots"""
+        self.treeManager = None
+        self.menuActions = None
 
+        """Rewrite slot react to close event"""
+        self.mainWindowActions = None
 
         """Initialize UI"""
         self.initUI()
 
     def initUI(self):
         """ Set main window parameters"""
+        print("Initializing UI")
         # set window position, title and so on...
         self.setGeometry(200, 200, 1200, 900)
         self.setWindowTitle('SpectraPro')
@@ -56,11 +58,6 @@ class MyMainWindow(QMainWindow):
         self.menubar = self.menuBar()
         self.fileMenu = self.menubar.addMenu('&File')
         self.colorMenu = self.menubar.addMenu('&Color')
-
-        # Add custom actions
-        self.menuActions = MenuActions(self)  # define self(main window) as parent object of self.menuActions
-        self.fileMenu.addAction(self.menuActions.chooseSpectrumFileAction())  # add a custom action instant
-        self.fileMenu.addAction(self.menuActions.chooseSpectrumFolderAction())
 
         """Create main window objects"""
         # hbox1
@@ -79,21 +76,25 @@ class MyMainWindow(QMainWindow):
         self.treeView = TreeManager.CustomTreeView()
         self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
 
-
         # # initial model from json
         # self.TreeManager.load_tree_state(self.model)
 
-        # self.treeView.setHeaderHidden(False)  # show header
-        # Set custom delegate for the 1st row of tree view
-        # self.treeView.setItemDelegateForColumn(0, self.TreeManager.CustomDelegate())
-
         # hbox3
-        self.treeCollapseButton = QPushButton('Collapse All')
-        # self.treeCollapseButton.clicked.connect(self.TreeManager.treeCollapse)
+        self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
+        self.treeCollapseButton.clicked.connect(self.treeManager.treeCollapse)
+        self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
+        self.allItemUncheckButton.clicked.connect(self.treeManager.allItemUncheck)
 
-        # add a button to uncheck all items
-        self.allItemUncheckButton = QPushButton('Uncheck All')
-        # self.allItemUncheckButton.clicked.connect(self.TreeManager.allItemUncheck)
+        """Add custom actions to menu and connect to slots."""
+        self.menuActions = MenuActions(self,
+                                       self.treeManager)  # define self(main window) as parent object of self.menuActions
+        self.fileMenu.addAction(self.menuActions.chooseSpectrumFileAction())  # add a custom action instant
+        self.fileMenu.addAction(self.menuActions.chooseSpectrumFolderAction())
+
+        """Add custom slot react to main window close event."""
+        self.mainWindowActions = MainWindowActions(self, self.menuActions, self.treeManager)
+        """Add a custom action to menu and connect to slot."""
+        self.fileMenu.addAction(self.mainWindowActions.saveCacheAction())
 
         """box manager"""
         hbox1 = QHBoxLayout()
@@ -120,21 +121,35 @@ class MyMainWindow(QMainWindow):
 
         self.show()
 
-    # def closeEvent(self, event):
-    #     # pass the filefolder
-    #     self.mainWindowActions = MainWindowActions(self, self.TreeManager, self.model, self.spectrumFolder)
-    #     # deal with close event by self.actions
-    #     self.mainWindowActions.closeEvent(event)
+    def closeEvent(self, event: QCloseEvent):
+        # deal with close event by self.actions
+        self.mainWindowActions.closeEvent(event)
 
 
 class MenuActions:
     """Handles menu actions and their corresponding slots."""
 
-    def __init__(self, main_window):
+    def __init__(self, main_window, treeManager):
+        """Initialization"""
+        print("MenuActions is instantiating...")
         self.parent = main_window
+        self.treeManager = treeManager
 
         self.spectrumFile = None
         self.spectrumFolder = None
+
+        self.initMenu()
+
+    def initMenu(self):
+        print("Initializing Menu...")
+        # try:
+        #     with open('filefolder_path.json', 'r') as f:
+        #         print("  |--> Opening 'filefolder_path.json'...")
+        #         self.spectrumFolder = json.load(f)
+        #         if self.spectrumFolder:
+        #             self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
+        # except FileNotFoundError:
+        #     print("  |--> Do not found 'filefolder_path.json'...")
 
     def chooseSpectrumFileAction(self):
         """Create a custom action for file selection."""
@@ -144,6 +159,7 @@ class MenuActions:
 
     def chooseSpectrumFile(self):
         """Define a custom slot to handle the 'chooseSpectrumFileAction'."""
+        print("Choosing spectrum file...")
         # Open a file dialog to select a file and display the filename in the text edit.
         self.spectrumFile, _ = QFileDialog.getOpenFileName(self.parent, 'Choose spectrum file', '',
                                                            'Spectrum file (*.txt *.spe *.h5 *.wxd)')
@@ -159,123 +175,222 @@ class MenuActions:
 
     def chooseSpectrumFolder(self):
         """Define a custom slot to handle the 'chooseSpectrumFolderAction'."""
+        print("Choosing spectrum file folder...")
         # Open a file folder dialog to select a file folder and display the file folder directory in the text edit.
         try:
             self.spectrumFolder = QFileDialog.getExistingDirectory(self.parent, 'Choose directory of files', '')
-            if self.spectrumFolder:
-                print(f"Select folder: {self.spectrumFolder}")
-                self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
-                # self.parent.TreeManager.loadDirectory(self.spectrumFolder)
-                # self.parent.spectrumFolder = self.spectrumFolder
+            print(f"Select folder: {self.spectrumFolder}")
+            self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
+            self.treeManager.loadDirectory(self.spectrumFolder)
         except Exception as e:
             print(f"Error choosing spectrum folder: {e}")
+
+    def saveSpectrumFileFolder(self):
+        print("Saving spectrum file folder")
+        try:
+            data = {
+                'text': self.spectrumFolder,
+            }
+            with open('filefolder_path.json', 'w') as f:  # if not exist, create one
+                json.dump(data, f, indent=4)
+            print("Json: 'filefolder_path.json' has been saved")
+        except Exception as e:
+            print(f'Error saving spectrum file folder: {e}')
 
 
 class MainWindowActions:
     """Main Window Actions"""
 
-    def __init__(self, main_window, tree_actions, model, filefolder):
-        self.main_window = main_window
-        self.tree_actions = tree_actions
-        self.model = model
-        self.filefolder = filefolder
-        self.waiting_dialog = None
-        # self.tree_actions.
+    def __init__(self, main_window, menuActions, treeManager):
+        """Initialization"""
+        print("MainWindowActions is instantiating...")
+        self.parent = main_window
+        self.menuActions = menuActions
+        self.treeManager = treeManager
+        self.model = self.treeManager.model
 
-    """set close event of main window"""
+        self.savingThread = None
+        self.saving_waiting_dialog = None
+        self.saving_label = None
 
     def closeEvent(self, event):
-        reply1 = QMessageBox.question(self.main_window, 'Message',
-                                      'Save the tree state before quit?',
-                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply1 == QMessageBox.Yes:
-            # Show waiting dialog
-            self.savingDialog()
-            self.savingThread = self.SavingThread(self.tree_actions, self.model, self.filefolder)
-            self.savingThread.savedSignal.connect(self.closeSavingDialog)
-            self.savingThread.start()
+        """Define close event of main window"""
+        print("Closing main window...")
+
+        self.saveCache()
+
+        reply = QMessageBox.question(self.parent, 'Message',
+                                     'Are you sure you want to quit?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            print("You choose yes in 2nd message dialog...")
+            self.parent.close()
         else:
-            pass
-        reply2 = QMessageBox.question(self.main_window, 'Message',
-                                      'Are you sure you want to quit?',
-                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply2 == QMessageBox.Yes:
-            self.main_window.close()
-        else:
+            print("You choose no in 2nd message dialog...")
             event.ignore()
 
-    def savingDialog(self):
+    def saveCache(self):
+        """A method for saving tree states and spectum file folder."""
+        reply = QMessageBox.question(self.parent, 'Confirmation',
+                                     'You are to save the cache, continue?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            print("You choose yes in 1st message dialog...")
+            # Show waiting dialog
+            self.saveWaitingDialog()
+
+            # Save the tree states, if completed, close waiting dialog
+            print("Setting custom thread...")
+            self.savingThread = self.SavingThread(self.menuActions, self.treeManager, self.model)
+            self.savingThread.savedSignal.connect(self.closeSavingDialog)
+            print("Setting custom thread completed...")
+            self.savingThread.start()
+        else:
+            print("You choose no in 1st message dialog...")
+            pass
+
+    def saveWaitingDialog(self):
+        """A Dialog for showing 'Waiting' message until the tree states have been saved."""
+        print("Showing waiting dialog when saving the tree states...")
         # 创建一个等待对话框
-        self.saving_dialog = QWidget()
-        self.saving_dialog.setWindowTitle('Saving')
+        self.saving_waiting_dialog = QWidget()
+        self.saving_waiting_dialog.setWindowTitle('Message')
         self.saving_label = QLabel('Saving state config, please wait...')
-        self.setFontSize(self.saving_label, 16)  # 设置字体大小为16
+        self.setFontSize(self.saving_label, 16)  # set font size to 16
         layout = QVBoxLayout()
         layout.addWidget(self.saving_label)
-        self.saving_dialog.setLayout(layout)
-        self.saving_dialog.setGeometry(400, 300, 200, 100)
-        self.saving_dialog.show()
+        self.saving_waiting_dialog.setLayout(layout)
+        self.saving_waiting_dialog.setGeometry(400, 300, 200, 100)
+        self.saving_waiting_dialog.show()
 
-    # rewrite run method from QThread
     class SavingThread(QThread):
-        # different to private propeties, signal is propeties of hole class
+        """Rewrite run method from QThread"""
+        # different to private propeties, signal is propeties of whole class
         # so needn't define like self.saved
         savedSignal = pyqtSignal()
 
-        def __init__(self, tree_actions, model, filefolder):
+        def __init__(self, menuActions, treeManager, model):
+            print("SavingThread is instantiating...")
             super().__init__()
-            self.tree_actions = tree_actions
+            self.menuActions = menuActions
+            self.treeManager = treeManager
             self.model = model
-            self.filefolder = filefolder
 
         def run(self):
-            # Perform the time-consuming task
-            self.tree_actions.save_tree_state(self.model, self.filefolder)
-            # Emit finished signal when done
-            # the signal then connect to closeSavingDialog
+            # Saving the tree states. This is a time-consuming task
+            print("Saving the tree states...")
+            self.treeManager.save_tree_state(self.model)
+
+            print("Saving the spectrum file folder...")
+            self.menuActions.saveSpectrumFileFolder()
+
+            # Emit finished signal when done, the signal then connect to closeSavingDialog
+            print("Sending the signal that tree states have been saved...")
             self.savedSignal.emit()
 
     def closeSavingDialog(self):
-        self.saving_dialog.close()
+        print("Closing the waiting dialog...")
+        self.saving_waiting_dialog.close()
 
     def setFontSize(self, label, size):
         font = label.font()  # 获取当前字体
         font.setPointSize(size)  # 设置字体大小
         label.setFont(font)  # 应用字体
 
+    def saveCacheAction(self):
+        """A action for saving tree states and spectrum file folder, equal to the saveCache method closeEvent."""
+        action = QAction('Save cache to json', self.parent)
+        action.triggered.connect(self.saveCache)
+        return action
 
 class TreeManager:
     """Tree Actions"""
 
     def __init__(self, main_window, treeView):
+        """Initialization"""
+        print("TreeManager is instantiating...")
         self.parent = main_window
         self.treeView = treeView
 
         self.model = None
+        self.folder_dir = QDir()
+        self.fileFilters = None
 
         self.initTree()
-        # self.fileFilters = None
-        # self.dir = QDir()
-        # self.treeView.setModel(self.model)  # Manage the tree actions and slots
-        # self.treeView.setItemDelegateForColumn(0, self.TreeManager.CustomDelegate())
+        # self.loadDirectory()
 
     def initTree(self):
+        print("Initializing tree...")
         self.model = QStandardItemModel()  # Manage the item in self.treeView through a model
-        self.model.setHorizontalHeaderLabels(['File Name', 'Select'])
         self.treeView.setModel(self.model)  # Manage the tree actions and slots
+        self.treeView.setHeaderHidden(False)  # show header
+        # Set custom delegate for the 1st row of tree view
         self.treeView.setItemDelegateForColumn(0, self.CustomDelegate())
 
-    def loadDirectory(self, folder):
         try:
-            self.parent.model.clear()  # Clear existing items
-            self.parent.model.setHorizontalHeaderLabels(['File Name', 'Select'])
+            with open('tree_state.json', 'r') as f:
+                print("  |--> Opening 'tree_state.json'...")
+                # self.spectrumFolder = json.load(f)
+                # print(type(self.spectrumFolder))
+            # if self.spectrumFolder:
+            #     self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
+        except FileNotFoundError:
+            print("  |--> Do not found 'tree_state.json'...")
+
+    def loadDirectory(self, spectrum_folder):
+        """Load directory and show in tree view"""
+        print("Loading dictory...")
+        self.spectrum_folder = spectrum_folder
+        try:
+            # initialize model
+            self.model.clear()  # Clear existing items
+            self.model.setHorizontalHeaderLabels(['File Name', 'Select'])
+
+            # set header of the tree view
             header = self.parent.treeView.header()  # Set the first column to be resizable but with a default width
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # Set the first column to be resizable
-            header.resizeSection(0, 700)  # Set the initial width of the first column to 500 pixels
+            header.resizeSection(0, 700)  # Set width of the first column to 700 pixels
 
-            self.addFolderItems(folder, self.parent.model.invisibleRootItem())
+            # add items to model
+            print("  |--> Adding items to model...")
+            self.addFolderItems(self.spectrum_folder, self.model.invisibleRootItem())
         except Exception as e:
             print(f"Error loading directory: {e}")
+
+    def addFolderItems(self, spectrum_folder, parent_item):
+        try:
+            self.folder_dir.setPath(spectrum_folder)
+            self.fileFilters = ['*.txt', '*.spe', '*.h5', '*.wxd']  # Select the file types to show
+            self.folder_dir.setNameFilters(self.fileFilters)
+
+            # Add files with filters
+            files = self.folder_dir.entryList(QDir.Files | QDir.NoDotAndDotDot)
+            for file_name in files:
+                item = QStandardItem(file_name)
+                item.setEditable(False)
+                item_check = QStandardItem()
+                item_check.setCheckable(True)
+                item_check.setEditable(False)
+                parent_item.appendRow([item, item_check])
+
+            # Add directories without filters
+            dirs = QDir(spectrum_folder).entryList(QDir.Dirs | QDir.NoDotAndDotDot)
+
+            for folder_name in dirs:
+                item = QStandardItem(folder_name)
+                item.setEditable(False)
+                item.setIcon(QIcon.fromTheme('folder'))
+                item_check = QStandardItem()
+                item_check.setCheckable(True)
+                item_check.setEditable(False)
+                parent_item.appendRow([item, item_check])
+
+                # Recursively add subfolders
+                self.addFolderItems(self.folder_dir.filePath(folder_name), item)
+            # If iterate through all elements, return to previous directory
+            self.folder_dir.cdUp()
+        except Exception as e:
+            print(f"Error adding folder items: {e}")
 
     class CustomTreeView(QTreeView):
         """Custom Tree View"""
@@ -333,42 +448,6 @@ class TreeManager:
                         self.collapse(item_index)
             super().mousePressEvent(event)
 
-    def addFolderItems(self, folder, parent_item):
-        self.if_cdUp = 0
-        try:
-            self.dir.setPath(folder)
-            self.fileFilters = ['*.txt', '*.spe', '*.h5', '*.wxd']  # Define the file types to show
-            self.dir.setNameFilters(self.fileFilters)
-
-            # Add files with filters
-            files = self.dir.entryList(QDir.Files | QDir.NoDotAndDotDot)
-            for file_name in self.dir.entryList(QDir.Files | QDir.NoDotAndDotDot):
-                item = QStandardItem(file_name)
-                item.setEditable(False)
-                check_item = QStandardItem()
-                check_item.setCheckable(True)
-                check_item.setEditable(False)
-                parent_item.appendRow([item, check_item])
-
-            # Add directories without filters
-            dirs = QDir(folder).entryList(QDir.Dirs | QDir.NoDotAndDotDot)
-
-            for folder_name in dirs:
-                folder_item = QStandardItem(folder_name)
-                folder_item.setEditable(False)
-                folder_item.setIcon(QIcon.fromTheme('folder'))
-                check_item = QStandardItem()
-                check_item.setCheckable(True)
-                check_item.setEditable(False)
-                parent_item.appendRow([folder_item, check_item])
-
-                # Recursively add subfolders
-                self.addFolderItems(self.dir.filePath(folder_name), folder_item)
-        except Exception as e:
-            print(f"Error adding folder items: {e}")
-
-        self.dir.cdUp()
-
     class CustomDelegate(QStyledItemDelegate):
         def paint(self, painter, option, index):
             # Call base class paint method
@@ -389,69 +468,68 @@ class TreeManager:
                                  QColor(144, 238, 144, alpha=150))  # Light green background for checked items
                 painter.restore()
 
-    # def treeCollapse(self):
-    #     """Collapsing all nodes in the tree view."""
-    #     self.parent.treeView.collapseAll()
-    #
-    # def allItemUncheck(self):
-    #     parent_item = self.parent.model.invisibleRootItem()
-    #     self.childItemUncheck(parent_item)
-    #
-    # def childItemUncheck(self, parent_item):
-    #     for row in range(parent_item.rowCount()):
-    #         child_item = parent_item.child(row, 0)
-    #         child_item_check = parent_item.child(row, 1)
-    #         child_item_check.setCheckState(False)
-    #         if child_item.hasChildren():
-    #             self.childItemUncheck(child_item)
-    #
+    def treeCollapse(self):
+        """Define a slot to collapse all nodes in the tree view."""
+        print("Collapsing all nodes in the tree view...")
+        self.treeView.collapseAll()
 
-    #
-    # """Four methods for saving tree state"""
-    #
-    # def save_tree_state(self, model, filefolder):
-    #     try:
-    #         self.model = model
-    #         self.filefolder = filefolder
-    #         # Save the root path and check states of all items
-    #         root_item = self.model.invisibleRootItem()
-    #         data = self.get_item_data(root_item)
-    #
-    #         # Save data to a JSON file
-    #         with open('tree_state.json', 'w') as f:  # if not exist, create one
-    #             json.dump(data, f, indent=4)
-    #         print("Json has been saved.")
-    #         # Save filepath to a JSON file
-    #         with open('file_path.json', 'w') as f:  # if not exist, create one
-    #             json.dump(self.filefolder, f, indent=4)
-    #         print('Filefolder has been saved')
-    #     except Exception as e:
-    #         print(f'Error saving tree state: {e}')
-    #
-    # def get_item_data(self, item):
-    #     item_check_data = None
-    #     item_index = item.index()
-    #     item_check_index = item_index.sibling(item_index.row(), 1)
-    #     item_check = item.model().itemFromIndex(item_check_index)
-    #
-    #     item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
-    #
-    #     data = {
-    #         'text': item.text(),
-    #         'checked': item_check_data,
-    #         'children': []
-    #     }
-    #
-    #     for row in range(item.rowCount()):
-    #         child_item = item.child(row, 0)
-    #         child_item_check = item.child(row, 1)
-    #
-    #         if child_item:
-    #             child_item_data = self.get_item_data(child_item)
-    #             child_item_check_data = Qt.Checked if child_item_check and child_item_check.checkState() == Qt.Checked else False
-    #             data['children'].append(child_item_data)
-    #     return data
-    #
+    def allItemUncheck(self):
+        """Define a slot to uncheck all items in 2nd column(item_check) in the tree view."""
+        print("Unchecking all items in the tree view...")
+        parent_item = self.model.invisibleRootItem()
+        self.childItemUncheck(parent_item)
+
+    def childItemUncheck(self, parent_item):
+        """To uncheck all child items, grandchild items..."""
+        for row in range(parent_item.rowCount()):
+            child_item = parent_item.child(row, 0)
+            child_item_check = parent_item.child(row, 1)
+            child_item_check.setCheckState(False)
+            if child_item.hasChildren():
+                self.childItemUncheck(child_item)
+
+    """Four methods for saving tree state"""
+
+    def save_tree_state(self, model):
+        """A method to save tree items' and their check status."""
+        print("Saving the tree states!")
+        try:
+            self.model = model
+            # Save the root path and check states of all items
+            root_item = self.model.invisibleRootItem()
+            data = self.get_item_data(root_item)
+
+            # Save data to a JSON file
+            with open('tree_state.json', 'w') as f:  # if not exist, create one
+                json.dump(data, f, indent=4)
+            print("Json: 'tree_state.json' has been saved.")
+        except Exception as e:
+            print(f'Error saving tree state: {e}')
+
+    def get_item_data(self, item):
+        item_check_data = None
+        item_index = item.index()
+        item_check_index = item_index.sibling(item_index.row(), 1)
+        item_check = item.model().itemFromIndex(item_check_index)
+
+        item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
+
+        data = {
+            'text': item.text(),
+            'checked': item_check_data,
+            'children': []
+        }
+
+        for row in range(item.rowCount()):
+            child_item = item.child(row, 0)
+            child_item_check = item.child(row, 1)
+
+            if child_item:
+                child_item_data = self.get_item_data(child_item)
+                child_item_check_data = Qt.Checked if child_item_check and child_item_check.checkState() == Qt.Checked else False
+                data['children'].append(child_item_data)
+        return data
+
     # def load_tree_state(self, model):
     #     print("Loading tree state from json...")
     #     self.model = model
