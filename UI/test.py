@@ -20,27 +20,49 @@ class MyMainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.spectrumFolder = None
-        self.treeActions = TreeActions(self)
-        self.menuActions = MenuActions(self)
+        """Menu objects"""
+        self.menubar = None
+        self.fileMenu = None
+        self.colorMenu = None
+        self.menuActions = None
+
+        """Main window objects"""
+        self.spectrumFileLabel = None
+        self.spectrumFileTextEdit = None
+        self.spectrumFolderLabel = None
+        self.spectrumFolderTextEdit = None
+
+        self.treeView = None
+        self.treeManager = None
+
+        self.treeCollapseButton = None
+        self.allItemUncheckButton = None
+
+        # self.spectrumFolder = None
+
+
+        """Initialize UI"""
         self.initUI()
 
     def initUI(self):
+        """ Set main window parameters"""
         # set window position, title and so on...
         self.setGeometry(200, 200, 1200, 900)
         self.setWindowTitle('SpectraPro')
         self.statusBar().showMessage('Ready')
 
-        # create manubar
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        colorMenu = menubar.addMenu('&Color')
+        """Create menubar objects"""
+        # create objects
+        self.menubar = self.menuBar()
+        self.fileMenu = self.menubar.addMenu('&File')
+        self.colorMenu = self.menubar.addMenu('&Color')
 
-        # connect menu action
-        fileMenu.addAction(self.menuActions.chooseSpectrumFileAction())
-        fileMenu.addAction(self.menuActions.chooseSpectrumFolderAction())
+        # Add custom actions
+        self.menuActions = MenuActions(self)  # define self(main window) as parent object of self.menuActions
+        self.fileMenu.addAction(self.menuActions.chooseSpectrumFileAction())  # add a custom action instant
+        self.fileMenu.addAction(self.menuActions.chooseSpectrumFolderAction())
 
-        """set main window"""
+        """Create main window objects"""
         # hbox1
         self.spectrumFileLabel = QLabel('File path')
         self.spectrumFileTextEdit = QTextEdit()
@@ -54,26 +76,24 @@ class MyMainWindow(QMainWindow):
         self.spectrumFolderTextEdit.setFixedHeight(30)  # Set height for QTextEdit
 
         # tree
-        # add a treeview and initialize it
-        self.treeView = CustomTreeView()
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(['File Name', 'Select'])
+        self.treeView = TreeManager.CustomTreeView()
+        self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
 
-        # initial model from json
-        self.treeActions.load_tree_state(self.model)
 
-        self.treeView.setModel(self.model)
-        self.treeView.setHeaderHidden(False)  # show header
+        # # initial model from json
+        # self.TreeManager.load_tree_state(self.model)
+
+        # self.treeView.setHeaderHidden(False)  # show header
         # Set custom delegate for the 1st row of tree view
-        self.treeView.setItemDelegateForColumn(0, self.treeActions.CustomDelegate())
+        # self.treeView.setItemDelegateForColumn(0, self.TreeManager.CustomDelegate())
 
-        # add a button to collapse the treeview
+        # hbox3
         self.treeCollapseButton = QPushButton('Collapse All')
-        self.treeCollapseButton.clicked.connect(self.treeActions.treeCollapse)
+        # self.treeCollapseButton.clicked.connect(self.TreeManager.treeCollapse)
 
         # add a button to uncheck all items
         self.allItemUncheckButton = QPushButton('Uncheck All')
-        self.allItemUncheckButton.clicked.connect(self.treeActions.allItemUncheck)
+        # self.allItemUncheckButton.clicked.connect(self.TreeManager.allItemUncheck)
 
         """box manager"""
         hbox1 = QHBoxLayout()
@@ -100,52 +120,60 @@ class MyMainWindow(QMainWindow):
 
         self.show()
 
-    def closeEvent(self, event):
-        # pass the filefolder
-        self.mainWindowActions = MainWindowActions(self, self.treeActions, self.model, self.spectrumFolder)
-        # deal with close event by self.actions
-        self.mainWindowActions.closeEvent(event)
+    # def closeEvent(self, event):
+    #     # pass the filefolder
+    #     self.mainWindowActions = MainWindowActions(self, self.TreeManager, self.model, self.spectrumFolder)
+    #     # deal with close event by self.actions
+    #     self.mainWindowActions.closeEvent(event)
 
 
 class MenuActions:
-    """Menu Actions"""
-    def __init__(self, parent):
-        self.parent = parent
+    """Handles menu actions and their corresponding slots."""
+
+    def __init__(self, main_window):
+        self.parent = main_window
+
+        self.spectrumFile = None
+        self.spectrumFolder = None
 
     def chooseSpectrumFileAction(self):
+        """Create a custom action for file selection."""
         action = QAction('Choose Spectrum File', self.parent)
         action.triggered.connect(self.chooseSpectrumFile)
         return action
 
     def chooseSpectrumFile(self):
-        # Open file dialog to choose a file, and show filename in textedit
+        """Define a custom slot to handle the 'chooseSpectrumFileAction'."""
+        # Open a file dialog to select a file and display the filename in the text edit.
         self.spectrumFile, _ = QFileDialog.getOpenFileName(self.parent, 'Choose spectrum file', '',
-                                                      'Spectrum file (*.txt *.spe *.h5 *.wxd)')
+                                                           'Spectrum file (*.txt *.spe *.h5 *.wxd)')
         if self.spectrumFile:
-            print(f"Selected file: {self.spectrumFile}")
+            print(f"Select file: {self.spectrumFile}")
             self.parent.spectrumFileTextEdit.setText(self.spectrumFile)
 
     def chooseSpectrumFolderAction(self):
+        """Create a custom action for file folder selection."""
         action = QAction('Choose Spectrum Folder', self.parent)
         action.triggered.connect(self.chooseSpectrumFolder)
         return action
 
     def chooseSpectrumFolder(self):
+        """Define a custom slot to handle the 'chooseSpectrumFolderAction'."""
+        # Open a file folder dialog to select a file folder and display the file folder directory in the text edit.
         try:
-            # Open folder dialog to choose a directory
             self.spectrumFolder = QFileDialog.getExistingDirectory(self.parent, 'Choose directory of files', '')
             if self.spectrumFolder:
-                print(f"Selected folder: {self.spectrumFolder}")
-                # Selecte the directory
+                print(f"Select folder: {self.spectrumFolder}")
                 self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
-                self.parent.treeActions.loadDirectory(self.spectrumFolder)
-                self.parent.spectrumFolder = self.spectrumFolder
+                # self.parent.TreeManager.loadDirectory(self.spectrumFolder)
+                # self.parent.spectrumFolder = self.spectrumFolder
         except Exception as e:
             print(f"Error choosing spectrum folder: {e}")
 
 
 class MainWindowActions:
     """Main Window Actions"""
+
     def __init__(self, main_window, tree_actions, model, filefolder):
         self.main_window = main_window
         self.tree_actions = tree_actions
@@ -155,6 +183,7 @@ class MainWindowActions:
         # self.tree_actions.
 
     """set close event of main window"""
+
     def closeEvent(self, event):
         reply1 = QMessageBox.question(self.main_window, 'Message',
                                       'Save the tree state before quit?',
@@ -215,68 +244,26 @@ class MainWindowActions:
         label.setFont(font)  # 应用字体
 
 
-class CustomTreeView(QTreeView):
-    """Custom Tree View"""
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-    # rewrite the mouse double click event inherit from parent
-    def mouseDoubleClickEvent(self, event):
-        # get index of double click position
-        index = self.indexAt(event.pos())
-        if not index.isValid() or event.button() == Qt.RightButton:
-            return
-
-        # get item frome model
-        item_index = index.sibling(index.row(), 0)
-        item_check_index = index.sibling(index.row(), 1)
-        item = self.model().itemFromIndex(item_index)
-        item_check = self.model().itemFromIndex(item_check_index)
-        # Toggle check state for the clicked item
-        new_state_is_check = not item_check.checkState()
-
-        if item_check is not None:
-            # exchange check state
-            item_check.setCheckState(Qt.Checked if new_state_is_check else Qt.Unchecked)
-
-        # Check if item is a folder
-        if item.hasChildren():
-            self.toggleCheckStateForChildren(item, new_state_is_check)
-
-        # other logic of double clicking
-        super().mouseDoubleClickEvent(event)
-
-    def toggleCheckStateForChildren(self, parent_item, check):
-        for row in range(parent_item.rowCount()):
-            child_item = parent_item.child(row, 0)
-            child_item_check = parent_item.child(row, 1)
-            child_item_check.setCheckState(Qt.Checked if check else Qt.Unchecked)
-            if child_item.hasChildren():
-                self.toggleCheckStateForChildren(child_item, check)
-
-    def mousePressEvent(self, event):
-        if event.button() == Qt.RightButton:
-            index = self.indexAt(event.pos())
-            if not index.isValid():
-                return
-
-            item_index = index.sibling(index.row(), 0)
-            item = self.model().itemFromIndex(item_index)
-            new_state_is_expand = not self.isExpanded(item_index)
-            if item.hasChildren():  # 检查是否是文件夹
-                if new_state_is_expand:
-                    self.expand(item_index)  # 展开这一级文件夹
-                else:
-                    self.collapse(item_index)
-        super().mousePressEvent(event)
-
-
-class TreeActions:
+class TreeManager:
     """Tree Actions"""
-    def __init__(self, parent):
-        self.parent = parent
-        self.fileFilters = None
-        self.dir = QDir()
+
+    def __init__(self, main_window, treeView):
+        self.parent = main_window
+        self.treeView = treeView
+
+        self.model = None
+
+        self.initTree()
+        # self.fileFilters = None
+        # self.dir = QDir()
+        # self.treeView.setModel(self.model)  # Manage the tree actions and slots
+        # self.treeView.setItemDelegateForColumn(0, self.TreeManager.CustomDelegate())
+
+    def initTree(self):
+        self.model = QStandardItemModel()  # Manage the item in self.treeView through a model
+        self.model.setHorizontalHeaderLabels(['File Name', 'Select'])
+        self.treeView.setModel(self.model)  # Manage the tree actions and slots
+        self.treeView.setItemDelegateForColumn(0, self.CustomDelegate())
 
     def loadDirectory(self, folder):
         try:
@@ -289,6 +276,62 @@ class TreeActions:
             self.addFolderItems(folder, self.parent.model.invisibleRootItem())
         except Exception as e:
             print(f"Error loading directory: {e}")
+
+    class CustomTreeView(QTreeView):
+        """Custom Tree View"""
+
+        def __init__(self, parent=None):
+            super().__init__(parent)
+
+        # rewrite the mouse double click event inherit from parent
+        def mouseDoubleClickEvent(self, event):
+            # get index of double click position
+            index = self.indexAt(event.pos())
+            if not index.isValid() or event.button() == Qt.RightButton:
+                return
+
+            # get item frome model
+            item_index = index.sibling(index.row(), 0)
+            item_check_index = index.sibling(index.row(), 1)
+            item = self.model().itemFromIndex(item_index)
+            item_check = self.model().itemFromIndex(item_check_index)
+            # Toggle check state for the clicked item
+            new_state_is_check = not item_check.checkState()
+
+            if item_check is not None:
+                # exchange check state
+                item_check.setCheckState(Qt.Checked if new_state_is_check else Qt.Unchecked)
+
+            # Check if item is a folder
+            if item.hasChildren():
+                self.toggleCheckStateForChildren(item, new_state_is_check)
+
+            # other logic of double clicking
+            super().mouseDoubleClickEvent(event)
+
+        def toggleCheckStateForChildren(self, parent_item, check):
+            for row in range(parent_item.rowCount()):
+                child_item = parent_item.child(row, 0)
+                child_item_check = parent_item.child(row, 1)
+                child_item_check.setCheckState(Qt.Checked if check else Qt.Unchecked)
+                if child_item.hasChildren():
+                    self.toggleCheckStateForChildren(child_item, check)
+
+        def mousePressEvent(self, event):
+            if event.button() == Qt.RightButton:
+                index = self.indexAt(event.pos())
+                if not index.isValid():
+                    return
+
+                item_index = index.sibling(index.row(), 0)
+                item = self.model().itemFromIndex(item_index)
+                new_state_is_expand = not self.isExpanded(item_index)
+                if item.hasChildren():  # 检查是否是文件夹
+                    if new_state_is_expand:
+                        self.expand(item_index)  # 展开这一级文件夹
+                    else:
+                        self.collapse(item_index)
+            super().mousePressEvent(event)
 
     def addFolderItems(self, folder, parent_item):
         self.if_cdUp = 0
@@ -326,22 +369,6 @@ class TreeActions:
 
         self.dir.cdUp()
 
-    def treeCollapse(self):
-        """Collapsing all nodes in the tree view."""
-        self.parent.treeView.collapseAll()
-
-    def allItemUncheck(self):
-        parent_item = self.parent.model.invisibleRootItem()
-        self.childItemUncheck(parent_item)
-
-    def childItemUncheck(self, parent_item):
-        for row in range(parent_item.rowCount()):
-            child_item = parent_item.child(row, 0)
-            child_item_check = parent_item.child(row, 1)
-            child_item_check.setCheckState(False)
-            if child_item.hasChildren():
-                self.childItemUncheck(child_item)
-
     class CustomDelegate(QStyledItemDelegate):
         def paint(self, painter, option, index):
             # Call base class paint method
@@ -362,61 +389,79 @@ class TreeActions:
                                  QColor(144, 238, 144, alpha=150))  # Light green background for checked items
                 painter.restore()
 
-    """Four methods for saving tree state"""
+    # def treeCollapse(self):
+    #     """Collapsing all nodes in the tree view."""
+    #     self.parent.treeView.collapseAll()
+    #
+    # def allItemUncheck(self):
+    #     parent_item = self.parent.model.invisibleRootItem()
+    #     self.childItemUncheck(parent_item)
+    #
+    # def childItemUncheck(self, parent_item):
+    #     for row in range(parent_item.rowCount()):
+    #         child_item = parent_item.child(row, 0)
+    #         child_item_check = parent_item.child(row, 1)
+    #         child_item_check.setCheckState(False)
+    #         if child_item.hasChildren():
+    #             self.childItemUncheck(child_item)
+    #
 
-    def save_tree_state(self, model, filefolder):
-        try:
-            self.model = model
-            self.filefolder = filefolder
-            # Save the root path and check states of all items
-            root_item = self.model.invisibleRootItem()
-            data = self.get_item_data(root_item)
-
-            # Save data to a JSON file
-            with open('tree_state.json', 'w') as f:  # if not exist, create one
-                json.dump(data, f, indent=4)
-            print("Json has been saved.")
-            # Save filepath to a JSON file
-            with open('file_path.json', 'w') as f:  # if not exist, create one
-                json.dump(self.filefolder, f, indent=4)
-            print('Filefolder has been saved')
-        except Exception as e:
-            print(f'Error saving tree state: {e}')
-
-    def get_item_data(self, item):
-        item_check_data = None
-        item_index = item.index()
-        item_check_index = item_index.sibling(item_index.row(), 1)
-        item_check = item.model().itemFromIndex(item_check_index)
-
-        item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
-
-        data = {
-            'text': item.text(),
-            'checked': item_check_data,
-            'children': []
-        }
-
-        for row in range(item.rowCount()):
-            child_item = item.child(row, 0)
-            child_item_check = item.child(row, 1)
-
-            if child_item:
-                child_item_data = self.get_item_data(child_item)
-                child_item_check_data = Qt.Checked if child_item_check and child_item_check.checkState() == Qt.Checked else False
-                data['children'].append(child_item_data)
-        return data
-
-    def load_tree_state(self, model):
-        print("Loading tree state from json...")
-        self.model = model
-        # Load from a JSON file
-        try:
-            with open('tree_state.json', 'r') as f:
-                data = json.load(f)
-            self.set_item_data(self.model.invisibleRootItem(), data)
-        except FileNotFoundError:
-            print("No saved state found.")
+    #
+    # """Four methods for saving tree state"""
+    #
+    # def save_tree_state(self, model, filefolder):
+    #     try:
+    #         self.model = model
+    #         self.filefolder = filefolder
+    #         # Save the root path and check states of all items
+    #         root_item = self.model.invisibleRootItem()
+    #         data = self.get_item_data(root_item)
+    #
+    #         # Save data to a JSON file
+    #         with open('tree_state.json', 'w') as f:  # if not exist, create one
+    #             json.dump(data, f, indent=4)
+    #         print("Json has been saved.")
+    #         # Save filepath to a JSON file
+    #         with open('file_path.json', 'w') as f:  # if not exist, create one
+    #             json.dump(self.filefolder, f, indent=4)
+    #         print('Filefolder has been saved')
+    #     except Exception as e:
+    #         print(f'Error saving tree state: {e}')
+    #
+    # def get_item_data(self, item):
+    #     item_check_data = None
+    #     item_index = item.index()
+    #     item_check_index = item_index.sibling(item_index.row(), 1)
+    #     item_check = item.model().itemFromIndex(item_check_index)
+    #
+    #     item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
+    #
+    #     data = {
+    #         'text': item.text(),
+    #         'checked': item_check_data,
+    #         'children': []
+    #     }
+    #
+    #     for row in range(item.rowCount()):
+    #         child_item = item.child(row, 0)
+    #         child_item_check = item.child(row, 1)
+    #
+    #         if child_item:
+    #             child_item_data = self.get_item_data(child_item)
+    #             child_item_check_data = Qt.Checked if child_item_check and child_item_check.checkState() == Qt.Checked else False
+    #             data['children'].append(child_item_data)
+    #     return data
+    #
+    # def load_tree_state(self, model):
+    #     print("Loading tree state from json...")
+    #     self.model = model
+    #     # Load from a JSON file
+    #     try:
+    #         with open('tree_state.json', 'r') as f:
+    #             data = json.load(f)
+    #         self.set_item_data(self.model.invisibleRootItem(), data)
+    #     except FileNotFoundError:
+    #         print("No saved state found.")
 
     # def set_item_data(self, item, data):
     #     item_index = item.index()
