@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import *
-from UI.Tree import Ui_Form
+from ui.Tree import Ui_Form
 from PyQt5.QtCore import pyqtSignal
 
 

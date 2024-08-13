@@ -34,6 +34,8 @@ class MyMainWindow(QMainWindow):
         self.treeView = None
         self.treeCollapseButton = None
         self.allItemUncheckButton = None
+        self.toggleShowTreeButton = None
+        self.toggleShowCheckedFilesButton = None
 
         """Signals and slots"""
         self.treeManager = None
@@ -42,12 +44,12 @@ class MyMainWindow(QMainWindow):
         """Rewrite slot react to close event"""
         self.mainWindowActions = None
 
-        """Initialize UI"""
+        """Initialize ui"""
         self.initUI()
 
     def initUI(self):
         """ Set main window parameters"""
-        print("Initializing UI")
+        print("Initializing ui")
         # set window position, title and so on...
         self.setGeometry(200, 200, 1200, 900)
         self.setWindowTitle('SpectraPro')
@@ -75,6 +77,7 @@ class MyMainWindow(QMainWindow):
         # tree
         self.treeView = TreeManager.CustomTreeView()
         self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
+        # self.treeView.hide()
 
         # # initial model from json
         # self.TreeManager.load_tree_state(self.model)
@@ -84,6 +87,16 @@ class MyMainWindow(QMainWindow):
         self.treeCollapseButton.clicked.connect(self.treeManager.treeCollapse)
         self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
         self.allItemUncheckButton.clicked.connect(self.treeManager.allItemUncheck)
+
+        # hbox4
+        # add a button to show/hide treeview
+        self.toggleShowTreeButton = QPushButton("Show tree")
+        self.toggleShowTreeButton.setChecked(True)  # Set initial status
+        self.toggleShowTreeButton.clicked.connect(self.treeManager.toggleShowTree)
+
+        # add a button to show/hide checked files
+        self.toggleShowCheckedFilesButton = QPushButton("Show checked files")
+        self.toggleShowCheckedFilesButton.setChecked(True)  # Set initial status
 
         """Add custom actions to menu and connect to slots."""
         self.menuActions = MenuActions(self,
@@ -105,15 +118,24 @@ class MyMainWindow(QMainWindow):
         hbox2.addWidget(self.spectrumFolderLabel)
         hbox2.addWidget(self.spectrumFolderTextEdit)
 
-        hbox3 = QHBoxLayout()
+        hbox3 = QVBoxLayout()
         hbox3.addWidget(self.treeCollapseButton)
         hbox3.addWidget(self.allItemUncheckButton)
+
+        hbox4 = QVBoxLayout()
+        hbox4.addWidget(self.toggleShowTreeButton)
+        hbox4.addWidget(self.toggleShowCheckedFilesButton)
+
+        hbox5 = QHBoxLayout()
+        hbox5.addLayout(hbox3)
+        hbox5.addLayout(hbox4)
 
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
         vbox.addWidget(self.treeView)
-        vbox.addLayout(hbox3)
+        vbox.addStretch(0)
+        vbox.addLayout(hbox5)
 
         central_widget = QWidget()
         central_widget.setLayout(vbox)
@@ -318,7 +340,6 @@ class TreeManager:
         print("TreeManager is instantiating...")
         self.parent = main_window
         self.treeView = treeView
-
         self.model = None
         self.folder_dir = QDir()
         self.fileFilters = None
@@ -484,6 +505,16 @@ class TreeManager:
             child_item_check.setCheckState(False)
             if child_item.hasChildren():
                 self.childItemUncheck(child_item)
+
+    def toggleShowTree(self):
+        print("Toggling tree view visibility...")
+        try:
+            if self.treeView.isVisible():
+                self.treeView.hide()
+            else:
+                self.treeView.show()
+        except Exception as e:
+            print(f"  |--> Error toggling show tree: {e}")
 
     """Four methods for saving tree state"""
     def save_tree_state(self, model):
