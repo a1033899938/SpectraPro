@@ -134,6 +134,7 @@ class MenuActions:
         print("MenuActions is instantiating...")
         self.parent = main_window
         self.treeManager = treeManager
+        self.model = self.treeManager.model
 
         self.spectrumFile = None
         self.spectrumFolder = None
@@ -142,14 +143,19 @@ class MenuActions:
 
     def initMenu(self):
         print("Initializing Menu...")
-        # try:
-        #     with open('filefolder_path.json', 'r') as f:
-        #         print("  |--> Opening 'filefolder_path.json'...")
-        #         self.spectrumFolder = json.load(f)
-        #         if self.spectrumFolder:
-        #             self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
-        # except FileNotFoundError:
-        #     print("  |--> Do not found 'filefolder_path.json'...")
+        try:
+            with open('filefolder_path.json', 'r') as f:
+                print("  |--> Opening 'filefolder_path.json'...")
+                data = json.load(f)
+                self.spectrumFolder = data['text']
+                print("  |--> Initializing spectrum folder text...")
+                self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
+                print("  |--> Initializing tree view: (1) set items...")
+                self.treeManager.loadDirectory(self.spectrumFolder)
+                print("  |--> Initializing tree view: (2) set items' check states...")
+                self.treeManager.load_tree_state(self.model)
+        except FileNotFoundError:
+            print("  |--> Do not found 'filefolder_path.json'...")
 
     def chooseSpectrumFileAction(self):
         """Create a custom action for file selection."""
@@ -164,7 +170,7 @@ class MenuActions:
         self.spectrumFile, _ = QFileDialog.getOpenFileName(self.parent, 'Choose spectrum file', '',
                                                            'Spectrum file (*.txt *.spe *.h5 *.wxd)')
         if self.spectrumFile:
-            print(f"Select file: {self.spectrumFile}")
+            print(f"  |--> Select file: {self.spectrumFile}")
             self.parent.spectrumFileTextEdit.setText(self.spectrumFile)
 
     def chooseSpectrumFolderAction(self):
@@ -179,11 +185,11 @@ class MenuActions:
         # Open a file folder dialog to select a file folder and display the file folder directory in the text edit.
         try:
             self.spectrumFolder = QFileDialog.getExistingDirectory(self.parent, 'Choose directory of files', '')
-            print(f"Select folder: {self.spectrumFolder}")
+            print(f"  |--> Select folder: {self.spectrumFolder}")
             self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
             self.treeManager.loadDirectory(self.spectrumFolder)
         except Exception as e:
-            print(f"Error choosing spectrum folder: {e}")
+            print(f"  |--> Error choosing spectrum folder: {e}")
 
     def saveSpectrumFileFolder(self):
         print("Saving spectrum file folder")
@@ -193,9 +199,9 @@ class MenuActions:
             }
             with open('filefolder_path.json', 'w') as f:  # if not exist, create one
                 json.dump(data, f, indent=4)
-            print("Json: 'filefolder_path.json' has been saved")
+            print("  |--> Json: 'filefolder_path.json' has been saved")
         except Exception as e:
-            print(f'Error saving spectrum file folder: {e}')
+            print(f'  |--> Error saving spectrum file folder: {e}')
 
 
 class MainWindowActions:
@@ -223,10 +229,10 @@ class MainWindowActions:
                                      'Are you sure you want to quit?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            print("You choose yes in 2nd message dialog...")
+            print("  |--> You choose yes in 2nd message dialog...")
             self.parent.close()
         else:
-            print("You choose no in 2nd message dialog...")
+            print("  |--> You choose no in 2nd message dialog...")
             event.ignore()
 
     def saveCache(self):
@@ -240,13 +246,13 @@ class MainWindowActions:
             self.saveWaitingDialog()
 
             # Save the tree states, if completed, close waiting dialog
-            print("Setting custom thread...")
+            print("  |--> Setting custom thread...")
             self.savingThread = self.SavingThread(self.menuActions, self.treeManager, self.model)
             self.savingThread.savedSignal.connect(self.closeSavingDialog)
-            print("Setting custom thread completed...")
+            print("  |--> Setting custom thread completed...")
             self.savingThread.start()
         else:
-            print("You choose no in 1st message dialog...")
+            print("  |--> You choose no in 1st message dialog...")
             pass
 
     def saveWaitingDialog(self):
@@ -281,11 +287,11 @@ class MainWindowActions:
             print("Saving the tree states...")
             self.treeManager.save_tree_state(self.model)
 
-            print("Saving the spectrum file folder...")
+            print("  |--> Saving the spectrum file folder...")
             self.menuActions.saveSpectrumFileFolder()
 
             # Emit finished signal when done, the signal then connect to closeSavingDialog
-            print("Sending the signal that tree states have been saved...")
+            print("  |--> Sending the signal that tree states have been saved...")
             self.savedSignal.emit()
 
     def closeSavingDialog(self):
@@ -302,6 +308,7 @@ class MainWindowActions:
         action = QAction('Save cache to json', self.parent)
         action.triggered.connect(self.saveCache)
         return action
+
 
 class TreeManager:
     """Tree Actions"""
@@ -327,19 +334,9 @@ class TreeManager:
         # Set custom delegate for the 1st row of tree view
         self.treeView.setItemDelegateForColumn(0, self.CustomDelegate())
 
-        try:
-            with open('tree_state.json', 'r') as f:
-                print("  |--> Opening 'tree_state.json'...")
-                # self.spectrumFolder = json.load(f)
-                # print(type(self.spectrumFolder))
-            # if self.spectrumFolder:
-            #     self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
-        except FileNotFoundError:
-            print("  |--> Do not found 'tree_state.json'...")
-
     def loadDirectory(self, spectrum_folder):
         """Load directory and show in tree view"""
-        print("Loading dictory...")
+        print("Loading directory...")
         self.spectrum_folder = spectrum_folder
         try:
             # initialize model
@@ -355,7 +352,7 @@ class TreeManager:
             print("  |--> Adding items to model...")
             self.addFolderItems(self.spectrum_folder, self.model.invisibleRootItem())
         except Exception as e:
-            print(f"Error loading directory: {e}")
+            print(f"  |--> Error loading directory: {e}")
 
     def addFolderItems(self, spectrum_folder, parent_item):
         try:
@@ -393,7 +390,7 @@ class TreeManager:
             print(f"Error adding folder items: {e}")
 
     class CustomTreeView(QTreeView):
-        """Custom Tree View"""
+        """Rewrite some slots for double left-clicking, right press and slot: 'check/uncheck all item'."""
 
         def __init__(self, parent=None):
             super().__init__(parent)
@@ -405,7 +402,7 @@ class TreeManager:
             if not index.isValid() or event.button() == Qt.RightButton:
                 return
 
-            # get item frome model
+            # get item from model
             item_index = index.sibling(index.row(), 0)
             item_check_index = index.sibling(index.row(), 1)
             item = self.model().itemFromIndex(item_index)
@@ -489,24 +486,24 @@ class TreeManager:
                 self.childItemUncheck(child_item)
 
     """Four methods for saving tree state"""
-
     def save_tree_state(self, model):
-        """A method to save tree items' and their check status."""
+        """A method to save tree items' and their check status to a json file."""
         print("Saving the tree states!")
-        try:
-            self.model = model
-            # Save the root path and check states of all items
-            root_item = self.model.invisibleRootItem()
-            data = self.get_item_data(root_item)
+        self.model = model
+        # Save the root path and check states of all items
+        root_item = self.model.invisibleRootItem()
+        data = self.get_item_data(root_item)
 
-            # Save data to a JSON file
+        # Save data to a json file
+        try:
             with open('tree_state.json', 'w') as f:  # if not exist, create one
                 json.dump(data, f, indent=4)
-            print("Json: 'tree_state.json' has been saved.")
+            print("  |--> Json: 'tree_state.json' has been saved.")
         except Exception as e:
-            print(f'Error saving tree state: {e}')
+            print(f'  |--> Error saving tree state: {e}')
 
     def get_item_data(self, item):
+        """Get all tree items' state data."""
         item_check_data = None
         item_index = item.index()
         item_check_index = item_index.sibling(item_index.row(), 1)
@@ -530,35 +527,32 @@ class TreeManager:
                 data['children'].append(child_item_data)
         return data
 
-    # def load_tree_state(self, model):
-    #     print("Loading tree state from json...")
-    #     self.model = model
-    #     # Load from a JSON file
-    #     try:
-    #         with open('tree_state.json', 'r') as f:
-    #             data = json.load(f)
-    #         self.set_item_data(self.model.invisibleRootItem(), data)
-    #     except FileNotFoundError:
-    #         print("No saved state found.")
+    def load_tree_state(self, model):
+        """A method to load tree items from a json file."""
+        print("Loading tree state from json...")
+        self.model = model
 
-    # def set_item_data(self, item, data):
-    #     item_index = item.index()
-    #     item_check_index = item_index.sibling(item_index.row(), 1)
-    #     item_check = item.model().itemFromIndex(item_check_index)
-    #
-    #     item.setText(data['text'])
-    #     item_check.checkState(data['checked'])
-    #
-    #     if not item_check:
-    #         item_check = QStandardItem()
-    #         check_item.setCheckable(True)
-    #         item.appendRow([item, check_item])
-    #     check_item.setCheckState(Qt.Checked if data['checked'] else Qt.Unchecked)
-    #
-    #     for child_data in data['children']:
-    #         child_item = QStandardItem()
-    #         self.set_item_data(child_item, child_data)
-    #         item.appendRow([child_item, QStandardItem()])
+        # Load data from a json file
+        try:
+            with open('tree_state.json', 'r') as f:
+                print("  |--> Opening 'tree_state.json'...")
+                data = json.load(f)
+                self.set_item_data(self.model.invisibleRootItem(), data)
+        except FileNotFoundError:
+            print("  |--> Do not found 'tree_state.json'...")
+
+    def set_item_data(self, item, data):
+        """Recursively set the item data from JSON to the tree."""
+        for row in range(item.rowCount()):
+            # get child item's check item
+            child_item = item.child(row, 0)
+            child_item_check = item.child(row, 1)
+            child_item_data = data['children'][row]
+            child_item_check.setCheckState(child_item_data['checked'])
+
+            # if child_item has at least one child, repeat.
+            if child_item.rowCount():
+                self.set_item_data(child_item, child_item_data)
 
 
 if __name__ == '__main__':

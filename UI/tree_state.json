@@ -18,7 +18,7 @@
                 },
                 {
                     "text": "Picture",
-                    "checked": false,
+                    "checked": 2,
                     "children": []
                 }
             ]
@@ -39,7 +39,7 @@
                 },
                 {
                     "text": "island_4",
-                    "checked": false,
+                    "checked": 2,
                     "children": []
                 },
                 {
@@ -58,12 +58,12 @@
                         },
                         {
                             "text": "Particles-NP_image_0",
-                            "checked": false,
+                            "checked": 2,
                             "children": []
                         },
                         {
                             "text": "Particles-SERS",
-                            "checked": false,
+                            "checked": 2,
                             "children": [
                                 {
                                     "text": "SERS_all",
@@ -3727,7 +3727,7 @@
         },
         {
             "text": "x",
-            "checked": 2,
+            "checked": false,
             "children": [
                 {
                     "text": "2024",
