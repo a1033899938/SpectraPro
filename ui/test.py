@@ -179,6 +179,7 @@ class MenuActions:
                 self.treeManager.loadDirectory(self.spectrumFolder)
                 print("  |--> Initializing tree view: (2) set items' check states...")
                 self.treeManager.load_tree_state(self.model)
+            pass
         except FileNotFoundError:
             print("  |--> Do not found 'filefolder_path.json'...")
 
@@ -364,7 +365,7 @@ class TreeManager:
         try:
             # initialize model
             self.model.clear()  # Clear existing items
-            self.model.setHorizontalHeaderLabels(['File Name', 'Select'])
+            self.model.setHorizontalHeaderLabels(['File Name', 'Select', 'File Path', 'Type'])
 
             # set header of the tree view
             header = self.parent.treeView.header()  # Set the first column to be resizable but with a default width
@@ -388,10 +389,18 @@ class TreeManager:
             for file_name in files:
                 item = QStandardItem(file_name)
                 item.setEditable(False)
+
                 item_check = QStandardItem()
                 item_check.setCheckable(True)
                 item_check.setEditable(False)
-                parent_item.appendRow([item, item_check])
+
+                file_path = self.folder_dir.filePath(file_name)
+                item_file_path = QStandardItem(file_path)
+                item_file_path.setEditable(False)
+
+                item_type = QStandardItem('File')
+                item_type.setEditable(False)
+                parent_item.appendRow([item, item_check, item_file_path, item_type])
 
             # Add directories without filters
             dirs = QDir(spectrum_folder).entryList(QDir.Dirs | QDir.NoDotAndDotDot)
@@ -400,10 +409,18 @@ class TreeManager:
                 item = QStandardItem(folder_name)
                 item.setEditable(False)
                 item.setIcon(QIcon.fromTheme('folder'))
+
                 item_check = QStandardItem()
                 item_check.setCheckable(True)
                 item_check.setEditable(False)
-                parent_item.appendRow([item, item_check])
+
+                file_path = self.folder_dir.filePath(folder_name)
+                item_file_path = QStandardItem(file_path)
+                item_file_path.setEditable(False)
+
+                item_type = QStandardItem('Folder')
+                item_type.setEditable(False)
+                parent_item.appendRow([item, item_check, item_file_path, item_type])
 
                 # Recursively add subfolders
                 self.addFolderItems(self.folder_dir.filePath(folder_name), item)
@@ -537,27 +554,37 @@ class TreeManager:
 
     def get_item_data(self, item):
         """Get all tree items' state data."""
-        item_check_data = None
-        item_index = item.index()
-        item_check_index = item_index.sibling(item_index.row(), 1)
-        item_check = item.model().itemFromIndex(item_check_index)
+        try:
+            item_index = item.index()
+            item_check_index = item_index.siblingAtColumn(1)
+            item_check = item.model().itemFromIndex(item_check_index)
+            item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
 
-        item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
+            item_file_path_index = item_index.siblingAtColumn(2)
+            item_file_path = item.model().itemFromIndex(item_file_path_index)
+            file_path = item_file_path.text() if item_file_path else ''
 
-        data = {
-            'text': item.text(),
-            'checked': item_check_data,
-            'children': []
-        }
+            item_type_index = item_index.siblingAtColumn(3)
+            item_type = item.model().itemFromIndex(item_type_index)
+            item_type = item_type.text() if item_type else ''
 
-        for row in range(item.rowCount()):
-            child_item = item.child(row, 0)
-            child_item_check = item.child(row, 1)
+            data = {
+                'text': item.text(),
+                'checked': item_check_data,
+                'file_path': file_path,
+                'type': item_type,
+                'children': []
+            }
 
-            if child_item:
-                child_item_data = self.get_item_data(child_item)
-                child_item_check_data = Qt.Checked if child_item_check and child_item_check.checkState() == Qt.Checked else False
-                data['children'].append(child_item_data)
+            for row in range(item.rowCount()):
+                child_item = item.child(row, 0)
+                child_item_check = item.child(row, 1)
+
+                if child_item:
+                    child_item_data = self.get_item_data(child_item)
+                    data['children'].append(child_item_data)
+        except Exception as e:
+            print(f"Error getting item data: {e}")
         return data
 
     def load_tree_state(self, model):
@@ -581,6 +608,7 @@ class TreeManager:
             child_item = item.child(row, 0)
             child_item_check = item.child(row, 1)
             child_item_data = data['children'][row]
+
             child_item_check.setCheckState(child_item_data['checked'])
 
             # if child_item has at least one child, repeat.
@@ -601,7 +629,8 @@ class ListManager:
         self.initList()
 
     def initList(self):
-        self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        # self.listWidget.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        pass
 
     def importCheckedFiles(self):
         """A method that import all checked items(except folder) to a list"""
@@ -624,7 +653,10 @@ class ListManager:
             # get child item's check item
             child_item = item.child(row, 0)
             child_item_check = item.child(row, 1)
-            if child_item_check.checkState():
+            chile_item_type = item.child(row, 3)
+            if chile_item_type:
+                chile_item_type = chile_item_type.text()
+            if child_item_check.checkState() and chile_item_type == 'File':
                 data = {
                     'text': child_item.text(),
                     'path': []
