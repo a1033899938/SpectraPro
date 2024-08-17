@@ -491,18 +491,29 @@ class TreeManager:
             super().paint(painter, option, index)
 
             # Get the item and its check state
-            item_index = index.sibling(index.row(), 0)
+            item_index = index.siblingAtColumn(0)
             item = index.model().itemFromIndex(item_index)
-            item_check_index = index.sibling(index.row(), 1)
+            item_check_index = index.siblingAtColumn(1)
             item_check = index.model().itemFromIndex(item_check_index)
+
+            item_type_index = index.siblingAtColumn(3)
+            item_type = index.model().itemFromIndex(item_type_index)
+            if item_type:
+                item_type = item_type.text()
+
             if not item_check:
                 return
 
             if item_check.checkState() == Qt.Checked:
-                # Highlight the item if it's checked
+                # Setting item's color according to item_type
                 painter.save()
-                painter.fillRect(option.rect,
-                                 QColor(144, 238, 144, alpha=150))  # Light green background for checked items
+                if item_type == 'File':
+                    painter.fillRect(option.rect, QColor(144, 238, 144, alpha=100))  # light green
+                elif item_type == 'Folder':
+                    painter.fillRect(option.rect, QColor(128, 0, 128, alpha=80))  # light purple
+                    # painter.fillRect(option.rect, QColor(173, 216, 230, alpha=150))  # light blue
+                else:
+                    painter.fillRect(option.rect, QColor(255, 0, 0, alpha=150))  # light red
                 painter.restore()
 
     def treeCollapse(self):
