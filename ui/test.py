@@ -24,7 +24,7 @@ class MyMainWindow(QMainWindow):
         """Menu objects"""
         self.menubar = None
         self.fileMenu = None
-        self.colorMenu = None
+        self.cacheMenu = None
 
         """Main window objects"""
         self.spectrumFileLabel = None
@@ -61,7 +61,7 @@ class MyMainWindow(QMainWindow):
         # create objects
         self.menubar = self.menuBar()
         self.fileMenu = self.menubar.addMenu('&File')
-        self.colorMenu = self.menubar.addMenu('&Color')
+        self.cacheMenu = self.menubar.addMenu('&Cache')
 
         """Create main window objects"""
         # hbox1
@@ -109,7 +109,7 @@ class MyMainWindow(QMainWindow):
         """Add custom slot react to main window close event."""
         self.mainWindowManager = MainWindowManager(self, self.menuActions, self.treeManager)
         """Add a custom action to menu and connect to slot."""
-        self.fileMenu.addAction(self.mainWindowManager.saveCacheAction())
+        self.cacheMenu.addAction(self.mainWindowManager.saveCacheAction())
 
         """box manager"""
         hbox1 = QHBoxLayout()
@@ -166,10 +166,11 @@ class MenuActions:
 
         self.initMenu()
 
-    def initMenu(self):
+    def initMenu(self, cache_name='_filefolder_path.json'):
         print("Initializing Menu...")
+        self.cache_name = cache_name
         try:
-            with open('filefolder_path.json', 'r') as f:
+            with open(self.cache_name, 'r') as f:
                 print("  |--> Opening 'filefolder_path.json'...")
                 data = json.load(f)
                 self.spectrumFolder = data['text']
@@ -185,7 +186,7 @@ class MenuActions:
 
     def chooseSpectrumFileAction(self):
         """Create a custom action for file selection."""
-        action = QAction('Choose Spectrum File', self.parent)
+        action = QAction('Select Spectrum File', self.parent)
         action.triggered.connect(self.chooseSpectrumFile)
         return action
 
@@ -193,7 +194,7 @@ class MenuActions:
         """Define a custom slot to handle the 'chooseSpectrumFileAction'."""
         print("Choosing spectrum file...")
         # Open a file dialog to select a file and display the filename in the text edit.
-        self.spectrumFile, _ = QFileDialog.getOpenFileName(self.parent, 'Choose spectrum file', '',
+        self.spectrumFile, _ = QFileDialog.getOpenFileName(self.parent, 'Select spectrum file', '',
                                                            'Spectrum file (*.txt *.spe *.h5 *.wxd)')
         if self.spectrumFile:
             print(f"  |--> Select file: {self.spectrumFile}")
@@ -201,7 +202,7 @@ class MenuActions:
 
     def chooseSpectrumFolderAction(self):
         """Create a custom action for file folder selection."""
-        action = QAction('Choose Spectrum Folder', self.parent)
+        action = QAction('Select Spectrum Folder', self.parent)
         action.triggered.connect(self.chooseSpectrumFolder)
         return action
 
@@ -210,20 +211,21 @@ class MenuActions:
         print("Choosing spectrum file folder...")
         # Open a file folder dialog to select a file folder and display the file folder directory in the text edit.
         try:
-            self.spectrumFolder = QFileDialog.getExistingDirectory(self.parent, 'Choose directory of files', '')
+            self.spectrumFolder = QFileDialog.getExistingDirectory(self.parent, 'Select directory of files', '')
             print(f"  |--> Select folder: {self.spectrumFolder}")
             self.parent.spectrumFolderTextEdit.setText(self.spectrumFolder)
             self.treeManager.loadDirectory(self.spectrumFolder)
         except Exception as e:
             print(f"  |--> Error choosing spectrum folder: {e}")
 
-    def saveSpectrumFileFolder(self):
+    def saveSpectrumFileFolder(self, cache_name_head=''):
         print("Saving spectrum file folder")
+        self.cache_name = cache_name_head + '_filefolder_path.json'
         try:
             data = {
                 'text': self.spectrumFolder,
             }
-            with open('filefolder_path.json', 'w') as f:  # if not exist, create one
+            with open(self.cache_name, 'w') as f:  # if not exist, create one
                 json.dump(data, f, indent=4)
             print("  |--> Json: 'filefolder_path.json' has been saved")
         except Exception as e:
@@ -248,8 +250,8 @@ class MainWindowManager:
     def closeEvent(self, event):
         """Define close event of main window"""
         print("Closing main window...")
-
-        self.saveCache()
+        self.cache_name_head = ''
+        self.saveCache(self.cache_name_head)
 
         reply = QMessageBox.question(self.parent, 'Message',
                                      'Are you sure you want to quit?',
@@ -261,8 +263,9 @@ class MainWindowManager:
             print("  |--> You choose no in 2nd message dialog...")
             event.ignore()
 
-    def saveCache(self):
+    def saveCache(self, cache_name_head):
         """A method for saving tree states and spectum file folder."""
+        self.cache_name_head = cache_name_head
         reply = QMessageBox.question(self.parent, 'Confirmation',
                                      'You are to save the cache, continue?',
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -273,7 +276,7 @@ class MainWindowManager:
 
             # Save the tree states, if completed, close waiting dialog
             print("  |--> Setting custom thread...")
-            self.savingThread = self.SavingThread(self.menuActions, self.treeManager, self.model)
+            self.savingThread = self.SavingThread(self.menuActions, self.treeManager, self.model, self.cache_name_head)
             self.savingThread.savedSignal.connect(self.closeSavingDialog)
             print("  |--> Setting custom thread completed...")
             self.savingThread.start()
@@ -301,20 +304,25 @@ class MainWindowManager:
         # so needn't define like self.saved
         savedSignal = pyqtSignal()
 
-        def __init__(self, menuActions, treeManager, model):
+        def __init__(self, menuActions, treeManager, model, cache_name):
             print("SavingThread is instantiating...")
             super().__init__()
             self.menuActions = menuActions
             self.treeManager = treeManager
             self.model = model
+            self.cache_name = cache_name
 
         def run(self):
             # Saving the tree states. This is a time-consuming task
             print("Saving the tree states...")
-            self.treeManager.save_tree_state(self.model)
-
-            print("  |--> Saving the spectrum file folder...")
-            self.menuActions.saveSpectrumFileFolder()
+            if self.cache_name:
+                self.treeManager.save_tree_state(self.model, tree_state_name_head=self.cache_name)
+                print("  |--> Saving the spectrum file folder...")
+                self.menuActions.saveSpectrumFileFolder(cache_name_head=self.cache_name)
+            else:
+                self.treeManager.save_tree_state(self.model)
+                print("  |--> Saving the spectrum file folder...")
+                self.menuActions.saveSpectrumFileFolder()
 
             # Emit finished signal when done, the signal then connect to closeSavingDialog
             print("  |--> Sending the signal that tree states have been saved...")
@@ -365,12 +373,14 @@ class TreeManager:
         try:
             # initialize model
             self.model.clear()  # Clear existing items
-            self.model.setHorizontalHeaderLabels(['File Name', 'Select', 'File Path', 'Type'])
+            self.model.setHorizontalHeaderLabels(['File Name', '✔', 'File Path', 'Type'])
 
             # set header of the tree view
             header = self.parent.treeView.header()  # Set the first column to be resizable but with a default width
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # Set the first column to be resizable
             header.resizeSection(0, 700)  # Set width of the first column to 700 pixels
+            header.setSectionResizeMode(1, QHeaderView.Interactive)  # Set the first column to be resizable
+            header.resizeSection(1, 10)  # Set width of the first column to 700 pixels
 
             # add items to model
             print("  |--> Adding items to model...")
@@ -547,17 +557,18 @@ class TreeManager:
             print(f"  |--> Error toggling show tree: {e}")
 
     """Four methods for saving tree state"""
-    def save_tree_state(self, model):
+    def save_tree_state(self, model, tree_state_name_head=''):
         """A method to save tree items' and their check status to a json file."""
         print("Saving the tree states!")
         self.model = model
+        self.tree_state_name = tree_state_name_head + '_tree_state.json'
         # Save the root path and check states of all items
         root_item = self.model.invisibleRootItem()
         data = self.get_item_data(root_item)
 
         # Save data to a json file
         try:
-            with open('tree_state.json', 'w') as f:  # if not exist, create one
+            with open(self.tree_state_name, 'w') as f:  # if not exist, create one
                 json.dump(data, f, indent=4)
             print("  |--> Json: 'tree_state.json' has been saved.")
         except Exception as e:
@@ -598,15 +609,16 @@ class TreeManager:
             print(f"Error getting item data: {e}")
         return data
 
-    def load_tree_state(self, model):
+    def load_tree_state(self, model, tree_state_name='_tree_state.json'):
         """A method to load tree items from a json file."""
         print("Loading tree state from json...")
         self.model = model
+        self.tree_state_name = tree_state_name
 
         # Load data from a json file
         try:
-            with open('tree_state.json', 'r') as f:
-                print("  |--> Opening 'tree_state.json'...")
+            with open(self.tree_state_name, 'r') as f:
+                print("  |--> Opening '_tree_state.json'...")
                 data = json.load(f)
                 self.set_item_data(self.model.invisibleRootItem(), data)
         except FileNotFoundError:
