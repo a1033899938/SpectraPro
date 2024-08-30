@@ -15,6 +15,7 @@ setup(
         'sys',
         're',
         'scipy',
+        'PyQt5',
     ],  # 这里可以添加依赖包
     author='Junjie Xie',
     author_email='a1033899938@gmail.com',

@@ -6,7 +6,7 @@
     "children": [
         {
             "text": "test.txt",
-            "checked": false,
+            "checked": 2,
             "file_path": "C:/Users/a1033/Desktop/Contemporary/test.txt",
             "type": "File",
             "children": []
@@ -633,95 +633,95 @@
         },
         {
             "text": "20240808",
-            "checked": 2,
+            "checked": false,
             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808",
             "type": "Folder",
             "children": [
                 {
                     "text": "JunjieXie",
-                    "checked": 2,
+                    "checked": false,
                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie",
                     "type": "Folder",
                     "children": [
                         {
                             "text": "20240806",
-                            "checked": 2,
+                            "checked": false,
                             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806",
                             "type": "Folder",
                             "children": [
                                 {
                                     "text": "BGD.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/BGD.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "DF_0.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/DF_0.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.55NA100P-8#-1.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.55NA100P-8#-1.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA100P-8#-1(2).wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA100P-8#-1(2).wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA100P-8#-1.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA100P-8#-1.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA100P-8#-1bACKGROUND.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA100P-8#-1bACKGROUND.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA100P-8#-1three particles.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA100P-8#-1three particles.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA100P-8#-1whitw particles.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA100P-8#-1whitw particles.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNP-0.75NA10P-8#-1.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/hBNonNP-0.75NA10P-8#-1.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "Si-50x0.55NA.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/Si-50x0.55NA.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "WSe2ML-PDMS.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240806/WSe2ML-PDMS.wxd",
                                     "type": "File",
                                     "children": []
@@ -730,573 +730,573 @@
                         },
                         {
                             "text": "20240808",
-                            "checked": 2,
+                            "checked": false,
                             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808",
                             "type": "Folder",
                             "children": [
                                 {
                                     "text": "hBNonNPs-12#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(2)-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(2)-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(2)-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA5P10str1800gr20s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(2)-100x0.75NA5P10str1800gr20s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA10P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA10P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA1P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA1P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA50P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA50P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA5P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str1800gr20s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-2-100x0.75NA5P10str1800gr20s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-PurehBN-100x0.75NA1P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-PurehBN-100x0.75NA1P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-sub1-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-sub1-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-sub2-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-12#-sub2-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA0.5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA0.5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA1P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA1P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-3-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-4(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-4(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-4-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-4-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-sub1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-13#-sub1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-sub1(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-sub1(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-sub1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-14#-sub2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-1(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-1(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-10-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-10-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-11-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-11-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-12-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-12-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-13-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-13-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-14-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-14-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-2(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(5)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-2(5)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-3(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-3(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-3-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-3-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-4(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-4(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-4-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-5(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-5(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-5-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-5-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-6(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-6(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-6(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-6-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-7(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-7(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-7-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-7-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-8(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-8(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-8-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-8-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-9(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-9(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-9-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-9-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/hBNonNPs-15#-sub2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "Si-457ex5s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/Si-457ex5s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "WSe2-100x0.75NA1P.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808/WSe2-100x0.75NA1P.wxd",
                                     "type": "File",
                                     "children": []
@@ -1305,566 +1305,566 @@
                         },
                         {
                             "text": "20240808 - \u526f\u672c",
-                            "checked": 2,
+                            "checked": false,
                             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c",
                             "type": "Folder",
                             "children": [
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(2)-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(2)-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(2)-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(2)-100x0.75NA5P10str1800gr20s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(2)-100x0.75NA5P10str1800gr20s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA10P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA10P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA1P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA1P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA50P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA50P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA5P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-2-100x0.75NA5P10str1800gr20s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-2-100x0.75NA5P10str1800gr20s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-PurehBN-100x0.75NA1P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-PurehBN-100x0.75NA1P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-sub1-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-sub1-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-12#-sub2-100x0.75NA100P10str150gr60s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-12#-sub2-100x0.75NA100P10str150gr60s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA0.5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA0.5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA10P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA10P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA1P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA1P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA50P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA50P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-3-100x0.75NA5P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-3-100x0.75NA5P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-4(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-4(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-4-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-4-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-13#-sub1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-13#-sub1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-sub1(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-sub1(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-sub1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-14#-sub2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-14#-sub2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-1(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-1(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-1-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-1-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-10-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-10-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-11-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-11-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-12-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-12-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-13-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-13-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-14-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-14-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-2(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2(5)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-2(5)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-3(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-3(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-3-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-3-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-4(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-4(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-4-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-4-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-5(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-5(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-5-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-5-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-6(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-6(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6(4)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-6(4)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-6-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-6-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-7(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-7(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-7-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-7-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-8(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-8(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-8-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-8-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-9(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-9(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-9-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-9-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub2(2)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2(3)-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub2(3)-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "hBNonNPs-15#-sub2-100x0.75NA100P10str150gr10s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/hBNonNPs-15#-sub2-100x0.75NA100P10str150gr10s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "Si-457ex5s.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/Si-457ex5s.wxd",
                                     "type": "File",
                                     "children": []
                                 },
                                 {
                                     "text": "WSe2-100x0.75NA1P.wxd",
-                                    "checked": 2,
+                                    "checked": false,
                                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240808/JunjieXie/20240808 - \u526f\u672c/WSe2-100x0.75NA1P.wxd",
                                     "type": "File",
                                     "children": []
