@@ -153,7 +153,6 @@ class MyMainWindow(QMainWindow):
 
 class MenuActions:
     """Handles menu actions and their corresponding slots."""
-
     def __init__(self, main_window, treeManager):
         """Initialization"""
         print("MenuActions is instantiating...")

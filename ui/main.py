@@ -42,9 +42,20 @@ class MyMainWindow(QMainWindow):
         self.treeManager = None
 
         # list
+        self.listWidget = None
+        self.listManager = None
 
         # menuActions
         self.menuActions = None
+
+        # hbox3
+        self.treeCollapseButton = None
+        self.allItemUncheckButton = None
+
+        # hbox4
+        self.toggleShowTreeButton = None
+        self.importCheckedFilesButton = None
+
         """Initialize ui"""
         self.initUI()
 
@@ -86,6 +97,23 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu.addAction(self.menuActions.save_cache_action())
         self.cacheMenu.addAction(self.menuActions.load_cache_action())
 
+        # list
+        self.listWidget = ListManager.CustomListWidget()
+        self.listManager = ListManager(self, self.listWidget, self.treeManager)
+
+        # hbox3
+        self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
+        self.treeCollapseButton.clicked.connect(self.treeManager.collapse_tree)
+        self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
+        self.allItemUncheckButton.clicked.connect(self.treeManager.uncheck_all_items)
+
+        # hbox4
+        self.toggleShowTreeButton = QPushButton("Show tree")  # add a button to show/hide treeview
+        self.toggleShowTreeButton.setChecked(True)  # Set initial status
+        self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
+        self.importCheckedFilesButton = QPushButton("Import checked files")  # add a button to show/hide checked files
+        self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
+
         """box manager"""
         hbox1 = QHBoxLayout()
         hbox1.addWidget(self.spectrum_file_label)
@@ -95,10 +123,21 @@ class MyMainWindow(QMainWindow):
         hbox2.addWidget(self.spectra_folder_label)
         hbox2.addWidget(self.spectra_folder_textedit)
 
+        hbox3 = QHBoxLayout()
+        hbox3.addWidget(self.treeCollapseButton)
+        hbox3.addWidget(self.allItemUncheckButton)
+
+        hbox4 = QHBoxLayout()
+        hbox4.addWidget(self.toggleShowTreeButton)
+        hbox4.addWidget(self.importCheckedFilesButton)
+
         vbox = QVBoxLayout()
         vbox.addLayout(hbox1)
         vbox.addLayout(hbox2)
         vbox.addWidget(self.treeView)
+        vbox.addWidget(self.listWidget)
+        vbox.addLayout(hbox3)
+        vbox.addLayout(hbox4)
 
         central_widget = QWidget()
         central_widget.setLayout(vbox)
@@ -325,18 +364,18 @@ class TreeManager:
 
             # Check if item is a folder
             if item.hasChildren():
-                self.toggleCheckStateForChildren(item, new_state_is_check)
+                self.toggle_check_state_for_children(item, new_state_is_check)
 
             # other logic of double clicking
             super().mouseDoubleClickEvent(event)
 
-        def toggleCheckStateForChildren(self, parent_item, check):
+        def toggle_check_state_for_children(self, parent_item, check):
             for row in range(parent_item.rowCount()):
                 child_item = parent_item.child(row, 0)
                 child_item_check = parent_item.child(row, 1)
                 child_item_check.setCheckState(Qt.Checked if check else Qt.Unchecked)
                 if child_item.hasChildren():
-                    self.toggleCheckStateForChildren(child_item, check)
+                    self.toggle_check_state_for_children(child_item, check)
 
         def mousePressEvent(self, event):
             if event.button() == Qt.RightButton:
@@ -385,12 +424,12 @@ class TreeManager:
                     painter.fillRect(option.rect, QColor(255, 0, 0, alpha=150))  # light red
                 painter.restore()
 
-    def treeCollapse(self):
+    def collapse_tree(self):
         """Define a slot to collapse all nodes in the tree view."""
         print("Collapsing all nodes in the tree view...")
         self.treeView.collapseAll()
 
-    def allItemUncheck(self):
+    def uncheck_all_items(self):
         """Define a slot to uncheck all items in 2nd column(item_check) in the tree view."""
         print("Unchecking all items in the tree view...")
         parent_item = self.model.invisibleRootItem()
@@ -405,7 +444,7 @@ class TreeManager:
             if child_item.hasChildren():
                 self.childItemUncheck(child_item)
 
-    def toggleShowTree(self):
+    def toggle_show_tree(self):
         print("Toggling tree view visibility...")
         try:
             if self.treeView.isVisible():
@@ -413,7 +452,7 @@ class TreeManager:
             else:
                 self.treeView.show()
         except Exception as e:
-            print(f"  |--> Error toggleShowTree: {e}")
+            print(f"  |--> Error toggle_show_tree: {e}")
 
     def input_name_head_and_save_cache(self):
         try:
@@ -567,6 +606,62 @@ class TreeManager:
                 self.loadDirectory(file_folder_path)
         except Exception as e:
             print(f"  |--> Error loading file folder: {e}")
+
+
+class ListManager:
+    def __init__(self, main_window, list_widget, treeManager):
+        """Initialization"""
+        print("ListManager is instantiating...")
+        self.parent = main_window
+        self.listWidget = list_widget
+        self.treeManager = treeManager
+        self.model = self.treeManager.model
+
+    def import_checked_files(self):
+        try:
+            self.checked_files_data = []  # clear cache every time
+            self.listWidget.clear()
+            root_item = self.model.invisibleRootItem()
+            get_checked_files_data = self.get_checked_files_data(root_item)
+            # print(get_checked_files_data)
+            # # items = ["Item 1", "Item 2", "Item 3", "Item 4"]
+            for file_data in get_checked_files_data:
+                file_name = QtWidgets.QListWidgetItem(file_data['text'])
+                self.listWidget.addItem(file_name)
+            # data = self.get_checked_files_data(root_item)
+        except Exception as e:
+            print(f"  |--> Error importing checked files: {e}")
+
+    def get_checked_files_data(self, item):
+        for row in range(item.rowCount()):
+            # get child item's check item
+            child_item = item.child(row, 0)
+            child_item_check = item.child(row, 1)
+            chile_item_type = item.child(row, 3)
+            if chile_item_type:
+                chile_item_type = chile_item_type.text()
+            if child_item_check.checkState() and chile_item_type == 'File':
+                data = {
+                    'text': child_item.text(),
+                    'path': []
+                }
+                self.checked_files_data.append(data)
+            if child_item.hasChildren():
+                self.get_checked_files_data(child_item)
+        return self.checked_files_data
+
+    class CustomListWidget(QtWidgets.QListWidget):
+        def __init__(self):
+            super().__init__()
+            # enable dragging
+            self.setDragEnabled(True)
+            self.setDropIndicatorShown(True)
+            self.setDefaultDropAction(QtCore.Qt.MoveAction)
+            self.setAcceptDrops(True)
+
+        def mouseDoubleClickEvent(self, e):
+            print("the first items")
+            print(self.item(0).text())
 
 
 if __name__ == '__main__':
