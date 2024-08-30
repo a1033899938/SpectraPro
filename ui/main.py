@@ -24,11 +24,11 @@ import matplotlib
 # for read file
 import spe_loader as sl
 
-
 matplotlib.use("Qt5Agg")  # 声明使用QT5
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+import matplotlib.figure as Figure
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
 
 
 class MyMainWindow(QMainWindow):
@@ -222,6 +222,7 @@ class GeneralMethods:
             data['ydim'] = sp.ydim[0]
             data['intensity'] = np.squeeze(np.array(sp.data))
             data['wavelength'] = sp.wavelength
+            data['strip'] = range(data['ydim'])
             print(data)
         elif file_path.endswith('txt'):
             pass
@@ -232,6 +233,7 @@ class GeneralMethods:
 
 class MenuActions:
     """Handles menu actions and their corresponding slots."""
+
     def __init__(self, main_window, treeManager):
         print("MenuActions is instantiating...")
         self.parent = main_window
@@ -289,6 +291,7 @@ class MenuActions:
 
 class TreeManager:
     """Tree Actions"""
+
     def __init__(self, main_window, treeView):
         """Initialization"""
         print("TreeManager is instantiating...")
@@ -383,6 +386,7 @@ class TreeManager:
 
     class CustomTreeView(QTreeView):
         """Rewrite some slots for double left-clicking, right press and slot: 'check/uncheck all item'."""
+
         def __init__(self, parent=None):
             super().__init__(parent)
 
@@ -729,28 +733,102 @@ class ListManager:
 
 
 class FigureManager(FigureCanvas):
-    def __init__(self, width=5, height=4, dpi=100):
-        self.fig = Figure(figsize=(width, height), dpi=dpi)
-        super(FigureManager, self).__init__(self.fig)
-        self.axes = self.fig.add_subplot(111)
+    def __init__(self, width=5, height=4, dpi=300):
+        try:
+            self.fig = plt.figure(figsize=(width, height), dpi=dpi)
+            super(FigureManager, self).__init__(self.fig)
+            self.axes = self.fig.add_subplot(111)
+            # self.fig.canvas.toolbar.pan()
+            self.setFocusPolicy(Qt.StrongFocus)  # Enable focus to receive mouse events
+
+            self.fig.canvas.mpl_connect('scroll_event', self.call_back)
+            self.fig.canvas.mpl_connect("button_press_event", self.on_press)
+            self.fig.canvas.mpl_connect("button_release_event", self.on_release)
+            self.fig.canvas.mpl_connect("motion_notify_event", self.on_move)
+
+            self.lastx = 0  # 获取鼠标按下时的坐标X
+            self.lasty = 0  # 获取鼠标按下时的坐标Y
+            self.press = False
+        except Exception as e:
+            print(f"  |--> Error initialize: {e}")
 
     def deal_with_this_file(self, list_item):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
-        GeneralMethods.read_file(list_item_path)
-        # self.plotfig(list_item_name, list_item_path)
-        # self.draw()
+        data = GeneralMethods.read_file(list_item_path)
+        self.plotfig(list_item_name, data)
+        self.draw()
 
-    def plotfig(self, list_item_name, list_item_path):
+    def plotfig(self, list_item_name, data):
         self.axes0 = self.fig.add_subplot(111)
-        t = np.arange(0.0, 3.0, 0.01)
-        s = np.sin(2 * np.pi * t)
-        self.axes0.plot(t, s)
+        x = data['wavelength']
+        y = data['strip']
+        z = data['intensity']
+
+        # Ensure x and y are 1D arrays and z is a 2D array
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        self.axes0.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
+        # self.axes0.pcolor(x, y, z)
         self.axes0.set_title(list_item_name)
-        # self.axes0.fontSize
 
-    # def read_file_data(self, file_path):
+    # def wheelEvent(self, event):
+    #     # Determine zoom factor based on scroll direction
+    #     factor = 1/1.1 if event.angleDelta().y() > 0 else 1.1
+    #     self.zoom(factor)
 
+    def on_press(self, event):
+        if event.inaxes:  # if mouse in axes
+            if event.button == 1:  # click left equals 1, while right equals 2
+                self.press = True
+                self.lastx = event.xdata  # get X coordinate of mouse
+                self.lasty = event.ydata  # get Y coordinate of mouse
+
+    def on_move(self, event):
+        try:
+            if event.inaxes and self.press:
+                x = event.xdata - self.lastx
+                y = event.ydata - self.lasty
+
+                x_min, x_max = event.inaxes.get_xlim()
+                y_min, y_max = event.inaxes.get_ylim()
+
+                x_min -= x
+                x_max -= x
+                y_min -= y
+                y_max -= y
+
+                event.inaxes.set_xlim(x_min, x_max)
+                event.inaxes.set_ylim(y_min, y_max)
+                self.fig.canvas.draw_idle()  # Draw immediately
+        except Exception as e:
+            print(f"  |--> Error on_move: {e}")
+
+    def on_release(self, event):
+        if self.press:
+            self.press = False  # 鼠标松开，结束移动
+
+    def call_back(self, event):
+        try:
+            if event.inaxes:
+                x_min, x_max = event.inaxes.get_xlim()
+                y_min, y_max = event.inaxes.get_ylim()
+
+                x_range = (x_max - x_min) / 10
+                y_range = (y_max - y_min) / 10
+
+                if event.button == 'up':
+                    event.inaxes.set_xlim(x_min + x_range, x_max - x_range)
+                    event.inaxes.set_ylim(y_min + y_range, y_max - y_range)
+                elif event.button == 'down':
+                    event.inaxes.set_xlim(x_min - x_range, x_max + x_range)
+                    event.inaxes.set_ylim(y_min - y_range, y_max + y_range)
+
+                self.fig.canvas.draw_idle()  # Redraw the canvas
+        except Exception as e:
+            print(f"  |--> Error call_back: {e}")
 
 
 if __name__ == '__main__':
