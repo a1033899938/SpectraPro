@@ -5,28 +5,35 @@
     "type": "",
     "children": [
         {
-            "text": "test.txt",
+            "text": "newNPs 13.spe",
             "checked": 2,
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 13.spe",
+            "type": "File",
+            "children": []
+        },
+        {
+            "text": "test.txt",
+            "checked": false,
             "file_path": "C:/Users/a1033/Desktop/Contemporary/test.txt",
             "type": "File",
             "children": []
         },
         {
             "text": "20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406",
-            "checked": 2,
+            "checked": false,
             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406",
             "type": "Folder",
             "children": [
                 {
                     "text": "hBN-AuShin-SiO2-2#_PL_5.txt",
-                    "checked": 2,
+                    "checked": false,
                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406/hBN-AuShin-SiO2-2#_PL_5.txt",
                     "type": "File",
                     "children": []
                 },
                 {
                     "text": "Picture",
-                    "checked": 2,
+                    "checked": false,
                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406/Picture",
                     "type": "Folder",
                     "children": []

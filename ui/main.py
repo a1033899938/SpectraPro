@@ -17,6 +17,18 @@ import json
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5 import (QtWidgets, QtCore, QtGui)
 from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QListWidget
+# for figure
+import numpy as np
+import matplotlib
+# for read file
+import spe_loader as sl
+
+
+matplotlib.use("Qt5Agg")  # 声明使用QT5
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 
 class MyMainWindow(QMainWindow):
@@ -29,11 +41,11 @@ class MyMainWindow(QMainWindow):
         self.fileMenu = None
         self.cacheMenu = None
 
-        # hbox1
+        # left_hbox1
         self.spectrum_file_label = None
         self.spectrum_file_textedit = None
 
-        # hbox2
+        # left_hbox2
         self.spectra_folder_label = None
         self.spectra_folder_textedit = None
 
@@ -48,13 +60,16 @@ class MyMainWindow(QMainWindow):
         # menuActions
         self.menuActions = None
 
-        # hbox3
+        # left_hbox3
         self.treeCollapseButton = None
         self.allItemUncheckButton = None
 
-        # hbox4
+        # left_hbox4
         self.toggleShowTreeButton = None
         self.importCheckedFilesButton = None
+
+        # right_hbox1
+        self.figureManager = None
 
         """Initialize ui"""
         self.initUI()
@@ -63,7 +78,7 @@ class MyMainWindow(QMainWindow):
         """ Set main window parameters"""
         print("Initializing UI")
         # set window position, title and so on...
-        self.setGeometry(200, 200, 1200, 900)
+        self.setGeometry(200, 200, 2400, 1200)
         self.setWindowTitle('SpectraPro')
         self.statusBar().showMessage('Ready')
 
@@ -74,13 +89,13 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu = self.menubar.addMenu('&Cache')
 
         """Create main window objects"""
-        # hbox1
+        # left_hbox1
         self.spectrum_file_label = QLabel('File path')
         self.spectrum_file_textedit = QTextEdit()
         self.spectrum_file_textedit.setReadOnly(True)  # Set to read-only for file path display
         self.spectrum_file_textedit.setFixedHeight(30)  # Set height for QTextEdit
 
-        # hbox2
+        # left_hbox2
         self.spectra_folder_label = QLabel('File folder')
         self.spectra_folder_textedit = QTextEdit()
         self.spectra_folder_textedit.setReadOnly(True)  # Set to read-only for file path display
@@ -97,17 +112,20 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu.addAction(self.menuActions.save_cache_action())
         self.cacheMenu.addAction(self.menuActions.load_cache_action())
 
-        # list
-        self.listWidget = ListManager.CustomListWidget()
-        self.listManager = ListManager(self, self.listWidget, self.treeManager)
+        # right_hbox1
+        self.figureManager = FigureManager(width=10, height=5, dpi=100)
 
-        # hbox3
+        # list
+        self.listWidget = ListManager.CustomListWidget(self.figureManager)
+        self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureManager)
+
+        # left_hbox3
         self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
         self.treeCollapseButton.clicked.connect(self.treeManager.collapse_tree)
         self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
         self.allItemUncheckButton.clicked.connect(self.treeManager.uncheck_all_items)
 
-        # hbox4
+        # left_hbox4
         self.toggleShowTreeButton = QPushButton("Show tree")  # add a button to show/hide treeview
         self.toggleShowTreeButton.setChecked(True)  # Set initial status
         self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
@@ -115,32 +133,41 @@ class MyMainWindow(QMainWindow):
         self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
 
         """box manager"""
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(self.spectrum_file_label)
-        hbox1.addWidget(self.spectrum_file_textedit)
+        # left box
+        left_hbox1 = QHBoxLayout()
+        left_hbox1.addWidget(self.spectrum_file_label)
+        left_hbox1.addWidget(self.spectrum_file_textedit)
 
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.spectra_folder_label)
-        hbox2.addWidget(self.spectra_folder_textedit)
+        left_hbox2 = QHBoxLayout()
+        left_hbox2.addWidget(self.spectra_folder_label)
+        left_hbox2.addWidget(self.spectra_folder_textedit)
 
-        hbox3 = QHBoxLayout()
-        hbox3.addWidget(self.treeCollapseButton)
-        hbox3.addWidget(self.allItemUncheckButton)
+        left_hbox3 = QHBoxLayout()
+        left_hbox3.addWidget(self.treeCollapseButton)
+        left_hbox3.addWidget(self.allItemUncheckButton)
 
-        hbox4 = QHBoxLayout()
-        hbox4.addWidget(self.toggleShowTreeButton)
-        hbox4.addWidget(self.importCheckedFilesButton)
+        left_hbox4 = QHBoxLayout()
+        left_hbox4.addWidget(self.toggleShowTreeButton)
+        left_hbox4.addWidget(self.importCheckedFilesButton)
 
-        vbox = QVBoxLayout()
-        vbox.addLayout(hbox1)
-        vbox.addLayout(hbox2)
-        vbox.addWidget(self.treeView)
-        vbox.addWidget(self.listWidget)
-        vbox.addLayout(hbox3)
-        vbox.addLayout(hbox4)
+        left_vbox = QVBoxLayout()
+        left_vbox.addLayout(left_hbox1)
+        left_vbox.addLayout(left_hbox2)
+        left_vbox.addWidget(self.treeView)
+        left_vbox.addWidget(self.listWidget)
+        left_vbox.addLayout(left_hbox3)
+        left_vbox.addLayout(left_hbox4)
+
+        # right box
+        right_hbox = QHBoxLayout()
+        right_hbox.addWidget(self.figureManager)
+
+        main_hbox = QHBoxLayout()
+        main_hbox.addLayout(left_vbox)
+        main_hbox.addLayout(right_hbox)
 
         central_widget = QWidget()
-        central_widget.setLayout(vbox)
+        central_widget.setLayout(main_hbox)
         self.setCentralWidget(central_widget)
 
         self.show()
@@ -185,6 +212,22 @@ class GeneralMethods:
         json_file_path, _ = QFileDialog.getOpenFileName(parent=None, caption='Select json file', directory='cache',
                                                         filter='Json file (*.json)')
         return json_file_path
+
+    @staticmethod
+    def read_file(file_path):
+        if file_path.endswith('spe'):
+            sp = sl.load_from_files([file_path])
+            data = {}
+            data['xdim'] = sp.xdim[0]
+            data['ydim'] = sp.ydim[0]
+            data['intensity'] = np.squeeze(np.array(sp.data))
+            data['wavelength'] = sp.wavelength
+            print(data)
+        elif file_path.endswith('txt'):
+            pass
+        else:
+            pass
+        return data
 
 
 class MenuActions:
@@ -538,20 +581,23 @@ class TreeManager:
         return data
 
     def select_json_file_and_load_cache(self):
-        json_file_path = GeneralMethods.select_json_file_through_dialog()
-        json_file_name = os.path.basename(json_file_path)
-        if '_tree_state.json' in json_file_name or '_filefolder.json' in json_file_name:
-            if '_tree_state.json' in json_file_name:
-                cache_name_head = json_file_name.replace('_tree_state.json', '')
+        try:
+            json_file_path = GeneralMethods.select_json_file_through_dialog()
+            json_file_name = os.path.basename(json_file_path)
+            if '_tree_state.json' in json_file_name or '_filefolder.json' in json_file_name:
+                if '_tree_state.json' in json_file_name:
+                    cache_name_head = json_file_name.replace('_tree_state.json', '')
+                else:
+                    cache_name_head = json_file_name.replace('_filefolder.json', '')
+                self.load_file_folder(cache_name_head + '_filefolder.json')
+                self.load_tree_state(cache_name_head + '_tree_state.json')
+            elif 'tree_state.json' in json_file_name or 'filefolder.json' in json_file_name:
+                self.load_file_folder('filefolder.json')
+                self.load_tree_state('tree_state.json')
             else:
-                cache_name_head = json_file_name.replace('_filefolder.json', '')
-            self.load_file_folder(cache_name_head + '_filefolder.json')
-            self.load_tree_state(cache_name_head + '_tree_state.json')
-        elif 'tree_state.json' in json_file_name or 'filefolder.json' in json_file_name:
-            self.load_file_folder('filefolder.json')
-            self.load_tree_state('tree_state.json')
-        else:
-            print("Error input json file.")
+                print("Error input json file.")
+        except Exception as e:
+            print(f"  |--> Error select json file and load cache: {e}")
 
     def load_tree_state(self, tree_state_json_file_name):
         """A method to load tree items from a json file."""
@@ -609,13 +655,16 @@ class TreeManager:
 
 
 class ListManager:
-    def __init__(self, main_window, list_widget, treeManager):
+    def __init__(self, main_window, list_widget, treeManager, figureManager):
         """Initialization"""
         print("ListManager is instantiating...")
         self.parent = main_window
         self.listWidget = list_widget
         self.treeManager = treeManager
         self.model = self.treeManager.model
+        self.figureManager = figureManager
+
+        self.checked_files_data = None
 
     def import_checked_files(self):
         try:
@@ -623,12 +672,10 @@ class ListManager:
             self.listWidget.clear()
             root_item = self.model.invisibleRootItem()
             get_checked_files_data = self.get_checked_files_data(root_item)
-            # print(get_checked_files_data)
-            # # items = ["Item 1", "Item 2", "Item 3", "Item 4"]
             for file_data in get_checked_files_data:
                 file_name = QtWidgets.QListWidgetItem(file_data['text'])
+                file_name.setData(1, file_data['file_path'])
                 self.listWidget.addItem(file_name)
-            # data = self.get_checked_files_data(root_item)
         except Exception as e:
             print(f"  |--> Error importing checked files: {e}")
 
@@ -637,13 +684,14 @@ class ListManager:
             # get child item's check item
             child_item = item.child(row, 0)
             child_item_check = item.child(row, 1)
+            child_item_file_path = item.child(row, 2)
             chile_item_type = item.child(row, 3)
             if chile_item_type:
                 chile_item_type = chile_item_type.text()
             if child_item_check.checkState() and chile_item_type == 'File':
                 data = {
                     'text': child_item.text(),
-                    'path': []
+                    'file_path': child_item_file_path.text(),
                 }
                 self.checked_files_data.append(data)
             if child_item.hasChildren():
@@ -651,7 +699,7 @@ class ListManager:
         return self.checked_files_data
 
     class CustomListWidget(QtWidgets.QListWidget):
-        def __init__(self):
+        def __init__(self, figureManager):
             super().__init__()
             # enable dragging
             self.setDragEnabled(True)
@@ -659,9 +707,50 @@ class ListManager:
             self.setDefaultDropAction(QtCore.Qt.MoveAction)
             self.setAcceptDrops(True)
 
-        def mouseDoubleClickEvent(self, e):
-            print("the first items")
+            self.figureManager = figureManager
+
+        def mouseDoubleClickEvent(self, event):
+            print("You are clicking the list widget:", end=' ')
             print(self.item(0).text())
+
+        def mousePressEvent(self, event):
+            try:
+                if event.button() == Qt.LeftButton:
+                    index = self.indexAt(event.pos())
+                    if not index.isValid():
+                        return
+                list_item = self.itemAt(event.pos())
+                if list_item:
+                    # list_item_text = list_item.data(0)
+                    # list_item_path = list_item.data(1)
+                    self.figureManager.deal_with_this_file(list_item)
+            except Exception as e:
+                print(f"  |--> Error mousePressEvent: {e}")
+
+
+class FigureManager(FigureCanvas):
+    def __init__(self, width=5, height=4, dpi=100):
+        self.fig = Figure(figsize=(width, height), dpi=dpi)
+        super(FigureManager, self).__init__(self.fig)
+        self.axes = self.fig.add_subplot(111)
+
+    def deal_with_this_file(self, list_item):
+        list_item_name = list_item.data(0)
+        list_item_path = list_item.data(1)
+        GeneralMethods.read_file(list_item_path)
+        # self.plotfig(list_item_name, list_item_path)
+        # self.draw()
+
+    def plotfig(self, list_item_name, list_item_path):
+        self.axes0 = self.fig.add_subplot(111)
+        t = np.arange(0.0, 3.0, 0.01)
+        s = np.sin(2 * np.pi * t)
+        self.axes0.plot(t, s)
+        self.axes0.set_title(list_item_name)
+        # self.axes0.fontSize
+
+    # def read_file_data(self, file_path):
+
 
 
 if __name__ == '__main__':
