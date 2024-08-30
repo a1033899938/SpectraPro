@@ -18,6 +18,8 @@ from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5 import (QtWidgets, QtCore, QtGui)
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QListWidget
+from PyQt5.QtWidgets import QSlider
+from PyQt5.QtGui import QPalette, QFont
 # for figure
 import numpy as np
 import matplotlib
@@ -70,6 +72,7 @@ class MyMainWindow(QMainWindow):
 
         # right_hbox1
         self.figureManager = None
+        self.sliderManager = None
 
         """Initialize ui"""
         self.initUI()
@@ -114,6 +117,7 @@ class MyMainWindow(QMainWindow):
 
         # right_hbox1
         self.figureManager = FigureManager(width=10, height=5, dpi=100)
+        self.sliderManager = SliderManager(min_value=0, max_value=100, initial_low=25, initial_high=25, tick_interval=5)
 
         # list
         self.listWidget = ListManager.CustomListWidget(self.figureManager)
@@ -161,6 +165,7 @@ class MyMainWindow(QMainWindow):
         # right box
         right_hbox = QHBoxLayout()
         right_hbox.addWidget(self.figureManager)
+        right_hbox.addWidget(self.sliderManager)
 
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(left_vbox)
@@ -829,6 +834,72 @@ class FigureManager(FigureCanvas):
                 self.fig.canvas.draw_idle()  # Redraw the canvas
         except Exception as e:
             print(f"  |--> Error call_back: {e}")
+
+
+class SliderManager(QWidget):
+    def __init__(self, min_value=0, max_value=100, initial_low=20, initial_high=80, tick_interval=10):
+        super().__init__()
+        self.min_value = min_value
+        self.max_value = max_value
+
+        # Create sliders for ROI
+        self.slider_low = QSlider(Qt.Horizontal, self)
+        self.slider_high = QSlider(Qt.Horizontal, self)
+
+        # Initialize sliders
+        self.slider_low.setMinimum(min_value)
+        self.slider_low.setMaximum(max_value)
+        self.slider_low.setValue(initial_low)
+        self.slider_low.setTickPosition(QSlider.TicksBelow)
+        self.slider_low.setTickInterval(1)
+
+        self.slider_high.setMinimum(min_value)
+        self.slider_high.setMaximum(max_value)
+        self.slider_high.setValue(initial_high)
+        self.slider_high.setTickPosition(QSlider.TicksBelow)
+        self.slider_high.setTickInterval(1)
+
+        # Create label to display the slider value
+        self.label_low = QLabel(f"Low: {initial_low}", self)
+        self.label_high = QLabel(f"High: {initial_high}", self)
+
+        pe = QPalette()
+        pe.setColor(QPalette.WindowText, Qt.blue)
+        pe.setColor(QPalette.Background, Qt.lightGray)
+        self.label_low.setAutoFillBackground(True)
+        self.label_low.setPalette(pe)
+        self.label_low.setFont(QFont("Roman times", 10, QFont.Bold))
+        self.label_high.setAutoFillBackground(True)
+        self.label_high.setPalette(pe)
+        self.label_high.setFont(QFont("Roman times", 10, QFont.Bold))
+
+        # Connect slider value change signal to the method
+        self.slider_low.valueChanged.connect(self.update_labels)
+        self.slider_high.valueChanged.connect(self.update_labels)
+
+        # Create layout
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.label_high)
+        self.layout.addWidget(self.slider_low)
+        self.layout.addWidget(self.slider_high)
+        self.layout.addWidget(self.label_low)
+        self.setLayout(self.layout)
+
+    def update_labels(self, value):
+        low_value = self.slider_low.value()
+        high_value = self.slider_high.value()
+
+        self.slider_low.setValue(low_value)
+        self.slider_high.setValue(high_value)
+
+        self.label_low.setText(f"Low: {low_value}")
+        self.label_high.setText(f"High: {high_value}")
+
+        print(f"ROI - Low: {low_value}, High: {high_value}")
+
+    def get_value(self):
+        # Method to return the current value of the slider
+        return self.slider.value()
 
 
 if __name__ == '__main__':
