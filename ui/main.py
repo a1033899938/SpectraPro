@@ -30,6 +30,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # for read file
 import spe_loader as sl
 from matplotlib.ticker import MaxNLocator
+import time
 
 matplotlib.use("Qt5Agg")  # 声明使用QT5
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -180,8 +181,8 @@ class MyMainWindow(QMainWindow):
         # right box
         right_hbox = QHBoxLayout()
         right_hbox.addWidget(self.figureManager)
-        # right_hbox.addWidget(self.sliderManager)
         right_hbox.addWidget(self.roiManager)
+        # right_hbox.addWidget(self.sliderManager)
 
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(left_vbox)
@@ -802,17 +803,20 @@ class FigureWidget(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
         self.setLayout(layout)
-        # self.canvas.setFixedSize(800, 600)
 
         self.initFig()
 
-        self.lastx = 0  # 获取鼠标按下时的坐标X
-        self.lasty = 0  # 获取鼠标按下时的坐标Y
+        self.lastx = 0
+        self.lasty = 0
+        self.originxmin = 0
+        self.originxmax = 0
+        self.originymin = 0
+        self.originymax = 0
+        self.last_click_time = 0
         self.press = False
 
     def initFig(self):
         try:
-            # self.fig.canvas.toolbar.pan()
             self.setFocusPolicy(Qt.StrongFocus)  # Enable focus to receive mouse events
 
             self.fig.canvas.mpl_connect('scroll_event', self.call_back)
@@ -826,10 +830,10 @@ class FigureWidget(QWidget):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
         data = GeneralMethods.read_file(list_item_path)
-        self.plotfig(list_item_name, data)
+        self.plot_figure(list_item_name, data)
         self.histogramWidget.updateHist(self.data)
 
-    def plotfig(self, list_item_name, data):
+    def plot_figure(self, list_item_name, data):
         x = data['wavelength']
         y = data['strip']
         z = data['intensity']
@@ -842,16 +846,29 @@ class FigureWidget(QWidget):
 
         self.ax.clear()
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        # self.ax.pcolor(x, y, z)
         self.ax.set_title(list_item_name)
         self.canvas.draw()
 
+        self.originxmin, self.originxmax = x.min(), x.max()
+        self.originymin, self.originymax = y.min(), y.max()
+
     def on_press(self, event):
-        if event.inaxes:  # if mouse in axes
-            if event.button == 1:  # click left equals 1, while right equals 2
-                self.press = True
-                self.lastx = event.xdata  # get X coordinate of mouse
-                self.lasty = event.ydata  # get Y coordinate of mouse
+        try:
+            if event.inaxes:  # if mouse in axes
+                if event.button == 1:  # click left equals 1, while right equals 2
+                    print(self.originxmin)
+                    self.press = True
+                    current_time = time.time()
+                    self.lastx = event.xdata  # get X coordinate of mouse
+                    self.lasty = event.ydata  # get Y coordinate of mouse
+
+                    if current_time - self.last_click_time < 0.3:
+                        event.inaxes.set_xlim(self.originxmin, self.originxmax)
+                        event.inaxes.set_ylim(self.originymin, self.originymax)
+                        self.fig.canvas.draw_idle()
+                    self.last_click_time = current_time
+        except Exception as e:
+            print(f"  |--> Error on_press: {e}")
 
     def on_move(self, event):
         try:
