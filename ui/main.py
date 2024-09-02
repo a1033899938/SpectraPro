@@ -1,5 +1,6 @@
 import sys
 import os
+import io
 import pprint
 from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QWidget, QDialog, QMessageBox
 from PyQt5.QtGui import QIcon
@@ -13,6 +14,7 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QStyledItemDelegate
 from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import QInputDialog
+from PyQt5.QtWidgets import QSizePolicy
 import json
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5 import (QtWidgets, QtCore, QtGui)
@@ -20,17 +22,24 @@ from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QListWidget
 from PyQt5.QtWidgets import QSlider
 from PyQt5.QtGui import QPalette, QFont
+from PyQt5.QtCore import QRect
 # for figure
 import numpy as np
 import matplotlib
+from mpl_toolkits.mplot3d import Axes3D
 # for read file
 import spe_loader as sl
+from matplotlib.ticker import MaxNLocator
 
 matplotlib.use("Qt5Agg")  # 声明使用QT5
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import matplotlib.figure as Figure
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
+from matplotlib.transforms import Affine2D
+import mpl_toolkits.axisartist.floating_axes as floating_axes
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsWidget, QGraphicsScene, QGraphicsProxyWidget
+from PyQt5.QtGui import QTransform
+from PyQt5.QtCore import QRectF
 
 
 class MyMainWindow(QMainWindow):
@@ -71,8 +80,10 @@ class MyMainWindow(QMainWindow):
         self.importCheckedFilesButton = None
 
         # right_hbox1
+        self.histogramWidget = None
+        self.roiManager = None
+        self.figureWidget = None
         self.figureManager = None
-        self.sliderManager = None
 
         """Initialize ui"""
         self.initUI()
@@ -106,6 +117,7 @@ class MyMainWindow(QMainWindow):
 
         # tree
         self.treeView = TreeManager.CustomTreeView()
+        self.treeView.setMinimumWidth(1000)
         self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
 
         """Add custom actions to menu and connect to slots."""
@@ -116,12 +128,15 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu.addAction(self.menuActions.load_cache_action())
 
         # right_hbox1
-        self.figureManager = FigureManager(width=10, height=5, dpi=100)
-        self.sliderManager = SliderManager(min_value=0, max_value=100, initial_low=25, initial_high=25, tick_interval=5)
+        self.histogramWidget = HistogramWidget(width=8, height=2, dpi=100)
+        self.roiManager = RoiManager(self.histogramWidget, width=250, height=850)
+        self.figureWidget = FigureWidget(self.histogramWidget, width=12, height=8, dpi=100)
+        self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
 
         # list
-        self.listWidget = ListManager.CustomListWidget(self.figureManager)
-        self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureManager)
+        self.listWidget = ListManager.CustomListWidget(self.figureWidget)
+        self.listWidget.setMinimumWidth(1000)
+        self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureWidget)
 
         # left_hbox3
         self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
@@ -165,7 +180,8 @@ class MyMainWindow(QMainWindow):
         # right box
         right_hbox = QHBoxLayout()
         right_hbox.addWidget(self.figureManager)
-        right_hbox.addWidget(self.sliderManager)
+        # right_hbox.addWidget(self.sliderManager)
+        right_hbox.addWidget(self.roiManager)
 
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(left_vbox)
@@ -209,8 +225,7 @@ class GeneralMethods:
     @staticmethod
     def input_dialog(parent, title='', property_name=''):
         text, okPressed = QInputDialog.getText(parent, f"{title}.", f"{property_name.title()}:", QLineEdit.Normal, "")
-        if okPressed and text != '':
-            return text
+        return text, okPressed
 
     @staticmethod
     def select_json_file_through_dialog():
@@ -234,6 +249,17 @@ class GeneralMethods:
         else:
             pass
         return data
+
+    @staticmethod
+    def rotate_view(graphicsView, angle):
+        # 创建一个 QTransform 对象
+        transform = QTransform()
+
+        # 在变换矩阵上应用旋转
+        transform.rotate(angle)
+
+        # 将变换应用到视图
+        graphicsView.setTransform(transform)
 
 
 class MenuActions:
@@ -323,14 +349,16 @@ class TreeManager:
         try:
             # initialize model
             self.model.clear()  # Clear existing items
-            self.model.setHorizontalHeaderLabels(['File Name', '✔', 'File Path', 'Type'])
+            self.model.setHorizontalHeaderLabels(['File Name', '✔', 'Type', 'File Path'])
 
             # set header of the tree view
             header = self.parent.treeView.header()  # Set the first column to be resizable but with a default width
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # Set the first column to be resizable
-            header.resizeSection(0, 700)  # Set width of the first column to 700 pixels
-            header.setSectionResizeMode(1, QHeaderView.Interactive)  # Set the first column to be resizable
+            header.resizeSection(0, 700)  # Set width of the second column to 700 pixels
+            header.setSectionResizeMode(1, QHeaderView.Interactive)  # Set the second column to be resizable
             header.resizeSection(1, 10)  # Set width of the first column to 700 pixels
+            header.setSectionResizeMode(2, QHeaderView.Interactive)  # Set the third column to be resizable
+            header.resizeSection(2, 80)  # Set width of the third column to 700 pixels
 
             # add items to model
             self.addFolderItems(self.spectra_file_folder_path, self.model.invisibleRootItem())
@@ -360,7 +388,7 @@ class TreeManager:
 
                 item_type = QStandardItem('File')
                 item_type.setEditable(False)
-                parent_item.appendRow([item, item_check, item_file_path, item_type])
+                parent_item.appendRow([item, item_check, item_type, item_file_path])
 
             # Add directories without filters
             dirs = QDir(spectra_file_folder_path).entryList(QDir.Dirs | QDir.NoDotAndDotDot)
@@ -380,7 +408,7 @@ class TreeManager:
 
                 item_type = QStandardItem('Folder')
                 item_type.setEditable(False)
-                parent_item.appendRow([item, item_check, item_file_path, item_type])
+                parent_item.appendRow([item, item_check, item_type, item_file_path])
 
                 # Recursively add subfolders
                 self.addFolderItems(self.folder_dir.filePath(folder_name), item)
@@ -456,7 +484,7 @@ class TreeManager:
             item_check_index = index.siblingAtColumn(1)
             item_check = index.model().itemFromIndex(item_check_index)
 
-            item_type_index = index.siblingAtColumn(3)
+            item_type_index = index.siblingAtColumn(2)
             item_type = index.model().itemFromIndex(item_type_index)
             if item_type:
                 item_type = item_type.text()
@@ -508,26 +536,36 @@ class TreeManager:
 
     def input_name_head_and_save_cache(self):
         try:
-            cache_name_head = GeneralMethods.input_dialog(self.parent, title='Input name head of cache',
-                                                          property_name='name head')
-            if cache_name_head:
-                if (os.path.exists(os.path.join('cache', cache_name_head + '_tree_state.json'))
-                        or os.path.exists(os.path.join('cache', cache_name_head + '_filefolder.json'))):
+            ask_flag = 0
+            save_flag = 0
+            cache_name_head, ok = GeneralMethods.input_dialog(self.parent, title='Input name head of cache',
+                                                              property_name='name head')
+
+            if ok:
+                if cache_name_head:
+                    if (os.path.exists(os.path.join('cache', cache_name_head + '_tree_state.json'))
+                            or os.path.exists(os.path.join('cache', cache_name_head + '_filefolder.json'))):
+                        ask_flag = 1
+                    else:
+                        save_flag = 1
+                else:
+                    if (os.path.exists(os.path.join('cache', 'tree_state.json'))
+                            or os.path.exists(os.path.join('cache', 'filefolder.json'))):
+                        ask_flag = 1
+                    else:
+                        save_flag = 1
+
+                if ask_flag:
                     reply = QMessageBox.question(self.parent, "Confirmation", 'The file is exist, continue?',
                                                  QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                     if reply == QMessageBox.Yes:
-                        self.save_cache(cache_name_head)
-                else:
+                        save_flag = 1
+
+                if save_flag:
                     self.save_cache(cache_name_head)
             else:
-                if (os.path.exists(os.path.join('cache', 'tree_state.json'))
-                        or os.path.exists(os.path.join('cache', 'filefolder.json'))):
-                    reply = QMessageBox.question(self.parent, "Confirmation", 'The file is exist, continue?',
-                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                    if reply == QMessageBox.Yes:
-                        self.save_cache(cache_name_head)
-                else:
-                    self.save_cache(cache_name_head)
+                print("You cancel inputting name head.")
+
         except Exception as e:
             print(f'  |--> Error input name head and save cache: {e}')
 
@@ -562,19 +600,19 @@ class TreeManager:
             item_check = item.model().itemFromIndex(item_check_index)
             item_check_data = Qt.Checked if item_check and item_check.checkState() == Qt.Checked else False
 
-            item_file_path_index = item_index.siblingAtColumn(2)
-            item_file_path = item.model().itemFromIndex(item_file_path_index)
-            file_path = item_file_path.text() if item_file_path else ''
-
-            item_type_index = item_index.siblingAtColumn(3)
+            item_type_index = item_index.siblingAtColumn(2)
             item_type = item.model().itemFromIndex(item_type_index)
             item_type = item_type.text() if item_type else ''
+
+            item_file_path_index = item_index.siblingAtColumn(3)
+            item_file_path = item.model().itemFromIndex(item_file_path_index)
+            file_path = item_file_path.text() if item_file_path else ''
 
             data = {
                 'text': item.text(),
                 'checked': item_check_data,
-                'file_path': file_path,
                 'type': item_type,
+                'file_path': file_path,
                 'children': []
             }
 
@@ -659,19 +697,20 @@ class TreeManager:
                 data = json.load(f)
                 file_folder_path = data['text']
                 self.loadDirectory(file_folder_path)
+                self.parent.spectra_file_folder_path = file_folder_path
         except Exception as e:
             print(f"  |--> Error loading file folder: {e}")
 
 
 class ListManager:
-    def __init__(self, main_window, list_widget, treeManager, figureManager):
+    def __init__(self, main_window, list_widget, treeManager, figureWidget):
         """Initialization"""
         print("ListManager is instantiating...")
         self.parent = main_window
         self.listWidget = list_widget
         self.treeManager = treeManager
         self.model = self.treeManager.model
-        self.figureManager = figureManager
+        self.figureWidget = figureWidget
 
         self.checked_files_data = None
 
@@ -693,8 +732,8 @@ class ListManager:
             # get child item's check item
             child_item = item.child(row, 0)
             child_item_check = item.child(row, 1)
-            child_item_file_path = item.child(row, 2)
-            chile_item_type = item.child(row, 3)
+            chile_item_type = item.child(row, 2)
+            child_item_file_path = item.child(row, 3)
             if chile_item_type:
                 chile_item_type = chile_item_type.text()
             if child_item_check.checkState() and chile_item_type == 'File':
@@ -708,7 +747,7 @@ class ListManager:
         return self.checked_files_data
 
     class CustomListWidget(QtWidgets.QListWidget):
-        def __init__(self, figureManager):
+        def __init__(self, figureWidget):
             super().__init__()
             # enable dragging
             self.setDragEnabled(True)
@@ -716,7 +755,7 @@ class ListManager:
             self.setDefaultDropAction(QtCore.Qt.MoveAction)
             self.setAcceptDrops(True)
 
-            self.figureManager = figureManager
+            self.figureWidget = figureWidget
 
         def mouseDoubleClickEvent(self, event):
             print("You are clicking the list widget:", end=' ')
@@ -730,19 +769,49 @@ class ListManager:
                         return
                 list_item = self.itemAt(event.pos())
                 if list_item:
-                    # list_item_text = list_item.data(0)
-                    # list_item_path = list_item.data(1)
-                    self.figureManager.deal_with_this_file(list_item)
+                    self.figureWidget.deal_with_this_file(list_item)
             except Exception as e:
                 print(f"  |--> Error mousePressEvent: {e}")
 
 
-class FigureManager(FigureCanvas):
-    def __init__(self, width=5, height=4, dpi=300):
+class FigureManager(QGraphicsView):
+    def __init__(self, figureWidget, width=400, height=300):
+        super().__init__()
+        self.figureWidget = figureWidget
+
+        self.scene = QGraphicsScene(self)
+        self.setScene(self.scene)
+
+        proxy = QGraphicsProxyWidget()
+        proxy.setWidget(self.figureWidget)
+        proxy.setGeometry(QRectF(0, 0, self.figureWidget.width(), self.figureWidget.height()))
+        self.scene.addItem(proxy)
+
+        self.setFixedSize(1250, 850)
+
+
+class FigureWidget(QWidget):
+    def __init__(self, histogramWidget, width=6, height=4, dpi=100, parent=None):
+        super().__init__(parent)
+        self.histogramWidget = histogramWidget
+
+        self.fig = plt.figure(figsize=(width, height), dpi=dpi)
+        self.ax = self.fig.add_subplot(111)
+        self.canvas = FigureCanvas(self.fig)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
+        # self.canvas.setFixedSize(800, 600)
+
+        self.initFig()
+
+        self.lastx = 0  # 获取鼠标按下时的坐标X
+        self.lasty = 0  # 获取鼠标按下时的坐标Y
+        self.press = False
+
+    def initFig(self):
         try:
-            self.fig = plt.figure(figsize=(width, height), dpi=dpi)
-            super(FigureManager, self).__init__(self.fig)
-            self.axes = self.fig.add_subplot(111)
             # self.fig.canvas.toolbar.pan()
             self.setFocusPolicy(Qt.StrongFocus)  # Enable focus to receive mouse events
 
@@ -750,22 +819,17 @@ class FigureManager(FigureCanvas):
             self.fig.canvas.mpl_connect("button_press_event", self.on_press)
             self.fig.canvas.mpl_connect("button_release_event", self.on_release)
             self.fig.canvas.mpl_connect("motion_notify_event", self.on_move)
-
-            self.lastx = 0  # 获取鼠标按下时的坐标X
-            self.lasty = 0  # 获取鼠标按下时的坐标Y
-            self.press = False
         except Exception as e:
-            print(f"  |--> Error initialize: {e}")
+            print(f"  |--> Error initFig: {e}")
 
     def deal_with_this_file(self, list_item):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
         data = GeneralMethods.read_file(list_item_path)
         self.plotfig(list_item_name, data)
-        self.draw()
+        self.histogramWidget.updateHist(self.data)
 
     def plotfig(self, list_item_name, data):
-        self.axes0 = self.fig.add_subplot(111)
         x = data['wavelength']
         y = data['strip']
         z = data['intensity']
@@ -774,15 +838,13 @@ class FigureManager(FigureCanvas):
         x = np.array(x)
         y = np.array(y)
         z = np.array(z)
+        self.data = z
 
-        self.axes0.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        # self.axes0.pcolor(x, y, z)
-        self.axes0.set_title(list_item_name)
-
-    # def wheelEvent(self, event):
-    #     # Determine zoom factor based on scroll direction
-    #     factor = 1/1.1 if event.angleDelta().y() > 0 else 1.1
-    #     self.zoom(factor)
+        self.ax.clear()
+        self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
+        # self.ax.pcolor(x, y, z)
+        self.ax.set_title(list_item_name)
+        self.canvas.draw()
 
     def on_press(self, event):
         if event.inaxes:  # if mouse in axes
@@ -836,70 +898,128 @@ class FigureManager(FigureCanvas):
             print(f"  |--> Error call_back: {e}")
 
 
-class SliderManager(QWidget):
-    def __init__(self, min_value=0, max_value=100, initial_low=20, initial_high=80, tick_interval=10):
+# class SilderManager(QSlider):
+#     def __init__(self, parent):
+#         super().__init__(Qt.Vertical, parent)
+#         self.setRange(0, 100)
+#         self.setTickPosition(QSlider.TicksBelow)
+#         self.setTickInterval(1)
+#
+#         self.low_handle = 20
+#         self.high_handle = 80
+#         self.dragging = None
+#         self.handle_width = 20
+#         self.handle_height = 10
+#
+#         # Invert slider values
+#         self.setInvertedAppearance(True)
+#
+#     def paintEvent(self, event):
+#         super().paintEvent(event)
+#         painter = QPainter(self)
+#         rect = self.rect()
+#
+#         # Draw the low handle
+#         low_rect = QRect(0, self.low_handle, self.handle_width, self.handle_height)
+#         painter.setBrush(QColor(0, 255, 0))
+#         painter.drawRect(low_rect)
+#
+#         # Draw the high handle
+#         high_rect = QRect(0, self.high_handle, self.handle_width, self.handle_height)
+#         painter.setBrush(QColor(255, 0, 255))
+#         painter.drawRect(high_rect)
+#
+#         # # Draw the range between handles
+#         # painter.setBrush(QColor(200, 200, 200))
+#         # range_rect = QRect(0, (self.low_handle + self.handle_width)/2, self.handle_width*1.5,
+#         #                    self.high_handle - self.low_handle - self.handle_height)
+#         # painter.drawRect(range_rect)
+#
+#     def mousePressEvent(self, event):
+#         pos = event.pos().y()
+#         if self.low_handle <= pos <= self.low_handle + self.handle_height:
+#             self.dragging = 'low'
+#             print("low")
+#         elif self.high_handle <= pos <= self.high_handle + self.handle_height:
+#             self.dragging = 'high'
+#             print("high")
+#         else:
+#             self.dragging = None
+#         super().mousePressEvent(event)
+#
+#     def mouseMoveEvent(self, event):
+#         if self.dragging:
+#             pos = event.pos().y()
+#             if self.dragging == 'low':
+#                 self.low_handle = max(0, min(pos, self.high_handle - self.handle_height))
+#                 print(pos)
+#             elif self.dragging == 'high':
+#                 self.high_handle = min(100, max(pos, self.low_handle + self.handle_height))
+#                 print(pos)
+#             self.update()
+#         super().mouseMoveEvent(event)
+#
+#     def mouseReleaseEvent(self, event):
+#         self.dragging = None
+#         super().mouseReleaseEvent(event)
+
+
+class RoiManager(QGraphicsView):
+    def __init__(self, histogramWidget, width=400, height=300):
         super().__init__()
-        self.min_value = min_value
-        self.max_value = max_value
+        self.histogramWidget = histogramWidget
 
-        # Create sliders for ROI
-        self.slider_low = QSlider(Qt.Horizontal, self)
-        self.slider_high = QSlider(Qt.Horizontal, self)
+        self.scene = QGraphicsScene(self)
+        self.setScene(self.scene)
 
-        # Initialize sliders
-        self.slider_low.setMinimum(min_value)
-        self.slider_low.setMaximum(max_value)
-        self.slider_low.setValue(initial_low)
-        self.slider_low.setTickPosition(QSlider.TicksBelow)
-        self.slider_low.setTickInterval(1)
+        proxy = QGraphicsProxyWidget()
+        proxy.setWidget(self.histogramWidget)
+        proxy.setGeometry(QRectF(0, 0, self.histogramWidget.width(), self.histogramWidget.height()))
+        self.scene.addItem(proxy)
 
-        self.slider_high.setMinimum(min_value)
-        self.slider_high.setMaximum(max_value)
-        self.slider_high.setValue(initial_high)
-        self.slider_high.setTickPosition(QSlider.TicksBelow)
-        self.slider_high.setTickInterval(1)
+        self.setFixedSize(width, height)
+        GeneralMethods.rotate_view(self, 270)
 
-        # Create label to display the slider value
-        self.label_low = QLabel(f"Low: {initial_low}", self)
-        self.label_high = QLabel(f"High: {initial_high}", self)
 
-        pe = QPalette()
-        pe.setColor(QPalette.WindowText, Qt.blue)
-        pe.setColor(QPalette.Background, Qt.lightGray)
-        self.label_low.setAutoFillBackground(True)
-        self.label_low.setPalette(pe)
-        self.label_low.setFont(QFont("Roman times", 10, QFont.Bold))
-        self.label_high.setAutoFillBackground(True)
-        self.label_high.setPalette(pe)
-        self.label_high.setFont(QFont("Roman times", 10, QFont.Bold))
+class HistogramWidget(QWidget):
+    def __init__(self, width=6, height=4, dpi=100, parent=None):
+        super().__init__(parent)
+        self.fig = plt.figure(figsize=(width, height), dpi=dpi)
+        self.canvas = FigureCanvas(self.fig)
+        self.ax = self.fig.add_subplot(111)
 
-        # Connect slider value change signal to the method
-        self.slider_low.valueChanged.connect(self.update_labels)
-        self.slider_high.valueChanged.connect(self.update_labels)
+        layout = QVBoxLayout()
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)
 
-        # Create layout
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(self.label_high)
-        self.layout.addWidget(self.slider_low)
-        self.layout.addWidget(self.slider_high)
-        self.layout.addWidget(self.label_low)
-        self.setLayout(self.layout)
+    def initHist(self):
+        self.ax.tick_params(axis='both', which='major', labelsize=8)  # 设置主刻度字体大小
+        self.ax.tick_params(axis='both', which='minor', labelsize=8)  # 设置次刻度字体大小
+        self.ax.xaxis.set_major_locator(MaxNLocator(nbins=6))  # 设置x轴刻度的最大数量为6
+        self.ax.yaxis.set_major_locator(MaxNLocator(nbins=6))  # 设置y轴刻度的最大数量为6
+        self.ax.set_xlabel('Intensity', fontsize=8)
+        self.ax.set_ylabel('Frequency', fontsize=8)
+        self.ax.set_title(f'Histogram', fontsize=10)
 
-    def update_labels(self, value):
-        low_value = self.slider_low.value()
-        high_value = self.slider_high.value()
+    def updateHist(self, data):
+        try:
+            self.data = data.flatten()
+            self.ax.clear()
+            self.ax.hist(self.data, bins=30, color='blue', density=False)
+            self.initHist()
 
-        self.slider_low.setValue(low_value)
-        self.slider_high.setValue(high_value)
+            x_min, x_max = min(self.data), max(self.data)
+            x_span = x_max - x_min
+            self.ax.set_xlim(x_min - x_span * 0.1, x_max + x_span * 0.1)
 
-        self.label_low.setText(f"Low: {low_value}")
-        self.label_high.setText(f"High: {high_value}")
+            hist, _ = np.histogram(self.data, bins=30)
+            y_max = max(hist) * 1.1
+            self.ax.set_ylim(0, y_max)
 
-        print(f"ROI - Low: {low_value}, High: {high_value}")
-
-    def get_value(self):
-        # Method to return the current value of the slider
-        return self.slider.value()
+            # self.fig.tight_layout()
+            self.canvas.draw()
+        except Exception as e:
+            print(f"  |--> Error initHistogram: {e}")
 
 
 if __name__ == '__main__':

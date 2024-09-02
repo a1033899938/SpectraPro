@@ -12,28 +12,77 @@
             "children": []
         },
         {
-            "text": "test.txt",
+            "text": "newNPs 14.spe",
             "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 14.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 15.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 15.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 16.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 16.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 17.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 17.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 18.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 18.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 19.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 19.spe",
+            "children": []
+        },
+        {
+            "text": "newNPs 20.spe",
+            "checked": 2,
+            "type": "File",
+            "file_path": "C:/Users/a1033/Desktop/Contemporary/newNPs 20.spe",
+            "children": []
+        },
+        {
+            "text": "test.txt",
+            "checked": false,
             "type": "File",
             "file_path": "C:/Users/a1033/Desktop/Contemporary/test.txt",
             "children": []
         },
         {
             "text": "20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406",
-            "checked": 2,
+            "checked": false,
             "type": "Folder",
             "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406",
             "children": [
                 {
                     "text": "hBN-AuShin-SiO2-2#_PL_5.txt",
-                    "checked": 2,
+                    "checked": false,
                     "type": "File",
                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406/hBN-AuShin-SiO2-2#_PL_5.txt",
                     "children": []
                 },
                 {
                     "text": "Picture",
-                    "checked": 2,
+                    "checked": false,
                     "type": "Folder",
                     "file_path": "C:/Users/a1033/Desktop/Contemporary/20240619hBN-AuShi-Sub\u6837\u54c1\u5149\u8c31\u5904\u7406/Picture",
                     "children": []
