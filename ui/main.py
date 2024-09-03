@@ -60,12 +60,12 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu = None
 
         # left_hbox1
-        self.spectrum_file_label = None
-        self.spectrum_file_textedit = None
+        self.spectrumFileLabel = None
+        self.spectrumFileTextEdit = None
 
         # left_hbox2
-        self.spectra_folder_label = None
-        self.spectra_folder_textedit = None
+        self.spectraFolderLabel = None
+        self.spectraFolderTextEdit = None
 
         # tree
         self.treeView = None
@@ -93,9 +93,12 @@ class MyMainWindow(QMainWindow):
         self.figureManager = None
 
         # right_box2
-        self.layout_combobox = None
-        self.output_textedit = None
+        self.layoutComboBox = None
+        self.outputTextEdit = None
+        self.showOutputButton = None
 
+        # slot
+        self.show_layout_flag = None
         """Initialize ui"""
         self.initUI()
 
@@ -115,22 +118,22 @@ class MyMainWindow(QMainWindow):
 
         """Create main window objects"""
         # right_hbox2
-        self.output_textedit = QTextEdit()
-        self.output_textedit.setReadOnly(True)
-        sys.stdout = OutputRedirector(self.output_textedit)
-        sys.stderr = OutputRedirector(self.output_textedit)
+        self.outputTextEdit = QTextEdit()
+        self.outputTextEdit.setReadOnly(True)
+        sys.stdout = OutputRedirector(self.outputTextEdit)
+        sys.stderr = OutputRedirector(self.outputTextEdit)
 
         # left_hbox1
-        self.spectrum_file_label = QLabel('File path')
-        self.spectrum_file_textedit = QTextEdit()
-        self.spectrum_file_textedit.setReadOnly(True)  # Set to read-only for file path display
-        self.spectrum_file_textedit.setFixedHeight(30)  # Set height for QTextEdit
+        self.spectrumFileLabel = QLabel('File path')
+        self.spectrumFileTextEdit = QTextEdit()
+        self.spectrumFileTextEdit.setReadOnly(True)  # Set to read-only for file path display
+        self.spectrumFileTextEdit.setFixedHeight(30)  # Set height for QTextEdit
 
         # left_hbox2
-        self.spectra_folder_label = QLabel('File folder')
-        self.spectra_folder_textedit = QTextEdit()
-        self.spectra_folder_textedit.setReadOnly(True)  # Set to read-only for file path display
-        self.spectra_folder_textedit.setFixedHeight(30)  # Set height for QTextEdit
+        self.spectraFolderLabel = QLabel('File folder')
+        self.spectraFolderTextEdit = QTextEdit()
+        self.spectraFolderTextEdit.setReadOnly(True)  # Set to read-only for file path display
+        self.spectraFolderTextEdit.setFixedHeight(30)  # Set height for QTextEdit
 
         # tree
         self.treeView = TreeManager.CustomTreeView()
@@ -151,10 +154,16 @@ class MyMainWindow(QMainWindow):
         self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
 
         # right_hbox2
-        self.layout_combobox = QComboBox(self)
-        self.layout_combobox.addItem("Image")
-        self.layout_combobox.addItem("Graph")
-        self.layout_combobox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
+        self.layoutComboBox = QComboBox(self)
+        self.layoutComboBox.addItem("Image")
+        self.layoutComboBox.addItem("Graph")
+        self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
+        self.layoutComboBox.setFixedHeight(50)
+        self.layoutComboBox.setFixedWidth(150)
+        self.showOutputButton = QPushButton("Show Layout")
+        self.showOutputButton.clicked.connect(self.toggle_show_layout)
+        self.showOutputButton.setFixedHeight(50)
+        self.showOutputButton.setFixedWidth(150)
 
         # list
         self.listWidget = ListManager.CustomListWidget(self.figureWidget)
@@ -177,12 +186,12 @@ class MyMainWindow(QMainWindow):
         """box manager"""
         # left box
         left_hbox1 = QHBoxLayout()
-        left_hbox1.addWidget(self.spectrum_file_label)
-        left_hbox1.addWidget(self.spectrum_file_textedit)
+        left_hbox1.addWidget(self.spectrumFileLabel)
+        left_hbox1.addWidget(self.spectrumFileTextEdit)
 
         left_hbox2 = QHBoxLayout()
-        left_hbox2.addWidget(self.spectra_folder_label)
-        left_hbox2.addWidget(self.spectra_folder_textedit)
+        left_hbox2.addWidget(self.spectraFolderLabel)
+        left_hbox2.addWidget(self.spectraFolderTextEdit)
 
         left_hbox3 = QHBoxLayout()
         left_hbox3.addWidget(self.treeCollapseButton)
@@ -205,11 +214,18 @@ class MyMainWindow(QMainWindow):
         right_hbox1.addWidget(self.figureManager)
         right_hbox1.addWidget(self.roiManager)
 
+        # right vbox1
+        right_vbox1 = QVBoxLayout()
+        right_vbox1.addWidget(self.layoutComboBox)
+        right_vbox1.addWidget(self.showOutputButton)
+        right_vbox1.setAlignment(self.layoutComboBox, Qt.AlignLeft)
+        right_vbox1.setAlignment(self.showOutputButton, Qt.AlignLeft)
+
         # right hbox2
         right_hbox2 = QHBoxLayout()
-        right_hbox2.addWidget(self.layout_combobox)
+        right_hbox2.addLayout(right_vbox1)
         # right_hbox2.addStretch(1)
-        right_hbox2.addWidget(self.output_textedit)
+        right_hbox2.addWidget(self.outputTextEdit)
 
         # right box
         right_vbox = QVBoxLayout()
@@ -225,6 +241,15 @@ class MyMainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
 
         self.show()
+
+    def toggle_show_layout(self):
+        if self.show_layout_flag:
+            self.outputTextEdit.setVisible(False)
+            self.show_layout_flag = 0
+        else:
+            self.outputTextEdit.setVisible(True)
+            self.show_layout_flag = 1
+
 
 
 class GeneralMethods:
@@ -302,7 +327,7 @@ class MenuActions:
         self.parent.spectrum_file_path = GeneralMethods.select_spectrum_file_through_dialog()
         if self.parent.spectrum_file_path:
             print(f"  |--> Select spectrum file: {self.parent.spectrum_file_path}")
-            self.parent.spectrum_file_textedit.setText(self.parent.spectrum_file_path)
+            self.parent.spectrumFileTextEdit.setText(self.parent.spectrum_file_path)
 
     def select_spectra_file_folder_action(self):
         """Create a custom action for file folder selection."""
@@ -320,7 +345,7 @@ class MenuActions:
             self.parent.spectra_file_folder_path = GeneralMethods.select_spectra_file_folder_through_dialog()
             if self.parent.spectra_file_folder_path:
                 print(f"  |--> Select spectra file folder: {self.parent.spectra_file_folder_path}")
-                self.parent.spectra_folder_textedit.setText(self.parent.spectra_file_folder_path)
+                self.parent.spectraFolderTextEdit.setText(self.parent.spectra_file_folder_path)
                 self.treeManager.loadDirectory(self.parent.spectra_file_folder_path)
         except Exception as e:
             print(f"Error select_spectra_file_folder_slot:\n  |--> {e}")
