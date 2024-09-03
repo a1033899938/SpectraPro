@@ -201,6 +201,7 @@ class MyMainWindow(QMainWindow):
         # right hbox2
         right_hbox2 = QHBoxLayout()
         right_hbox2.addWidget(self.selectLayoutBox)
+        # right_hbox2.addWidget(stretch=0)
 
         # right box
         right_vbox = QVBoxLayout()
@@ -819,6 +820,7 @@ class FigureWidget(QWidget):
         self.originymin = 0
         self.originymax = 0
         self.last_click_time = 0
+        self.figure_xylim = None
         self.press = False
 
     def initFig(self):
@@ -854,7 +856,7 @@ class FigureWidget(QWidget):
 
         self.ax.clear()
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        set_figure.set_text(self.ax, title=self.fig_title)
+        set_figure.set_text(self.ax, title=fig_title)
         set_figure.set_tick(self.ax, xbins=6, ybins=10)
         self.canvas.draw()
 
@@ -893,6 +895,8 @@ class FigureWidget(QWidget):
                 y_min -= y
                 y_max -= y
 
+                self.figure_xylim = (x_min, x_max, y_min, y_max)
+                self.pass_parameters_to_hist(self.figure_xylim)
                 event.inaxes.set_xlim(x_min, x_max)
                 event.inaxes.set_ylim(y_min, y_max)
                 self.fig.canvas.draw_idle()  # Draw immediately
@@ -926,6 +930,9 @@ class FigureWidget(QWidget):
     def toggle_image_and_graph(self):
         pass
 
+    def pass_parameters_to_hist(self, figure_xylim):
+        self.histogramWidget.receive_parameters_from_figure(figure_xylim)
+
 
 class RoiManager(QGraphicsView):
     def __init__(self, histogramWidget, width=400, height=300):
@@ -956,9 +963,12 @@ class HistogramWidget(QWidget):
         self.last_click_time = 0
         self.start_xmin = None
         self.start_xmax = None
+        self.start_xmid = None
         self.dragging_xmin = False
         self.dragging_xmax = False
+        self.dragging_xmid = False
         self.rect_edge_size = 1
+        self.figure_xylim = None
 
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -979,11 +989,11 @@ class HistogramWidget(QWidget):
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_move)
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
 
-    def show_hist(self, data, ax, canvas):
+    def show_hist(self, data, figure_ax, figure_canvas):
         try:
             self.data = data
-            self.figure_ax = ax
-            self.figure_canvas = canvas
+            self.figure_ax = figure_ax
+            self.figure_canvas = figure_canvas
 
             self.intensity_1d = data['intensity_image'].flatten()
             self.ax.clear()
@@ -1029,6 +1039,10 @@ class HistogramWidget(QWidget):
             elif abs(event.xdata - rect_bbox.x1) < self.rect_edge_size:
                 self.dragging_xmax = True
                 self.start_xmax = rect_bbox.x1
+            elif rect_bbox.x0 + self.rect_edge_size < event.xdata < rect_bbox.x1 - self.rect_edge_size:
+                self.dragging_xmid = True
+                self.start_xmid = event.xdata
+                self.start_xmid_pos = rect_bbox.x0
             else:
                 print("Error pressing.")
 
@@ -1038,13 +1052,14 @@ class HistogramWidget(QWidget):
             self.rect.set_xy((self.x_min, 0))
             self.rect.set_width(self.x_span)
             self.fig.canvas.draw_idle()
+            self.update_figure()
         self.last_click_time = current_time
 
     def on_move(self, event):
         if event.inaxes != self.ax:
             return
 
-        if not self.dragging_xmin and not self.dragging_xmax:
+        if not self.dragging_xmin and not self.dragging_xmax and not self.dragging_xmid:
             return
         else:
             rect_bbox = self.rect.get_bbox()
@@ -1060,6 +1075,10 @@ class HistogramWidget(QWidget):
                 dx = event.xdata - self.start_xmax
                 new_width = max(self.rect.get_width() + dx, 0)
                 self.rect.set_width(new_width)
+            elif self.dragging_xmid:
+                dx = event.xdata - self.start_xmid
+                new_x = self.start_xmid_pos + dx
+                self.rect.set_xy((new_x, 0))
             else:
                 print("Error dragging.")
 
@@ -1070,6 +1089,7 @@ class HistogramWidget(QWidget):
         print("on_release")
         self.dragging_xmin = False
         self.dragging_xmax = False
+        self.dragging_xmid = False
 
     def update_figure(self):
         x = self.data['wavelength']
@@ -1085,9 +1105,17 @@ class HistogramWidget(QWidget):
         self.figure_ax.clear()
         self.figure_ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower',
                               vmin=rect_bbox.x0, vmax=rect_bbox.x1)
+        # self.figure_ax.set_xlim()
+        if self.figure_xylim:
+            self.figure_ax.set_xlim(self.figure_xylim[0], self.figure_xylim[1])
+            self.figure_ax.set_ylim(self.figure_xylim[2], self.figure_xylim[3])
+
         set_figure.set_text(self.figure_ax, title=self.figure_title)
         set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
         self.figure_canvas.draw()
+
+    def receive_parameters_from_figure(self, figure_xylim):
+        self.figure_xylim = figure_xylim
 
 
 if __name__ == '__main__':
