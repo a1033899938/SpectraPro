@@ -93,7 +93,8 @@ class MyMainWindow(QMainWindow):
         self.figureManager = None
 
         # right_box2
-        self.selectLayoutBox = None
+        self.layout_combobox = None
+        self.output_textedit = None
 
         """Initialize ui"""
         self.initUI()
@@ -113,6 +114,12 @@ class MyMainWindow(QMainWindow):
         self.cacheMenu = self.menubar.addMenu('&Cache')
 
         """Create main window objects"""
+        # right_hbox2
+        self.output_textedit = QTextEdit()
+        self.output_textedit.setReadOnly(True)
+        sys.stdout = OutputRedirector(self.output_textedit)
+        sys.stderr = OutputRedirector(self.output_textedit)
+
         # left_hbox1
         self.spectrum_file_label = QLabel('File path')
         self.spectrum_file_textedit = QTextEdit()
@@ -143,6 +150,12 @@ class MyMainWindow(QMainWindow):
         self.figureWidget = FigureWidget(self.histogramWidget, width=12, height=8, dpi=100)
         self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
 
+        # right_hbox2
+        self.layout_combobox = QComboBox(self)
+        self.layout_combobox.addItem("Image")
+        self.layout_combobox.addItem("Graph")
+        self.layout_combobox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
+
         # list
         self.listWidget = ListManager.CustomListWidget(self.figureWidget)
         self.listWidget.setMinimumWidth(1000)
@@ -160,12 +173,6 @@ class MyMainWindow(QMainWindow):
         self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
         self.importCheckedFilesButton = QPushButton("Import checked files")  # add a button to show/hide checked files
         self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
-
-        # right_hbox2
-        self.selectLayoutBox = QComboBox(self)
-        self.selectLayoutBox.addItem("Image")
-        self.selectLayoutBox.addItem("Graph")
-        self.selectLayoutBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
 
         """box manager"""
         # left box
@@ -200,8 +207,9 @@ class MyMainWindow(QMainWindow):
 
         # right hbox2
         right_hbox2 = QHBoxLayout()
-        right_hbox2.addWidget(self.selectLayoutBox)
-        # right_hbox2.addWidget(stretch=0)
+        right_hbox2.addWidget(self.layout_combobox)
+        # right_hbox2.addStretch(1)
+        right_hbox2.addWidget(self.output_textedit)
 
         # right box
         right_vbox = QVBoxLayout()
@@ -687,7 +695,6 @@ class TreeManager:
             self.file_folder_json_file_name = cache_name_head + '_filefolder.json'
         else:
             self.file_folder_json_file_name = 'filefolder.json'
-        print(self.parent.spectra_file_folder_path)
         try:
             data = {
                 'text': self.parent.spectra_file_folder_path,
@@ -811,8 +818,8 @@ class FigureWidget(QWidget):
         layout.addWidget(self.canvas)
         self.setLayout(layout)
 
+        # mouse event
         self.initFig()
-
         self.lastx = 0
         self.lasty = 0
         self.originxmin = 0
@@ -822,6 +829,8 @@ class FigureWidget(QWidget):
         self.last_click_time = 0
         self.figure_xylim = None
         self.press = False
+
+        self.show_flag = 'image'
 
     def initFig(self):
         try:
@@ -837,13 +846,20 @@ class FigureWidget(QWidget):
     def deal_with_this_file(self, list_item):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
-        # data = GeneralMethods.read_file(list_item_path)
-        data = read_file.read_spe(list_item_path)
+        self.data = read_file.read_spe(list_item_path)
         self.fig_title = list_item_name
-        self.show_figure(data, fig_title=self.fig_title)
+        self.show_figue()
         self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
 
-    def show_figure(self, data, fig_title='default title'):
+    def show_figue(self):
+        if self.show_flag == 'image':
+            self.show_image(self.data, fig_title=self.fig_title)
+        elif self.show_flag == 'graph':
+            self.show_graph(self.data, fig_title=self.fig_title)
+        else:
+            print("Error show_flag.")
+
+    def show_image(self, data, fig_title='default title'):
         x = data['wavelength']
         y = data['strip']
         z = data['intensity_image']
@@ -852,7 +868,6 @@ class FigureWidget(QWidget):
         x = np.array(x)
         y = np.array(y)
         z = np.array(z)
-        self.data = data
 
         self.ax.clear()
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
@@ -860,6 +875,29 @@ class FigureWidget(QWidget):
         set_figure.set_tick(self.ax, xbins=6, ybins=10)
         self.canvas.draw()
 
+        self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
+        self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
+        self.originxmin, self.originxmax = x.min(), x.max()
+        self.originymin, self.originymax = y.min(), y.max()
+
+    def show_graph(self, data, fig_title='default title'):
+        x = data['wavelength']
+        y = data['intensity']
+
+        # Ensure x and y are 1D arrays and z is a 2D array
+        x = np.array(x)
+        y = np.array(y)
+
+        self.ax.clear()
+        self.ax.plot(x, y)
+        self.ax.set_xlim([x.min(), x.max()])
+        self.ax.set_ylim([y.min(), y.max()])
+        set_figure.set_text(self.ax, title=fig_title)
+        set_figure.set_tick(self.ax, xbins=6, ybins=10)
+        self.canvas.draw()
+
+        self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
+        self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
         self.originxmin, self.originxmax = x.min(), x.max()
         self.originymin, self.originymax = y.min(), y.max()
 
@@ -867,13 +905,14 @@ class FigureWidget(QWidget):
         try:
             if event.inaxes:  # if mouse in axes
                 if event.button == 1:  # click left equals 1, while right equals 2
-                    print(self.originxmin)
                     self.press = True
                     current_time = time.time()
                     self.lastx = event.xdata  # get X coordinate of mouse
                     self.lasty = event.ydata  # get Y coordinate of mouse
 
                     if current_time - self.last_click_time < 0.3:
+                        self.figure_xylim = [self.originxmin, self.originxmax, self.originymin, self.originymax]
+                        self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
                         event.inaxes.set_xlim(self.originxmin, self.originxmax)
                         event.inaxes.set_ylim(self.originymin, self.originymax)
                         self.fig.canvas.draw_idle()
@@ -895,8 +934,8 @@ class FigureWidget(QWidget):
                 y_min -= y
                 y_max -= y
 
-                self.figure_xylim = (x_min, x_max, y_min, y_max)
-                self.pass_parameters_to_hist(self.figure_xylim)
+                self.figure_xylim = [x_min, x_max, y_min, y_max]
+                self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
                 event.inaxes.set_xlim(x_min, x_max)
                 event.inaxes.set_ylim(y_min, y_max)
                 self.fig.canvas.draw_idle()  # Draw immediately
@@ -917,21 +956,44 @@ class FigureWidget(QWidget):
                 y_range = (y_max - y_min) / 10
 
                 if event.button == 'up':
-                    event.inaxes.set_xlim(x_min + x_range, x_max - x_range)
-                    event.inaxes.set_ylim(y_min + y_range, y_max - y_range)
-                elif event.button == 'down':
-                    event.inaxes.set_xlim(x_min - x_range, x_max + x_range)
-                    event.inaxes.set_ylim(y_min - y_range, y_max + y_range)
+                    new_x_min, new_x_max = x_min + x_range, x_max - x_range
+                    new_y_min, new_y_max = y_min + y_range, y_max - y_range
 
+                elif event.button == 'down':
+                    new_x_min, new_x_max = x_min - x_range, x_max + x_range
+                    new_y_min, new_y_max = y_min - y_range, y_max + y_range
+
+                event.inaxes.set_xlim(new_x_min, new_x_max)
+                event.inaxes.set_ylim(new_y_min, new_y_max)
+
+                self.figure_xylim = [new_x_min, new_x_max, new_y_min, new_y_max]
+                self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
                 self.fig.canvas.draw_idle()  # Redraw the canvas
         except Exception as e:
             print(f"  |--> Error call_back: {e}")
 
-    def toggle_image_and_graph(self):
-        pass
+    def toggle_image_and_graph(self, index):
+        try:
+            if index == 0 or index == 1:
+                if index == 0:
+                    self.show_flag = 'image'
+                    self.show_image(self.data, fig_title=self.fig_title)
+                elif index == 1:
+                    self.show_flag = 'graph'
+                    self.show_graph(self.data, fig_title=self.fig_title)
+                else:
+                    print("Error combox input.")
+                self.pass_parameters_to_hist(show_flag=self.show_flag)
+            else:
+                print("Error toggle_image_and_graph.")
+        except Exception as e:
+            print(f"  |--> Error toggle_image_and_graph: {e}")
 
-    def pass_parameters_to_hist(self, figure_xylim):
-        self.histogramWidget.receive_parameters_from_figure(figure_xylim)
+    def pass_parameters_to_hist(self, figure_xylim=None, show_flag=None):
+        if figure_xylim:
+            self.histogramWidget.receive_parameters_from_figure(figure_xylim=figure_xylim)
+        if show_flag:
+            self.histogramWidget.receive_parameters_from_figure(show_flag=show_flag)
 
 
 class RoiManager(QGraphicsView):
@@ -969,6 +1031,7 @@ class HistogramWidget(QWidget):
         self.dragging_xmid = False
         self.rect_edge_size = 1
         self.figure_xylim = None
+        self.show_flag = 'image'
 
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -1026,8 +1089,7 @@ class HistogramWidget(QWidget):
             print(f"  |--> Error draw_rectangle: {e}")
 
     def on_press(self, event):
-        print("on_press")
-        if event.inaxes != self.ax:
+        if event.inaxes != self.ax or self.show_flag == 'graph':
             return
 
         # 计算矩形的边缘区域
@@ -1056,7 +1118,7 @@ class HistogramWidget(QWidget):
         self.last_click_time = current_time
 
     def on_move(self, event):
-        if event.inaxes != self.ax:
+        if event.inaxes != self.ax or self.show_flag == 'graph':
             return
 
         if not self.dragging_xmin and not self.dragging_xmax and not self.dragging_xmid:
@@ -1086,7 +1148,6 @@ class HistogramWidget(QWidget):
             self.fig.canvas.draw()
 
     def on_release(self, event):
-        print("on_release")
         self.dragging_xmin = False
         self.dragging_xmax = False
         self.dragging_xmid = False
@@ -1114,8 +1175,24 @@ class HistogramWidget(QWidget):
         set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
         self.figure_canvas.draw()
 
-    def receive_parameters_from_figure(self, figure_xylim):
-        self.figure_xylim = figure_xylim
+    def receive_parameters_from_figure(self, figure_xylim=None, show_flag=None):
+        if figure_xylim:
+            self.figure_xylim = figure_xylim
+        elif show_flag:
+            self.show_flag = show_flag
+
+
+class OutputRedirector:
+    def __init__(self, text_edit):
+        self.text_edit = text_edit
+
+    def write(self, message):
+        self.text_edit.insertPlainText(message)
+        self.text_edit.ensureCursorVisible()
+
+    def flush(self):
+        # This method is needed for Python 3.x
+        pass
 
 
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 import spe_loader as sl
 import numpy as np
+import pprint
 
 
 def read_spe(file_path, strip='all'):
@@ -12,9 +13,10 @@ def read_spe(file_path, strip='all'):
     data['strip'] = range(data['ydim'])
 
     if strip == 'all':
-        data['intensity'] = np.sum(data['intensity_image'], axis=1)
-    print("----------data----------")
-    print(data)
+        data['intensity'] = np.sum(data['intensity_image'], axis=0)
+    print("==========data==========")
+    pprint.pprint(data)
+    print("========data end========")
     return data
 
 
@@ -33,9 +35,13 @@ if __name__ == '__main__':
         data = read_spe(filepath)
         wavelength = data['wavelength']
         strip = data['strip']
-        intensity = data['intensity_image']
+        intensity_image = data['intensity_image']
+        intensity = data['intensity']
 
         fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.imshow(intensity)
+        ax = fig.add_subplot(211)
+        ax.imshow(intensity_image)
+
+        ax2 = fig.add_subplot(212)
+        ax2.plot(wavelength, intensity)
         plt.show()
