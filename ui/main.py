@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import QStyledItemDelegate
 from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QComboBox
 import json
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5 import (QtWidgets, QtCore, QtGui)
@@ -45,7 +46,7 @@ from PyQt5.QtCore import QRectF
 
 # import my modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src import read_file, set_figure
+from src import read_file, set_figure, numerical_transform
 
 
 class MyMainWindow(QMainWindow):
@@ -90,6 +91,9 @@ class MyMainWindow(QMainWindow):
         self.roiManager = None
         self.figureWidget = None
         self.figureManager = None
+
+        # right_box2
+        self.selectLayoutBox = None
 
         """Initialize ui"""
         self.initUI()
@@ -157,6 +161,12 @@ class MyMainWindow(QMainWindow):
         self.importCheckedFilesButton = QPushButton("Import checked files")  # add a button to show/hide checked files
         self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
 
+        # right_hbox2
+        self.selectLayoutBox = QComboBox(self)
+        self.selectLayoutBox.addItem("Image")
+        self.selectLayoutBox.addItem("Graph")
+        self.selectLayoutBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
+
         """box manager"""
         # left box
         left_hbox1 = QHBoxLayout()
@@ -183,14 +193,23 @@ class MyMainWindow(QMainWindow):
         left_vbox.addLayout(left_hbox3)
         left_vbox.addLayout(left_hbox4)
 
+        # right_hbox1
+        right_hbox1 = QHBoxLayout()
+        right_hbox1.addWidget(self.figureManager)
+        right_hbox1.addWidget(self.roiManager)
+
+        # right hbox2
+        right_hbox2 = QHBoxLayout()
+        right_hbox2.addWidget(self.selectLayoutBox)
+
         # right box
-        right_hbox = QHBoxLayout()
-        right_hbox.addWidget(self.figureManager)
-        right_hbox.addWidget(self.roiManager)
+        right_vbox = QVBoxLayout()
+        right_vbox.addLayout(right_hbox1)
+        right_vbox.addLayout(right_hbox2)
 
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(left_vbox)
-        main_hbox.addLayout(right_hbox)
+        main_hbox.addLayout(right_vbox)
 
         central_widget = QWidget()
         central_widget.setLayout(main_hbox)
@@ -818,23 +837,24 @@ class FigureWidget(QWidget):
         list_item_path = list_item.data(1)
         # data = GeneralMethods.read_file(list_item_path)
         data = read_file.read_spe(list_item_path)
-        self.update_figure(list_item_name, data)
-        self.histogramWidget.update_hist(self.data)
+        self.fig_title = list_item_name
+        self.show_figure(data, fig_title=self.fig_title)
+        self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
 
-    def update_figure(self, list_item_name, data):
+    def show_figure(self, data, fig_title='default title'):
         x = data['wavelength']
         y = data['strip']
-        z = data['intensity']
+        z = data['intensity_image']
 
         # Ensure x and y are 1D arrays and z is a 2D array
         x = np.array(x)
         y = np.array(y)
         z = np.array(z)
-        self.data = z
+        self.data = data
 
         self.ax.clear()
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        set_figure.set_text(self.ax, title=list_item_name)
+        set_figure.set_text(self.ax, title=self.fig_title)
         set_figure.set_tick(self.ax, xbins=6, ybins=10)
         self.canvas.draw()
 
@@ -903,6 +923,9 @@ class FigureWidget(QWidget):
         except Exception as e:
             print(f"  |--> Error call_back: {e}")
 
+    def toggle_image_and_graph(self):
+        pass
+
 
 class RoiManager(QGraphicsView):
     def __init__(self, histogramWidget, width=400, height=300):
@@ -924,10 +947,13 @@ class RoiManager(QGraphicsView):
 class HistogramWidget(QWidget):
     def __init__(self, width=6, height=4, dpi=100, parent=None):
         super().__init__(parent)
+        self.figureWidget = FigureWidget(self)
+
         self.fig = plt.figure(figsize=(width, height), dpi=dpi)
         self.canvas = FigureCanvas(self.fig)
         self.ax = self.fig.add_subplot(111)
         self.rect = None
+        self.last_click_time = 0
         self.start_xmin = None
         self.start_xmax = None
         self.dragging_xmin = False
@@ -953,18 +979,22 @@ class HistogramWidget(QWidget):
         self.fig.canvas.mpl_connect('motion_notify_event', self.on_move)
         self.fig.canvas.mpl_connect('button_release_event', self.on_release)
 
-    def update_hist(self, data):
+    def show_hist(self, data, ax, canvas):
         try:
-            self.data = data.flatten()
+            self.data = data
+            self.figure_ax = ax
+            self.figure_canvas = canvas
+
+            self.intensity_1d = data['intensity_image'].flatten()
             self.ax.clear()
-            self.ax.hist(self.data, bins=30, color='blue', density=False)
+            self.ax.hist(self.intensity_1d, bins=30, color='blue', density=False)
             self.initHist()
 
-            self.x_min, self.x_max = min(self.data), max(self.data)
+            self.x_min, self.x_max = min(self.intensity_1d), max(self.intensity_1d)
             self.x_span = self.x_max - self.x_min
             self.ax.set_xlim(self.x_min - self.x_span * 0.1, self.x_max + self.x_span * 0.1)
 
-            hist, _ = np.histogram(self.data, bins=30)
+            hist, _ = np.histogram(self.intensity_1d, bins=30)
             self.y_max = max(hist)
             self.ax.set_ylim(0, self.y_max*1.1)
 
@@ -1002,6 +1032,14 @@ class HistogramWidget(QWidget):
             else:
                 print("Error pressing.")
 
+        current_time = time.time()
+
+        if current_time - self.last_click_time < 0.3:
+            self.rect.set_xy((self.x_min, 0))
+            self.rect.set_width(self.x_span)
+            self.fig.canvas.draw_idle()
+        self.last_click_time = current_time
+
     def on_move(self, event):
         if event.inaxes != self.ax:
             return
@@ -1025,12 +1063,31 @@ class HistogramWidget(QWidget):
             else:
                 print("Error dragging.")
 
-        self.fig.canvas.draw()
+            self.update_figure()
+            self.fig.canvas.draw()
 
     def on_release(self, event):
         print("on_release")
         self.dragging_xmin = False
         self.dragging_xmax = False
+
+    def update_figure(self):
+        x = self.data['wavelength']
+        y = self.data['strip']
+        z = self.data['intensity_image']
+        rect_bbox = self.rect.get_bbox()
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        self.figure_title = self.figure_ax.get_title()
+        self.figure_ax.clear()
+        self.figure_ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower',
+                              vmin=rect_bbox.x0, vmax=rect_bbox.x1)
+        set_figure.set_text(self.figure_ax, title=self.figure_title)
+        set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
+        self.figure_canvas.draw()
 
 
 if __name__ == '__main__':

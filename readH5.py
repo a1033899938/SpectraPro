@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox # 用于获取axes边界
 from matplotlib.ticker import MaxNLocator # 用于设置tick最大刻度数
-import matplotlib.colors as mcolors
 import re # 用于排序
 from scipy.optimize import curve_fit  # 用于拟合
 import pprint # 用于分行打印
