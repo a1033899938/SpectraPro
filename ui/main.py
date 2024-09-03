@@ -38,9 +38,11 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.pyplot as plt
 from matplotlib.transforms import Affine2D
 import mpl_toolkits.axisartist.floating_axes as floating_axes
+from matplotlib.patches import Rectangle
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsWidget, QGraphicsScene, QGraphicsProxyWidget
 from PyQt5.QtGui import QTransform
 from PyQt5.QtCore import QRectF
+
 
 
 class MyMainWindow(QMainWindow):
@@ -830,10 +832,10 @@ class FigureWidget(QWidget):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
         data = GeneralMethods.read_file(list_item_path)
-        self.plot_figure(list_item_name, data)
-        self.histogramWidget.updateHist(self.data)
+        self.update_figure(list_item_name, data)
+        self.histogramWidget.update_hist(self.data)
 
-    def plot_figure(self, list_item_name, data):
+    def update_figure(self, list_item_name, data):
         x = data['wavelength']
         y = data['strip']
         z = data['intensity']
@@ -1004,6 +1006,12 @@ class HistogramWidget(QWidget):
         self.fig = plt.figure(figsize=(width, height), dpi=dpi)
         self.canvas = FigureCanvas(self.fig)
         self.ax = self.fig.add_subplot(111)
+        self.rect = None
+        self.start_xmin = None
+        self.start_xmax = None
+        self.dragging_xmin = False
+        self.dragging_xmax = False
+        self.rect_edge_size = 1
 
         layout = QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -1018,25 +1026,94 @@ class HistogramWidget(QWidget):
         self.ax.set_ylabel('Frequency', fontsize=8)
         self.ax.set_title(f'Histogram', fontsize=10)
 
-    def updateHist(self, data):
+        self.setFocusPolicy(Qt.StrongFocus)
+
+        self.fig.canvas.mpl_connect('button_press_event', self.on_press)
+        self.fig.canvas.mpl_connect('motion_notify_event', self.on_move)
+        self.fig.canvas.mpl_connect('button_release_event', self.on_release)
+
+    def update_hist(self, data):
         try:
             self.data = data.flatten()
             self.ax.clear()
             self.ax.hist(self.data, bins=30, color='blue', density=False)
             self.initHist()
 
-            x_min, x_max = min(self.data), max(self.data)
-            x_span = x_max - x_min
-            self.ax.set_xlim(x_min - x_span * 0.1, x_max + x_span * 0.1)
+            self.x_min, self.x_max = min(self.data), max(self.data)
+            self.x_span = self.x_max - self.x_min
+            self.ax.set_xlim(self.x_min - self.x_span * 0.1, self.x_max + self.x_span * 0.1)
 
             hist, _ = np.histogram(self.data, bins=30)
-            y_max = max(hist) * 1.1
-            self.ax.set_ylim(0, y_max)
+            self.y_max = max(hist)
+            self.ax.set_ylim(0, self.y_max*1.1)
+
+            self.draw_rectangle()
+
+            self.rect_edge_size = self.x_span/30
 
             # self.fig.tight_layout()
             self.canvas.draw()
         except Exception as e:
             print(f"  |--> Error initHistogram: {e}")
+
+    def draw_rectangle(self):
+        try:
+            face_color = (0.5, 0.1, 0.9, 0.6)
+            self.rect = Rectangle((self.x_min, 0), self.x_span, self.y_max, linewidth=1, edgecolor='red', facecolor=face_color, linestyle='-')
+            self.ax.add_patch(self.rect)
+        except Exception as e:
+            print(f"  |--> Error draw_rectangle: {e}")
+
+    def on_press(self, event):
+        print("on_press")
+        if event.inaxes != self.ax:
+            return
+
+        # 计算矩形的边缘区域
+        rect_bbox = self.rect.get_bbox()
+        if rect_bbox.y0 <= event.ydata <= rect_bbox.y1:
+            if abs(event.xdata - rect_bbox.x0) < self.rect_edge_size:
+                self.dragging_xmin = True
+                self.start_xmin = rect_bbox.x0
+            elif abs(event.xdata - rect_bbox.x1) < self.rect_edge_size:
+                self.dragging_xmax = True
+                self.start_xmax = rect_bbox.x1
+            else:
+                print("Error pressing.")
+
+    def on_move(self, event):
+        if event.inaxes != self.ax:
+            return
+        rect_bbox = self.rect.get_bbox()
+        if abs(event.xdata - rect_bbox.x0) < self.rect_edge_size:
+            print("in x min")
+        elif abs(event.xdata - rect_bbox.x1) < self.rect_edge_size:
+            print("in x max")
+        if not self.dragging_xmin and not self.dragging_xmax:
+            return
+        else:
+            rect_bbox = self.rect.get_bbox()
+            self.start_xmin = rect_bbox.x0
+            self.start_xmax = rect_bbox.x1
+            if self.dragging_xmin:
+                dx = event.xdata - self.start_xmin
+                new_x = self.start_xmin + dx
+                self.rect.set_xy((new_x, 0))
+                new_width = max(self.rect.get_width() - dx, 0)
+                self.rect.set_width(new_width)
+            elif self.dragging_xmax:
+                dx = event.xdata - self.start_xmax
+                new_width = max(self.rect.get_width() + dx, 0)
+                self.rect.set_width(new_width)
+            else:
+                print("Error dragging.")
+
+        self.fig.canvas.draw()
+
+    def on_release(self, event):
+        print("on_release")
+        self.dragging_xmin = False
+        self.dragging_xmax = False
 
 
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ import re  # 用于排序
 import numpy as np
 import pandas as pd
 from matplotlib.ticker import MaxNLocator # 用于设置tick最大刻度数
+from matplotlib.patches import Rectangle
 
 filepath = r'C:\Users\a1033\Desktop\Contemporary\240806-240808\20240808'
 
@@ -45,12 +46,17 @@ for file, filename in zip(files, filenames):
         intensity = intensity/max(intensity)
         x = wavelength
         y = intensity
-        plt.plot(x, y, linewidth=0.5)
-        plt.tick_params(axis='both', which='major', labelsize=8)  # 设置主刻度字体大小
-        plt.tick_params(axis='both', which='minor', labelsize=8)  # 设置次刻度字体大小
-        plt.xlabel('Wavelength(nm)', fontsize=8)
-        plt.ylabel('Normalized its', fontsize=8)
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(x, y, linewidth=0.5)
+        # plt.tick_params(axis='both', which='major', labelsize=8)  # 设置主刻度字体大小
+        # plt.tick_params(axis='both', which='minor', labelsize=8)  # 设置次刻度字体大小
+        # plt.xlabel('Wavelength(nm)', fontsize=8)
+        # plt.ylabel('Normalized its', fontsize=8)
         le.append(filename)
+        rect = Rectangle((0.1, 0.1), 0.4, 0.4, linewidth=1, edgecolor='red', facecolor='none', linestyle='--')
+        ax.add_patch(rect)
+
 plt.legend(le, loc='upper right')
 plt.show()
 # particles.sort(key=lambda i: int(re.search(r'(\d+)', i).group()) if re.search(r'(\d+)', i) else float('inf'))
