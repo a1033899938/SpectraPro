@@ -43,6 +43,9 @@ from PyQt5.QtWidgets import QGraphicsView, QGraphicsWidget, QGraphicsScene, QGra
 from PyQt5.QtGui import QTransform
 from PyQt5.QtCore import QRectF
 
+# import my modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src import read_file, set_figure
 
 
 class MyMainWindow(QMainWindow):
@@ -184,7 +187,6 @@ class MyMainWindow(QMainWindow):
         right_hbox = QHBoxLayout()
         right_hbox.addWidget(self.figureManager)
         right_hbox.addWidget(self.roiManager)
-        # right_hbox.addWidget(self.sliderManager)
 
         main_hbox = QHBoxLayout()
         main_hbox.addLayout(left_vbox)
@@ -235,23 +237,6 @@ class GeneralMethods:
         json_file_path, _ = QFileDialog.getOpenFileName(parent=None, caption='Select json file', directory='cache',
                                                         filter='Json file (*.json)')
         return json_file_path
-
-    @staticmethod
-    def read_file(file_path):
-        if file_path.endswith('spe'):
-            sp = sl.load_from_files([file_path])
-            data = {}
-            data['xdim'] = sp.xdim[0]
-            data['ydim'] = sp.ydim[0]
-            data['intensity'] = np.squeeze(np.array(sp.data))
-            data['wavelength'] = sp.wavelength
-            data['strip'] = range(data['ydim'])
-            print(data)
-        elif file_path.endswith('txt'):
-            pass
-        else:
-            pass
-        return data
 
     @staticmethod
     def rotate_view(graphicsView, angle):
@@ -831,7 +816,8 @@ class FigureWidget(QWidget):
     def deal_with_this_file(self, list_item):
         list_item_name = list_item.data(0)
         list_item_path = list_item.data(1)
-        data = GeneralMethods.read_file(list_item_path)
+        # data = GeneralMethods.read_file(list_item_path)
+        data = read_file.read_spe(list_item_path)
         self.update_figure(list_item_name, data)
         self.histogramWidget.update_hist(self.data)
 
@@ -848,7 +834,8 @@ class FigureWidget(QWidget):
 
         self.ax.clear()
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        self.ax.set_title(list_item_name)
+        set_figure.set_text(self.ax, title=list_item_name)
+        set_figure.set_tick(self.ax, xbins=6, ybins=10)
         self.canvas.draw()
 
         self.originxmin, self.originxmax = x.min(), x.max()
@@ -915,72 +902,6 @@ class FigureWidget(QWidget):
                 self.fig.canvas.draw_idle()  # Redraw the canvas
         except Exception as e:
             print(f"  |--> Error call_back: {e}")
-
-
-# class SilderManager(QSlider):
-#     def __init__(self, parent):
-#         super().__init__(Qt.Vertical, parent)
-#         self.setRange(0, 100)
-#         self.setTickPosition(QSlider.TicksBelow)
-#         self.setTickInterval(1)
-#
-#         self.low_handle = 20
-#         self.high_handle = 80
-#         self.dragging = None
-#         self.handle_width = 20
-#         self.handle_height = 10
-#
-#         # Invert slider values
-#         self.setInvertedAppearance(True)
-#
-#     def paintEvent(self, event):
-#         super().paintEvent(event)
-#         painter = QPainter(self)
-#         rect = self.rect()
-#
-#         # Draw the low handle
-#         low_rect = QRect(0, self.low_handle, self.handle_width, self.handle_height)
-#         painter.setBrush(QColor(0, 255, 0))
-#         painter.drawRect(low_rect)
-#
-#         # Draw the high handle
-#         high_rect = QRect(0, self.high_handle, self.handle_width, self.handle_height)
-#         painter.setBrush(QColor(255, 0, 255))
-#         painter.drawRect(high_rect)
-#
-#         # # Draw the range between handles
-#         # painter.setBrush(QColor(200, 200, 200))
-#         # range_rect = QRect(0, (self.low_handle + self.handle_width)/2, self.handle_width*1.5,
-#         #                    self.high_handle - self.low_handle - self.handle_height)
-#         # painter.drawRect(range_rect)
-#
-#     def mousePressEvent(self, event):
-#         pos = event.pos().y()
-#         if self.low_handle <= pos <= self.low_handle + self.handle_height:
-#             self.dragging = 'low'
-#             print("low")
-#         elif self.high_handle <= pos <= self.high_handle + self.handle_height:
-#             self.dragging = 'high'
-#             print("high")
-#         else:
-#             self.dragging = None
-#         super().mousePressEvent(event)
-#
-#     def mouseMoveEvent(self, event):
-#         if self.dragging:
-#             pos = event.pos().y()
-#             if self.dragging == 'low':
-#                 self.low_handle = max(0, min(pos, self.high_handle - self.handle_height))
-#                 print(pos)
-#             elif self.dragging == 'high':
-#                 self.high_handle = min(100, max(pos, self.low_handle + self.handle_height))
-#                 print(pos)
-#             self.update()
-#         super().mouseMoveEvent(event)
-#
-#     def mouseReleaseEvent(self, event):
-#         self.dragging = None
-#         super().mouseReleaseEvent(event)
 
 
 class RoiManager(QGraphicsView):
@@ -1084,11 +1005,7 @@ class HistogramWidget(QWidget):
     def on_move(self, event):
         if event.inaxes != self.ax:
             return
-        rect_bbox = self.rect.get_bbox()
-        if abs(event.xdata - rect_bbox.x0) < self.rect_edge_size:
-            print("in x min")
-        elif abs(event.xdata - rect_bbox.x1) < self.rect_edge_size:
-            print("in x max")
+
         if not self.dragging_xmin and not self.dragging_xmax:
             return
         else:
