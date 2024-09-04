@@ -22,6 +22,9 @@ def read_spe(file_path, strip='all'):
 
         if strip == 'all':
             data['intensity'] = np.sum(data['intensity_image'], axis=0)
+        else:
+            strip = np.array(strip)
+            data['intensity'] = np.sum(data['intensity_image'][strip.min():strip.max(), :], axis=0)
 
         print("==========data==========")
         pprint.pprint(data)

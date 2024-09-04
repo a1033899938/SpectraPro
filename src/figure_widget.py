@@ -28,6 +28,8 @@ class FigureWidget(QWidget):
             self.setLayout(layout)
 
             # read data and file name
+            self.list_item_name = None
+            self.list_item_path = None
             self.data = None
             self.fig_title = None
 
@@ -48,6 +50,8 @@ class FigureWidget(QWidget):
             self.rect_y_min = None
             self.rect_x_span = None
             self.rect_y_span = None
+            self.spin_box_min = None
+            self.spin_box_max = None
 
             self.show_flag = 'image'
             self.draw_rect_flag = False
@@ -68,14 +72,30 @@ class FigureWidget(QWidget):
     def deal_with_this_file(self, list_item):
         try:
             # read data and file name
-            list_item_name = list_item.data(0)
-            list_item_path = list_item.data(1)
-            self.data = read_file.read_spe(list_item_path)
-            self.fig_title = list_item_name
+            list_item_now = list_item
+            self.list_item_name = list_item.data(0)
+            self.list_item_path = list_item.data(1)
+
+            self.fig_title = self.list_item_name
+
+            self.read_data()
 
             self.show_figue()
         except Exception as e:
             print(f"Error FigureWidget.deal_with_this_file:\n  |--> {e}")
+
+    def read_data(self):
+        try:
+            if self.spin_box_min is None and self.spin_box_max is None:
+                self.data = read_file.read_spe(self.list_item_path, strip='all')
+                print("full strip.")
+            elif self.spin_box_min and self.spin_box_max:
+                self.data = read_file.read_spe(self.list_item_path, strip=[self.spin_box_min, self.spin_box_max])
+                print(f"strip range is: {self.spin_box_min, self.spin_box_max}")
+            else:
+                print("Wrong parameters.")
+        except Exception as e:
+            print(f"Error FigureWidget.read_data:\n  |--> {e}")
 
     def show_figue(self):
         try:
@@ -223,18 +243,20 @@ class FigureWidget(QWidget):
             if index == 0 or index == 1:
                 if index == 0:
                     self.show_flag = 'image'
-                    self.show_image(self.data, fig_title=self.fig_title)
+                    self.read_data()
+                    self.show_figue()
                     self.histogramWidget.show_hist()
                 elif index == 1:
                     self.show_flag = 'graph'
-                    self.show_graph(self.data, fig_title=self.fig_title)
+                    self.read_data()
+                    self.show_figue()
                 else:
                     print("Error combox input.")
                 self.pass_parameters_to_hist(self.data, self.ax, self.canvas,
                                              self.canvas_xylim, self.canvas_origin_xylim, self.show_flag)
             else:
                 print("Error toggle_image_and_graph.")
-            self.pass_roi_flag()
+            # self.pass_roi_flag()
         except Exception as e:
             print(f"Error FigureWidget.toggle_image_and_graph:\n  |--> {e}")
 
@@ -251,7 +273,7 @@ class FigureWidget(QWidget):
                 self.draw_rect_flag = False
                 self.rect.remove()
                 self.fig.canvas.draw_idle()
-            self.pass_roi_flag()
+            # self.pass_roi_flag()
         except Exception as e:
             print(f"Error FigureWidget.toggle_show_rect:\n  |--> {e}")
 
@@ -279,6 +301,9 @@ class FigureWidget(QWidget):
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
             self.parent.receive_spinbox_value_from_figure(value, tag='max')
+            self.spin_box_max = value
+            self.read_data()  # reload data for showing graph with new strip range
+            self.show_figue()
         except Exception as e:
             print(f"Error FigureWidget.change_rect_maxlim:\n  |--> {e}")
 
@@ -290,14 +315,17 @@ class FigureWidget(QWidget):
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
             self.parent.receive_spinbox_value_from_figure(value, tag='min')
+            self.spin_box_min = value
+            self.read_data()  # reload data for showing graph with new strip range
+            self.show_figue()
         except Exception as e:
             print(f"Error FigureWidget.change_rect_minlim:\n  |--> {e}")
 
-    def pass_roi_flag(self):
-        try:
-            self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag)
-        except Exception as e:
-            print(f"Error FigureWidget.pass_roi_flag:\n  |--> {e}")
+    # def pass_roi_flag(self):
+    #     try:
+    #         self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag)
+    #     except Exception as e:
+    #         print(f"Error FigureWidget.pass_roi_flag:\n  |--> {e}")
 
     def save_current_figure(self):
         try:

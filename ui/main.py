@@ -72,7 +72,7 @@ class MyMainWindow(QMainWindow):
 
         # slot flag
         self.show_layout_flag = None
-        self.show_roi_flag_now = False
+        self.show_roi_flag = False
         self.draw_rect_flag = None
         self.show_flag = None
         self.spinbox_lim = None
@@ -102,10 +102,10 @@ class MyMainWindow(QMainWindow):
 
             """Create main window objects"""
             # right_hbox2
-            # self.outputTextEdit = QTextEdit()
-            # self.outputTextEdit.setReadOnly(True)
-            # sys.stdout = OutputRedirector(self.outputTextEdit)
-            # sys.stderr = OutputRedirector(self.outputTextEdit)
+            self.outputTextEdit = QTextEdit()
+            self.outputTextEdit.setReadOnly(True)
+            sys.stdout = OutputRedirector(self.outputTextEdit)
+            sys.stderr = OutputRedirector(self.outputTextEdit)
 
             # left_hbox1
             self.spectrumFileLabel = QLabel('File path')
@@ -151,18 +151,18 @@ class MyMainWindow(QMainWindow):
             self.showRoiButton.setFixedWidth(150)
 
             self.roiUpperSpinBox = QSpinBox()
-            self.roiUpperSpinBox.setEnabled(False)
+            # self.roiUpperSpinBox.setEnabled(False)
             self.roiUpperSpinBox.setFixedHeight(50)
             self.roiUpperSpinBox.setFixedWidth(70)
             self.roiUpperSpinBox.valueChanged.connect(self.figureWidget.change_rect_maxlim)
             self.roiLowerSpinBox = QSpinBox()
-            self.roiLowerSpinBox.setEnabled(False)
+            # self.roiLowerSpinBox.setEnabled(False)
             self.roiLowerSpinBox.setFixedHeight(50)
             self.roiLowerSpinBox.setFixedWidth(70)
             self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_minlim)
 
             self.showOutputButton = QPushButton("Show Layout")
-            # self.showOutputButton.clicked.connect(self.toggle_show_layout)
+            self.showOutputButton.clicked.connect(self.toggle_show_layout)
             self.showOutputButton.setFixedHeight(50)
             self.showOutputButton.setFixedWidth(150)
 
@@ -247,7 +247,7 @@ class MyMainWindow(QMainWindow):
             right_hbox2 = QHBoxLayout()
             right_hbox2.addLayout(right_vbox1)
             # right_hbox2.addStretch(1)
-            # right_hbox2.addWidget(self.outputTextEdit)
+            right_hbox2.addWidget(self.outputTextEdit)
 
             # right box
             right_vbox = QVBoxLayout()
@@ -277,21 +277,21 @@ class MyMainWindow(QMainWindow):
         except Exception as e:
             print(f"Error main.toggle_show_layout:\n  |--> {e}")
 
-    def toggle_show_roi(self, draw_rect_flag, show_flag):
-        try:
-            self.draw_rect_flag = draw_rect_flag
-            self.show_flag = show_flag
-            if self.show_roi_flag_now:
-                self.roiUpperSpinBox.setEnabled(False)
-                self.roiLowerSpinBox.setEnabled(False)
-                self.show_roi_flag_now = False
-            else:
-                if self.draw_rect_flag is True and self.show_flag == 'image':
-                    self.roiUpperSpinBox.setEnabled(True)
-                    self.roiLowerSpinBox.setEnabled(True)
-                    self.show_roi_flag_now = True
-        except Exception as e:
-            print(f"Error main.toggle_show_roi:\n  |--> {e}")
+    # def toggle_show_roi(self, draw_rect_flag, show_flag):
+    #     try:
+    #         self.draw_rect_flag = draw_rect_flag
+    #         self.show_flag = show_flag
+    #         if self.show_roi_flag:
+    #             self.roiUpperSpinBox.setEnabled(False)
+    #             self.roiLowerSpinBox.setEnabled(False)
+    #             self.show_roi_flag = False
+    #         else:
+    #             if self.draw_rect_flag is True and self.show_flag == 'image':
+    #                 self.roiUpperSpinBox.setEnabled(True)
+    #                 self.roiLowerSpinBox.setEnabled(True)
+    #                 self.show_roi_flag = True
+    #     except Exception as e:
+    #         print(f"Error main.toggle_show_roi:\n  |--> {e}")
 
     def set_spin_box_lim(self, canvas_origin_xylim):
         self.spinbox_lim = canvas_origin_xylim
