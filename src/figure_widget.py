@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtCore import Qt
+from src import read_file, set_figure
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from PyQt5.QtWidgets import QVBoxLayout
-from PyQt5.QtCore import Qt
-from src import read_file, set_figure
 from matplotlib.patches import Rectangle
+
 import time
 import os
 from PyQt5.QtWidgets import QFileDialog

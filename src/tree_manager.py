@@ -1,11 +1,9 @@
 import os
-from PyQt5.QtCore import QDir, Qt
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QTreeView, QHeaderView, QStyledItemDelegate
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QMessageBox
-from src.general_methods import GeneralMethods
 import json
+from PyQt5.QtWidgets import QTreeView, QHeaderView, QStyledItemDelegate, QMessageBox
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon, QColor
+from PyQt5.QtCore import QDir, Qt
+from src.general_methods import GeneralMethods
 
 
 class TreeManager:

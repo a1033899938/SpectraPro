@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QFileDialog, QInputDialog
-from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QLineEdit
 from PyQt5.QtGui import QTransform
 """General methods
 """
