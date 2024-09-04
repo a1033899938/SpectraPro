@@ -180,12 +180,12 @@ class MyMainWindow(QMainWindow):
         self.roiUpperSpinBox.setEnabled(False)
         self.roiUpperSpinBox.setFixedHeight(50)
         self.roiUpperSpinBox.setFixedWidth(70)
-        # self.roiUpperSpinBox.valueChanged.connect()
+        self.roiUpperSpinBox.valueChanged.connect(self.figureWidget.change_rect_maxlim)
         self.roiLowerSpinBox = QSpinBox()
         self.roiLowerSpinBox.setEnabled(False)
         self.roiLowerSpinBox.setFixedHeight(50)
         self.roiLowerSpinBox.setFixedWidth(70)
-        # self.roiLowerSpinBox.valueChanged.connect()
+        self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_mimlim)
 
         self.showOutputButton = QPushButton("Show Layout")
         self.showOutputButton.clicked.connect(self.toggle_show_layout)
@@ -294,13 +294,10 @@ class MyMainWindow(QMainWindow):
             self.outputTextEdit.setVisible(True)
             self.show_layout_flag = 1
 
-    def toggle_show_roi(self, draw_rect_flag, show_flag):
+    def toggle_show_roi(self, draw_rect_flag, show_flag, figure_xylim):
         self.draw_rect_flag = draw_rect_flag
         self.show_flag = show_flag
-        print("click")
-        print(self.show_roi_flag_now)
-        print(self.draw_rect_flag)
-        print(self.show_flag)
+        self.figure_xylim = figure_xylim
         if self.show_roi_flag_now:
             self.roiUpperSpinBox.setEnabled(False)
             self.roiLowerSpinBox.setEnabled(False)
@@ -309,6 +306,13 @@ class MyMainWindow(QMainWindow):
             if self.draw_rect_flag is True and self.show_flag == 'image':
                 self.roiUpperSpinBox.setEnabled(True)
                 self.roiLowerSpinBox.setEnabled(True)
+                print(figure_xylim)
+                self.roiUpperSpinBox.setMinimum(self.figure_xylim[2])
+                self.roiUpperSpinBox.setMaximum(self.figure_xylim[3])
+                self.roiLowerSpinBox.setMinimum(self.figure_xylim[2])
+                self.roiLowerSpinBox.setMaximum(self.figure_xylim[3])
+                self.roiUpperSpinBox.setValue(self.figure_xylim[3])
+                self.roiLowerSpinBox.setValue(self.figure_xylim[2])
                 self.show_roi_flag_now = True
 
 
@@ -966,6 +970,7 @@ class FigureWidget(QWidget):
         self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
         self.originxmin, self.originxmax = x.min(), x.max()
         self.originymin, self.originymax = y.min(), y.max()
+        self.figure_origin_xylim = [self.originxmin, self.originxmax, self.originymin, self.originymax]
 
         if self.draw_rect_flag:
             self.draw_rectangle()
@@ -995,15 +1000,38 @@ class FigureWidget(QWidget):
     def draw_rectangle(self):
         try:
             face_color = (0.5, 0.1, 0.9, 0.6)
-            x_min = self.figure_xylim[0]
-            y_min = self.figure_xylim[2]
-            x_span = self.figure_xylim[1] - self.figure_xylim[0]
-            y_span = self.figure_xylim[3] - self.figure_xylim[2]
-            self.rect = Rectangle((x_min, y_min), x_span*1.4, y_span, linewidth=1, edgecolor='red',
+            self.rect_x_min = self.figure_origin_xylim[0]
+            self.rect_y_min = self.figure_origin_xylim[2]
+            self.rect_x_span = self.figure_origin_xylim[1] - self.figure_origin_xylim[0]
+            self.rect_y_span = self.figure_origin_xylim[3] - self.figure_origin_xylim[2]
+            self.rect = Rectangle((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min), self.rect_x_span*1.4, self.rect_y_span,
+                                  linewidth=1, edgecolor='red',
                                   facecolor=face_color, linestyle='-')
             self.ax.add_patch(self.rect)
         except Exception as e:
             print(f"  |--> Error draw_rectangle: {e}")
+
+    def change_rect_maxlim(self, value):
+        try:
+            self.rect_y_span = value - self.rect_y_min
+            self.rect.set_xy((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min))
+            self.rect.set_height(self.rect_y_span)
+            self.fig.canvas.draw_idle()
+        except Exception as e:
+            print(f"  |--> Error change_rect_maxlim: {e}")
+
+    def change_rect_mimlim(self, value):
+        try:
+            self.rect_y_span = self.rect_y_min + self.rect_y_span - value
+            self.rect_y_min = value
+            self.rect.set_xy((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min))
+            self.rect.set_height(self.rect_y_span)
+            self.fig.canvas.draw_idle()
+        except Exception as e:
+            print(f"  |--> Error change_rect_maxlim: {e}")
+
+    # def change_roi_span(self, value):
+    #     if
 
     def on_press(self, event):
         try:
@@ -1113,7 +1141,7 @@ class FigureWidget(QWidget):
             print(f"  |--> Error toggle_show_rect: {e}")
 
     def pass_roi_flag(self):
-        self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag)
+        self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag, self.figure_origin_xylim)
 
     def save_current_figure(self):
         try:
