@@ -13,33 +13,36 @@ from PyQt5.QtWidgets import QFileDialog
 
 class FigureWidget(QWidget):
     def __init__(self, main_window, histogramWidget, width=6, height=4, dpi=100):
-        super().__init__()
-        self.parent = main_window
-        self.histogramWidget = histogramWidget
+        try:
+            super().__init__()
+            self.parent = main_window
+            self.histogramWidget = histogramWidget
 
-        self.fig = plt.figure(figsize=(width, height), dpi=dpi)
-        self.ax = self.fig.add_subplot(111)
-        self.canvas = FigureCanvas(self.fig)
+            self.fig = plt.figure(figsize=(width, height), dpi=dpi)
+            self.ax = self.fig.add_subplot(111)
+            self.canvas = FigureCanvas(self.fig)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.canvas)
-        self.setLayout(layout)
+            layout = QVBoxLayout()
+            layout.addWidget(self.canvas)
+            self.setLayout(layout)
 
-        # mouse event
-        self.initFig()
-        self.lastx = 0
-        self.lasty = 0
-        self.originxmin = 0
-        self.originxmax = 0
-        self.originymin = 0
-        self.originymax = 0
-        self.last_click_time = 0
-        self.figure_xylim = None
-        self.press = False
+            # mouse event
+            self.initFig()
+            self.lastx = 0
+            self.lasty = 0
+            self.originxmin = 0
+            self.originxmax = 0
+            self.originymin = 0
+            self.originymax = 0
+            self.last_click_time = 0
+            self.figure_xylim = None
+            self.press = False
 
-        self.show_flag = 'image'
-        self.fig_title = None
-        self.draw_rect_flag = False
+            self.show_flag = 'image'
+            self.fig_title = None
+            self.draw_rect_flag = False
+        except Exception as e:
+            print(f"Error FigureWidget.init:\n  |--> {e}")
 
     def initFig(self):
         try:
@@ -50,69 +53,81 @@ class FigureWidget(QWidget):
             self.fig.canvas.mpl_connect("button_release_event", self.on_release)
             self.fig.canvas.mpl_connect("motion_notify_event", self.on_move)
         except Exception as e:
-            print(f"  |--> Error initFig: {e}")
+            print(f"Error FigureWidget.initFig:\n  |--> {e}")
 
     def deal_with_this_file(self, list_item):
-        list_item_name = list_item.data(0)
-        list_item_path = list_item.data(1)
-        self.data = read_file.read_spe(list_item_path)
-        self.fig_title = list_item_name
-        self.show_figue()
+        try:
+            list_item_name = list_item.data(0)
+            list_item_path = list_item.data(1)
+            self.data = read_file.read_spe(list_item_path)
+            self.fig_title = list_item_name
+            self.show_figue()
+        except Exception as e:
+            print(f"Error FigureWidget.deal_with_this_file:\n  |--> {e}")
 
     def show_figue(self):
-        if self.show_flag == 'image':
-            self.show_image(self.data, fig_title=self.fig_title)
-            self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
-        elif self.show_flag == 'graph':
-            self.show_graph(self.data, fig_title=self.fig_title)
-        else:
-            print("Error show_flag.")
+        try:
+            if self.show_flag == 'image':
+                self.show_image(self.data, fig_title=self.fig_title)
+                self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
+            elif self.show_flag == 'graph':
+                self.show_graph(self.data, fig_title=self.fig_title)
+            else:
+                print("Error show_flag.")
+        except Exception as e:
+            print(f"Error FigureWidget.show_figue:\n  |--> {e}")
 
     def show_image(self, data, fig_title='default title'):
-        x = data['wavelength']
-        y = data['strip']
-        z = data['intensity_image']
+        try:
+            x = data['wavelength']
+            y = data['strip']
+            z = data['intensity_image']
 
-        # Ensure x and y are 1D arrays and z is a 2D array
-        x = np.array(x)
-        y = np.array(y)
-        z = np.array(z)
+            # Ensure x and y are 1D arrays and z is a 2D array
+            x = np.array(x)
+            y = np.array(y)
+            z = np.array(z)
 
-        self.ax.clear()
-        self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-        set_figure.set_text(self.ax, title=fig_title)
-        set_figure.set_tick(self.ax, xbins=6, ybins=10)
+            self.ax.clear()
+            self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
+            set_figure.set_text(self.ax, title=fig_title)
+            set_figure.set_tick(self.ax, xbins=6, ybins=10)
 
-        self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
-        self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
-        self.originxmin, self.originxmax = x.min(), x.max()
-        self.originymin, self.originymax = y.min(), y.max()
-        self.figure_origin_xylim = [self.originxmin, self.originxmax, self.originymin, self.originymax]
+            self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
+            self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
+            self.originxmin, self.originxmax = x.min(), x.max()
+            self.originymin, self.originymax = y.min(), y.max()
+            self.figure_origin_xylim = [self.originxmin, self.originxmax, self.originymin, self.originymax]
 
-        if self.draw_rect_flag:
-            self.draw_rectangle()
-        self.canvas.draw()
+            if self.draw_rect_flag:
+                self.draw_rectangle()
+            self.canvas.draw()
+        except Exception as e:
+            print(f"Error FigureWidget.show_image:\n  |--> {e}")
 
     def show_graph(self, data, fig_title='default title'):
-        x = data['wavelength']
-        y = data['intensity']
+        try:
+            x = data['wavelength']
+            y = data['intensity']
 
-        # Ensure x and y are 1D arrays and z is a 2D array
-        x = np.array(x)
-        y = np.array(y)
+            # Ensure x and y are 1D arrays and z is a 2D array
+            x = np.array(x)
+            y = np.array(y)
 
-        self.ax.clear()
-        self.ax.plot(x, y)
-        self.ax.set_xlim([x.min(), x.max()])
-        self.ax.set_ylim([y.min(), y.max()])
-        set_figure.set_text(self.ax, title=fig_title)
-        set_figure.set_tick(self.ax, xbins=6, ybins=10)
-        self.canvas.draw()
+            self.ax.clear()
+            self.ax.plot(x, y)
+            self.ax.set_xlim([x.min(), x.max()])
+            self.ax.set_ylim([y.min(), y.max()])
+            set_figure.set_text(self.ax, title=fig_title)
+            set_figure.set_tick(self.ax, xbins=6, ybins=10)
+            self.canvas.draw()
 
-        self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
-        self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
-        self.originxmin, self.originxmax = x.min(), x.max()
-        self.originymin, self.originymax = y.min(), y.max()
+            self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
+            self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
+            self.originxmin, self.originxmax = x.min(), x.max()
+            self.originymin, self.originymax = y.min(), y.max()
+        except Exception as e:
+            print(f"Error FigureWidget.show_graph:\n  |--> {e}")
 
     def draw_rectangle(self):
         try:
@@ -127,7 +142,7 @@ class FigureWidget(QWidget):
                                   facecolor=face_color, linestyle='-')
             self.ax.add_patch(self.rect)
         except Exception as e:
-            print(f"  |--> Error draw_rectangle: {e}")
+            print(f"Error FigureWidget.draw_rectangle:\n  |--> {e}")
 
     def change_rect_maxlim(self, value):
         try:
@@ -136,7 +151,7 @@ class FigureWidget(QWidget):
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
         except Exception as e:
-            print(f"  |--> Error change_rect_maxlim: {e}")
+            print(f"Error FigureWidget.change_rect_maxlim:\n  |--> {e}")
 
     def change_rect_mimlim(self, value):
         try:
@@ -146,7 +161,7 @@ class FigureWidget(QWidget):
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
         except Exception as e:
-            print(f"  |--> Error change_rect_maxlim: {e}")
+            print(f"Error FigureWidget.change_rect_mimlim:\n  |--> {e}")
 
     # def change_roi_span(self, value):
     #     if
@@ -168,7 +183,7 @@ class FigureWidget(QWidget):
                         self.fig.canvas.draw_idle()
                     self.last_click_time = current_time
         except Exception as e:
-            print(f"  |--> Error on_press: {e}")
+            print(f"Error FigureWidget.on_press:\n  |--> {e}")
 
     def on_move(self, event):
         try:
@@ -190,11 +205,14 @@ class FigureWidget(QWidget):
                 event.inaxes.set_ylim(y_min, y_max)
                 self.fig.canvas.draw_idle()  # Draw immediately
         except Exception as e:
-            print(f"  |--> Error on_move: {e}")
+            print(f"Error FigureWidget.on_move:\n  |--> {e}")
 
     def on_release(self, event):
-        if self.press:
-            self.press = False  # 鼠标松开，结束移动
+        try:
+            if self.press:
+                self.press = False  # 鼠标松开，结束移动
+        except Exception as e:
+            print(f"Error FigureWidget.on_release:\n  |--> {e}")
 
     def call_back(self, event):
         try:
@@ -220,7 +238,7 @@ class FigureWidget(QWidget):
                 self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
                 self.fig.canvas.draw_idle()  # Redraw the canvas
         except Exception as e:
-            print(f"  |--> Error call_back: {e}")
+            print(f"Error FigureWidget.call_back:\n  |--> {e}")
 
     def toggle_image_and_graph(self, index):
         try:
@@ -239,7 +257,7 @@ class FigureWidget(QWidget):
                 print("Error toggle_image_and_graph.")
             self.pass_roi_flag()
         except Exception as e:
-            print(f"  |--> Error toggle_image_and_graph: {e}")
+            print(f"Error FigureWidget.toggle_image_and_graph:\n  |--> {e}")
 
     def toggle_show_rect(self):
         try:
@@ -256,10 +274,13 @@ class FigureWidget(QWidget):
                 self.fig.canvas.draw_idle()
             self.pass_roi_flag()
         except Exception as e:
-            print(f"  |--> Error toggle_show_rect: {e}")
+            print(f"Error FigureWidget.toggle_show_rect:\n  |--> {e}")
 
     def pass_roi_flag(self):
-        self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag, self.figure_origin_xylim)
+        try:
+            self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag, self.figure_origin_xylim)
+        except Exception as e:
+            print(f"Error FigureWidget.pass_roi_flag:\n  |--> {e}")
 
     def save_current_figure(self):
         try:
@@ -281,10 +302,13 @@ class FigureWidget(QWidget):
             if file_path:
                 self.fig.savefig(file_path)
         except Exception as e:
-            print(f"  |--> Error save_current_figure: {e}")
+            print(f"Error FigureWidget.save_current_figure:\n  |--> {e}")
 
     def pass_parameters_to_hist(self, figure_xylim=None, show_flag=None):
-        if figure_xylim:
-            self.histogramWidget.receive_parameters_from_figure(figure_xylim=figure_xylim)
-        if show_flag:
-            self.histogramWidget.receive_parameters_from_figure(show_flag=show_flag)
+        try:
+            if figure_xylim:
+                self.histogramWidget.receive_parameters_from_figure(figure_xylim=figure_xylim)
+            if show_flag:
+                self.histogramWidget.receive_parameters_from_figure(show_flag=show_flag)
+        except Exception as e:
+            print(f"Error FigureWidget.pass_parameters_to_hist:\n  |--> {e}")

@@ -70,7 +70,7 @@ class MyMainWindow(QMainWindow):
         self.showOutputButton = None
         self.saveFigureButton = None
 
-        # slot
+        # slot flag
         self.show_layout_flag = None
         self.show_roi_flag_now = False
         self.draw_rect_flag = None
@@ -79,6 +79,10 @@ class MyMainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
+        self.createUiObjects()
+        self.setLayout()
+
+    def createUiObjects(self):
         """ Set main window parameters"""
         print("Initializing UI")
         try:
@@ -92,7 +96,7 @@ class MyMainWindow(QMainWindow):
             self.menubar = self.menuBar()
             self.fileMenu = self.menubar.addMenu('&File')
             self.cacheMenu = self.menubar.addMenu('&Cache')
-            print("ss")
+
             """Create main window objects"""
             # right_hbox2
             # self.outputTextEdit = QTextEdit()
@@ -181,8 +185,12 @@ class MyMainWindow(QMainWindow):
             self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
             self.importCheckedFilesButton = QPushButton("Import Checked Files")  # add a button to show/hide checked files
             self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
+        except Exception as e:
+            print(f"Error main.createUiObjects:\n  |--> {e}")
 
-            """box manager"""
+    def setLayout(self):
+        """box manager"""
+        try:
             # left box
             left_hbox1 = QHBoxLayout()
             left_hbox1.addWidget(self.spectrumFileLabel)
@@ -253,36 +261,42 @@ class MyMainWindow(QMainWindow):
 
             self.show()
         except Exception as e:
-            print(f"Error initUI:\n  |--> {e}")
+            print(f"Error main.setLayout:\n  |--> {e}")
 
     def toggle_show_layout(self):
-        if self.show_layout_flag:
-            self.outputTextEdit.setVisible(False)
-            self.show_layout_flag = 0
-        else:
-            self.outputTextEdit.setVisible(True)
-            self.show_layout_flag = 1
+        try:
+            if self.show_layout_flag:
+                self.outputTextEdit.setVisible(False)
+                self.show_layout_flag = 0
+            else:
+                self.outputTextEdit.setVisible(True)
+                self.show_layout_flag = 1
+        except Exception as e:
+            print(f"Error main.toggle_show_layout:\n  |--> {e}")
 
     def toggle_show_roi(self, draw_rect_flag, show_flag, figure_xylim):
-        self.draw_rect_flag = draw_rect_flag
-        self.show_flag = show_flag
-        self.figure_xylim = figure_xylim
-        if self.show_roi_flag_now:
-            self.roiUpperSpinBox.setEnabled(False)
-            self.roiLowerSpinBox.setEnabled(False)
-            self.show_roi_flag_now = False
-        else:
-            if self.draw_rect_flag is True and self.show_flag == 'image':
-                self.roiUpperSpinBox.setEnabled(True)
-                self.roiLowerSpinBox.setEnabled(True)
-                print(figure_xylim)
-                self.roiUpperSpinBox.setMinimum(self.figure_xylim[2])
-                self.roiUpperSpinBox.setMaximum(self.figure_xylim[3])
-                self.roiLowerSpinBox.setMinimum(self.figure_xylim[2])
-                self.roiLowerSpinBox.setMaximum(self.figure_xylim[3])
-                self.roiUpperSpinBox.setValue(self.figure_xylim[3])
-                self.roiLowerSpinBox.setValue(self.figure_xylim[2])
-                self.show_roi_flag_now = True
+        try:
+            self.draw_rect_flag = draw_rect_flag
+            self.show_flag = show_flag
+            self.figure_xylim = figure_xylim
+            if self.show_roi_flag_now:
+                self.roiUpperSpinBox.setEnabled(False)
+                self.roiLowerSpinBox.setEnabled(False)
+                self.show_roi_flag_now = False
+            else:
+                if self.draw_rect_flag is True and self.show_flag == 'image':
+                    self.roiUpperSpinBox.setEnabled(True)
+                    self.roiLowerSpinBox.setEnabled(True)
+                    print(figure_xylim)
+                    self.roiUpperSpinBox.setMinimum(self.figure_xylim[2])
+                    self.roiUpperSpinBox.setMaximum(self.figure_xylim[3])
+                    self.roiLowerSpinBox.setMinimum(self.figure_xylim[2])
+                    self.roiLowerSpinBox.setMaximum(self.figure_xylim[3])
+                    self.roiUpperSpinBox.setValue(self.figure_xylim[3])
+                    self.roiLowerSpinBox.setValue(self.figure_xylim[2])
+                    self.show_roi_flag_now = True
+        except Exception as e:
+            print(f"Error main.toggle_show_roi:\n  |--> {e}")
 
 
 if __name__ == '__main__':

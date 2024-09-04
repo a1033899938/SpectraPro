@@ -4,32 +4,38 @@ import pprint
 
 
 def read_spe(file_path, strip='all'):
-    sp = sl.load_from_files([file_path])
-    data = {}
-    if sp.xdim[0] > sp.ydim[0]:
-        data['xdim'] = sp.xdim[0]
-        data['ydim'] = sp.ydim[0]
-        data['intensity_image'] = np.squeeze(np.array(sp.data))
-        data['wavelength'] = sp.wavelength
-        data['strip'] = range(data['ydim'])
-    else:
-        data['xdim'] = sp.ydim[0]
-        data['ydim'] = sp.xdim[0]
-        data['intensity_image'] = np.transpose(np.squeeze(np.array(sp.data)))
-        data['wavelength'] = sp.wavelength
-        data['strip'] = range(data['ydim'])
+    try:
+        sp = sl.load_from_files([file_path])
+        data = {}
+        if sp.xdim[0] > sp.ydim[0]:
+            data['xdim'] = sp.xdim[0]
+            data['ydim'] = sp.ydim[0]
+            data['intensity_image'] = np.squeeze(np.array(sp.data))
+            data['wavelength'] = sp.wavelength
+            data['strip'] = range(data['ydim'])
+        else:
+            data['xdim'] = sp.ydim[0]
+            data['ydim'] = sp.xdim[0]
+            data['intensity_image'] = np.transpose(np.squeeze(np.array(sp.data)))
+            data['wavelength'] = sp.wavelength
+            data['strip'] = range(data['ydim'])
 
-    if strip == 'all':
-        data['intensity'] = np.sum(data['intensity_image'], axis=0)
+        if strip == 'all':
+            data['intensity'] = np.sum(data['intensity_image'], axis=0)
 
-    print("==========data==========")
-    pprint.pprint(data)
-    print("========data end========")
-    return data
+        print("==========data==========")
+        pprint.pprint(data)
+        print("========data end========")
+        return data
+    except Exception as e:
+        print(f"Error read_file.read_spe:\n  |--> {e}")
 
 
 def read_txt(file_path):
-    print("under doing.")
+    try:
+        print("under doing.")
+    except Exception as e:
+        print(f"Error read_file.read_txt:\n  |--> {e}")
 
 
 if __name__ == '__main__':

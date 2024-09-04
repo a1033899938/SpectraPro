@@ -5,6 +5,7 @@ from PyQt5.QtGui import QTransform
 
 
 class GeneralMethods:
+    @staticmethod
     def select_spectrum_file_through_dialog():
         """Select spectrum file through a dialog, and return (1)file path"""
         print("Select spectrum file through a dialog.")
@@ -17,7 +18,7 @@ class GeneralMethods:
             print(f"Error GeneralMethods.select_spectrum_file_through_dialog:\n  |--> {e}")
         return spectrum_file_path
 
-
+    @staticmethod
     def select_spectra_file_folder_through_dialog():
         """Select spectra file folder through a dialog, and return (1)file folder path"""
         print("Select spectra file folder through a dialog.")
@@ -29,7 +30,7 @@ class GeneralMethods:
             print(f"Error GeneralMethods.select_spectra_file_folder_through_dialog:\n  |--> {e}")
         return spectra_file_folder_path
 
-
+    @staticmethod
     def input_dialog(parent, title='', property_name=''):
         try:
             text, okPressed = QInputDialog.getText(parent, f"{title}.", f"{property_name.title()}:", QLineEdit.Normal, "")
@@ -37,7 +38,7 @@ class GeneralMethods:
         except Exception as e:
             print(f"Error GeneralMethods.input_dialog:\n  |--> {e}")
 
-
+    @staticmethod
     def select_json_file_through_dialog():
         try:
             json_file_path, _ = QFileDialog.getOpenFileName(parent=None, caption='Select json file', directory='cache',
@@ -46,7 +47,7 @@ class GeneralMethods:
         except Exception as e:
             print(f"Error GeneralMethods.select_json_file_through_dialog:\n  |--> {e}")
 
-
+    @staticmethod
     def rotate_view(graphicsView, angle):
         try:
             # create a QTransform object

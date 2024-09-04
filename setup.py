@@ -20,7 +20,7 @@ setup(
     author='Junjie Xie',
     author_email='a1033899938@gmail.com',
     description='A package for processing spectra data from our labs',
-    long_description=open('README.md').read(),
+    long_description=open('tests/README.md').read(),
     long_description_content_type='text/markdown',
     url="Haven't personal pages now",  # 项目主页
     classifiers=[

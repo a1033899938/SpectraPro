@@ -6,7 +6,7 @@ import os
 # 确保项目根目录在 sys.path 中
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # 获取 mydlg2.ui 文件的绝对路径
-ui_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "../ui/uiFile/mydlg2.ui")
+ui_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "../ui/ui_files/mydlg2.ui")
 print(ui_file_path)
 
 
