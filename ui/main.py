@@ -18,7 +18,7 @@ from PyQt5.QtGui import QIcon, QColor, QPainter
 from PyQt5.QtWidgets import QListWidgetItem
 # graphics view
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsProxyWidget
-from PyQt5.QtGui import QTransform
+
 from PyQt5.QtCore import QRectF
 # math
 import numpy as np
@@ -33,6 +33,7 @@ from matplotlib.ticker import MaxNLocator
 # my modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src import read_file, set_figure, numerical_transform
+from src import GeneralMethods
 
 
 class MyMainWindow(QMainWindow):
@@ -98,177 +99,179 @@ class MyMainWindow(QMainWindow):
     def initUI(self):
         """ Set main window parameters"""
         print("Initializing UI")
+        try:
+            # set window position, title and so on...
+            self.setGeometry(200, 200, 2400, 1200)
+            self.setWindowTitle('SpectraPro')
+            self.statusBar().showMessage('Ready')
 
-        # set window position, title and so on...
-        self.setGeometry(200, 200, 2400, 1200)
-        self.setWindowTitle('SpectraPro')
-        self.statusBar().showMessage('Ready')
+            """Create menubar objects"""
+            # create objects
+            self.menubar = self.menuBar()
+            self.fileMenu = self.menubar.addMenu('&File')
+            self.cacheMenu = self.menubar.addMenu('&Cache')
+            print("ss")
+            """Create main window objects"""
+            # right_hbox2
+            # self.outputTextEdit = QTextEdit()
+            # self.outputTextEdit.setReadOnly(True)
+            # sys.stdout = OutputRedirector(self.outputTextEdit)
+            # sys.stderr = OutputRedirector(self.outputTextEdit)
 
-        """Create menubar objects"""
-        # create objects
-        self.menubar = self.menuBar()
-        self.fileMenu = self.menubar.addMenu('&File')
-        self.cacheMenu = self.menubar.addMenu('&Cache')
+            # left_hbox1
+            self.spectrumFileLabel = QLabel('File path')
+            self.spectrumFileTextEdit = QTextEdit()
+            self.spectrumFileTextEdit.setReadOnly(True)  # Set to read-only for file path display
+            self.spectrumFileTextEdit.setFixedHeight(30)  # Set height for QTextEdit
 
-        """Create main window objects"""
-        # right_hbox2
-        self.outputTextEdit = QTextEdit()
-        self.outputTextEdit.setReadOnly(True)
-        sys.stdout = OutputRedirector(self.outputTextEdit)
-        sys.stderr = OutputRedirector(self.outputTextEdit)
+            # left_hbox2
+            self.spectraFolderLabel = QLabel('File folder')
+            self.spectraFolderTextEdit = QTextEdit()
+            self.spectraFolderTextEdit.setReadOnly(True)  # Set to read-only for file path display
+            self.spectraFolderTextEdit.setFixedHeight(30)  # Set height for QTextEdit
 
-        # left_hbox1
-        self.spectrumFileLabel = QLabel('File path')
-        self.spectrumFileTextEdit = QTextEdit()
-        self.spectrumFileTextEdit.setReadOnly(True)  # Set to read-only for file path display
-        self.spectrumFileTextEdit.setFixedHeight(30)  # Set height for QTextEdit
+            # tree
+            self.treeView = TreeManager.CustomTreeView()
+            self.treeView.setMinimumWidth(1000)
+            self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
 
-        # left_hbox2
-        self.spectraFolderLabel = QLabel('File folder')
-        self.spectraFolderTextEdit = QTextEdit()
-        self.spectraFolderTextEdit.setReadOnly(True)  # Set to read-only for file path display
-        self.spectraFolderTextEdit.setFixedHeight(30)  # Set height for QTextEdit
+            """Add custom actions to menu and connect to slots."""
+            self.menuActions = MenuActions(self, self.treeManager)
+            self.fileMenu.addAction(self.menuActions.select_spectrum_file_action())  # add a custom action instant
+            self.fileMenu.addAction(self.menuActions.select_spectra_file_folder_action())
+            self.cacheMenu.addAction(self.menuActions.save_cache_action())
+            self.cacheMenu.addAction(self.menuActions.load_cache_action())
 
-        # tree
-        self.treeView = TreeManager.CustomTreeView()
-        self.treeView.setMinimumWidth(1000)
-        self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
+            # right_hbox1
+            self.histogramWidget = HistogramWidget(width=8, height=2, dpi=100)
+            self.roiManager = RoiManager(self.histogramWidget, width=250, height=850)
+            self.figureWidget = FigureWidget(self, self.histogramWidget, width=12, height=8, dpi=100)
+            self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
 
-        """Add custom actions to menu and connect to slots."""
-        self.menuActions = MenuActions(self, self.treeManager)
-        self.fileMenu.addAction(self.menuActions.select_spectrum_file_action())  # add a custom action instant
-        self.fileMenu.addAction(self.menuActions.select_spectra_file_folder_action())
-        self.cacheMenu.addAction(self.menuActions.save_cache_action())
-        self.cacheMenu.addAction(self.menuActions.load_cache_action())
+            # right_hbox2
+            self.layoutComboBox = QComboBox(self)
+            self.layoutComboBox.addItem("Image")
+            self.layoutComboBox.addItem("Graph")
+            self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
+            self.layoutComboBox.setFixedHeight(50)
+            self.layoutComboBox.setFixedWidth(150)
 
-        # right_hbox1
-        self.histogramWidget = HistogramWidget(width=8, height=2, dpi=100)
-        self.roiManager = RoiManager(self.histogramWidget, width=250, height=850)
-        self.figureWidget = FigureWidget(self, self.histogramWidget, width=12, height=8, dpi=100)
-        self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
+            self.showRoiButton = QPushButton("Show ROI")
+            self.showRoiButton.clicked.connect(self.figureWidget.toggle_show_rect)
+            self.showRoiButton.setFixedHeight(50)
+            self.showRoiButton.setFixedWidth(150)
 
-        # right_hbox2
-        self.layoutComboBox = QComboBox(self)
-        self.layoutComboBox.addItem("Image")
-        self.layoutComboBox.addItem("Graph")
-        self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
-        self.layoutComboBox.setFixedHeight(50)
-        self.layoutComboBox.setFixedWidth(150)
+            self.roiUpperSpinBox = QSpinBox()
+            self.roiUpperSpinBox.setEnabled(False)
+            self.roiUpperSpinBox.setFixedHeight(50)
+            self.roiUpperSpinBox.setFixedWidth(70)
+            self.roiUpperSpinBox.valueChanged.connect(self.figureWidget.change_rect_maxlim)
+            self.roiLowerSpinBox = QSpinBox()
+            self.roiLowerSpinBox.setEnabled(False)
+            self.roiLowerSpinBox.setFixedHeight(50)
+            self.roiLowerSpinBox.setFixedWidth(70)
+            self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_mimlim)
 
-        self.showRoiButton = QPushButton("Show ROI")
-        self.showRoiButton.clicked.connect(self.figureWidget.toggle_show_rect)
-        self.showRoiButton.setFixedHeight(50)
-        self.showRoiButton.setFixedWidth(150)
+            self.showOutputButton = QPushButton("Show Layout")
+            # self.showOutputButton.clicked.connect(self.toggle_show_layout)
+            self.showOutputButton.setFixedHeight(50)
+            self.showOutputButton.setFixedWidth(150)
 
-        self.roiUpperSpinBox = QSpinBox()
-        self.roiUpperSpinBox.setEnabled(False)
-        self.roiUpperSpinBox.setFixedHeight(50)
-        self.roiUpperSpinBox.setFixedWidth(70)
-        self.roiUpperSpinBox.valueChanged.connect(self.figureWidget.change_rect_maxlim)
-        self.roiLowerSpinBox = QSpinBox()
-        self.roiLowerSpinBox.setEnabled(False)
-        self.roiLowerSpinBox.setFixedHeight(50)
-        self.roiLowerSpinBox.setFixedWidth(70)
-        self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_mimlim)
+            self.saveFigureButton = QPushButton("Save Figure")
+            self.saveFigureButton.clicked.connect(self.figureWidget.save_current_figure)
+            self.saveFigureButton.setFixedHeight(50)
+            self.saveFigureButton.setFixedWidth(150)
 
-        self.showOutputButton = QPushButton("Show Layout")
-        self.showOutputButton.clicked.connect(self.toggle_show_layout)
-        self.showOutputButton.setFixedHeight(50)
-        self.showOutputButton.setFixedWidth(150)
+            # list
+            self.listWidget = ListManager.CustomListWidget(self.figureWidget)
+            self.listWidget.setMinimumWidth(1000)
+            self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureWidget)
 
-        self.saveFigureButton = QPushButton("Save Figure")
-        self.saveFigureButton.clicked.connect(self.figureWidget.save_current_figure)
-        self.saveFigureButton.setFixedHeight(50)
-        self.saveFigureButton.setFixedWidth(150)
+            # left_hbox3
+            self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
+            self.treeCollapseButton.clicked.connect(self.treeManager.collapse_tree)
+            self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
+            self.allItemUncheckButton.clicked.connect(self.treeManager.uncheck_all_items)
 
-        # list
-        self.listWidget = ListManager.CustomListWidget(self.figureWidget)
-        self.listWidget.setMinimumWidth(1000)
-        self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureWidget)
+            # left_hbox4
+            self.toggleShowTreeButton = QPushButton("Show Tree")  # add a button to show/hide treeview
+            self.toggleShowTreeButton.setChecked(True)  # Set initial status
+            self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
+            self.importCheckedFilesButton = QPushButton("Import Checked Files")  # add a button to show/hide checked files
+            self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
 
-        # left_hbox3
-        self.treeCollapseButton = QPushButton('Collapse All')  # add a button to collapse all nodes
-        self.treeCollapseButton.clicked.connect(self.treeManager.collapse_tree)
-        self.allItemUncheckButton = QPushButton('Uncheck All')  # add a button to uncheck all items
-        self.allItemUncheckButton.clicked.connect(self.treeManager.uncheck_all_items)
+            """box manager"""
+            # left box
+            left_hbox1 = QHBoxLayout()
+            left_hbox1.addWidget(self.spectrumFileLabel)
+            left_hbox1.addWidget(self.spectrumFileTextEdit)
 
-        # left_hbox4
-        self.toggleShowTreeButton = QPushButton("Show Tree")  # add a button to show/hide treeview
-        self.toggleShowTreeButton.setChecked(True)  # Set initial status
-        self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
-        self.importCheckedFilesButton = QPushButton("Import Checked Files")  # add a button to show/hide checked files
-        self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
+            left_hbox2 = QHBoxLayout()
+            left_hbox2.addWidget(self.spectraFolderLabel)
+            left_hbox2.addWidget(self.spectraFolderTextEdit)
 
-        """box manager"""
-        # left box
-        left_hbox1 = QHBoxLayout()
-        left_hbox1.addWidget(self.spectrumFileLabel)
-        left_hbox1.addWidget(self.spectrumFileTextEdit)
+            left_hbox3 = QHBoxLayout()
+            left_hbox3.addWidget(self.treeCollapseButton)
+            left_hbox3.addWidget(self.allItemUncheckButton)
 
-        left_hbox2 = QHBoxLayout()
-        left_hbox2.addWidget(self.spectraFolderLabel)
-        left_hbox2.addWidget(self.spectraFolderTextEdit)
+            left_hbox4 = QHBoxLayout()
+            left_hbox4.addWidget(self.toggleShowTreeButton)
+            left_hbox4.addWidget(self.importCheckedFilesButton)
 
-        left_hbox3 = QHBoxLayout()
-        left_hbox3.addWidget(self.treeCollapseButton)
-        left_hbox3.addWidget(self.allItemUncheckButton)
+            left_vbox = QVBoxLayout()
+            left_vbox.addLayout(left_hbox1)
+            left_vbox.addLayout(left_hbox2)
+            left_vbox.addWidget(self.treeView)
+            left_vbox.addWidget(self.listWidget)
+            left_vbox.addLayout(left_hbox3)
+            left_vbox.addLayout(left_hbox4)
 
-        left_hbox4 = QHBoxLayout()
-        left_hbox4.addWidget(self.toggleShowTreeButton)
-        left_hbox4.addWidget(self.importCheckedFilesButton)
+            # right_hbox1
+            right_hbox1 = QHBoxLayout()
+            right_hbox1.addWidget(self.figureManager)
+            right_hbox1.addWidget(self.roiManager)
 
-        left_vbox = QVBoxLayout()
-        left_vbox.addLayout(left_hbox1)
-        left_vbox.addLayout(left_hbox2)
-        left_vbox.addWidget(self.treeView)
-        left_vbox.addWidget(self.listWidget)
-        left_vbox.addLayout(left_hbox3)
-        left_vbox.addLayout(left_hbox4)
+            # roi grid box
+            roi_grid_box = QGridLayout()
+            roi_grid_box.addWidget(self.showRoiButton, 0, 0, 1, 2)
+            roi_grid_box.addWidget(self.roiUpperSpinBox, 1, 0)
+            roi_grid_box.addWidget(self.roiLowerSpinBox, 1, 1)
 
-        # right_hbox1
-        right_hbox1 = QHBoxLayout()
-        right_hbox1.addWidget(self.figureManager)
-        right_hbox1.addWidget(self.roiManager)
+            # right vbox1
+            right_vbox1 = QVBoxLayout()
+            right_vbox1.addWidget(self.layoutComboBox)
+            right_vbox1.addLayout(roi_grid_box)
+            right_vbox1.addWidget(self.showOutputButton)
+            right_vbox1.addWidget(self.saveFigureButton)
 
-        # roi grid box
-        roi_grid_box = QGridLayout()
-        roi_grid_box.addWidget(self.showRoiButton, 0, 0, 1, 2)
-        roi_grid_box.addWidget(self.roiUpperSpinBox, 1, 0)
-        roi_grid_box.addWidget(self.roiLowerSpinBox, 1, 1)
+            right_vbox1.setAlignment(self.layoutComboBox, Qt.AlignLeft)
+            right_vbox1.setAlignment(roi_grid_box, Qt.AlignLeft)
+            right_vbox1.setAlignment(self.showRoiButton, Qt.AlignLeft)
+            right_vbox1.setAlignment(self.showOutputButton, Qt.AlignLeft)
+            right_vbox1.setAlignment(self.saveFigureButton, Qt.AlignLeft)
 
-        # right vbox1
-        right_vbox1 = QVBoxLayout()
-        right_vbox1.addWidget(self.layoutComboBox)
-        right_vbox1.addLayout(roi_grid_box)
-        right_vbox1.addWidget(self.showOutputButton)
-        right_vbox1.addWidget(self.saveFigureButton)
+            # right hbox2
+            right_hbox2 = QHBoxLayout()
+            right_hbox2.addLayout(right_vbox1)
+            # right_hbox2.addStretch(1)
+            # right_hbox2.addWidget(self.outputTextEdit)
 
-        right_vbox1.setAlignment(self.layoutComboBox, Qt.AlignLeft)
-        right_vbox1.setAlignment(roi_grid_box, Qt.AlignLeft)
-        right_vbox1.setAlignment(self.showRoiButton, Qt.AlignLeft)
-        right_vbox1.setAlignment(self.showOutputButton, Qt.AlignLeft)
-        right_vbox1.setAlignment(self.saveFigureButton, Qt.AlignLeft)
+            # right box
+            right_vbox = QVBoxLayout()
+            right_vbox.addLayout(right_hbox1)
+            right_vbox.addLayout(right_hbox2)
 
-        # right hbox2
-        right_hbox2 = QHBoxLayout()
-        right_hbox2.addLayout(right_vbox1)
-        # right_hbox2.addStretch(1)
-        right_hbox2.addWidget(self.outputTextEdit)
+            main_hbox = QHBoxLayout()
+            main_hbox.addLayout(left_vbox)
+            main_hbox.addLayout(right_vbox)
 
-        # right box
-        right_vbox = QVBoxLayout()
-        right_vbox.addLayout(right_hbox1)
-        right_vbox.addLayout(right_hbox2)
+            central_widget = QWidget()
+            central_widget.setLayout(main_hbox)
+            self.setCentralWidget(central_widget)
 
-        main_hbox = QHBoxLayout()
-        main_hbox.addLayout(left_vbox)
-        main_hbox.addLayout(right_vbox)
-
-        central_widget = QWidget()
-        central_widget.setLayout(main_hbox)
-        self.setCentralWidget(central_widget)
-
-        self.show()
+            self.show()
+        except Exception as e:
+            print(f"Error initUI:\n  |--> {e}")
 
     def toggle_show_layout(self):
         if self.show_layout_flag:
@@ -300,55 +303,7 @@ class MyMainWindow(QMainWindow):
                 self.show_roi_flag_now = True
 
 
-class GeneralMethods:
-    """General methods"""
 
-    @staticmethod
-    def select_spectrum_file_through_dialog():
-        """Select spectrum file through a dialog, and return (1)file path"""
-        print("Select spectrum file through a dialog.")
-        try:
-            # Open a file dialog to select a file and display the filename in the text edit.
-            spectrum_file_path, _ = QFileDialog.getOpenFileName(parent=None, caption='Select spectrum file',
-                                                                directory='',
-                                                                filter='Spectrum file (*.txt *.spe *.h5 *.wxd)')
-        except Exception as e:
-            print(f"Error select_spectrum_file_through_dialog:\n  |--> {e}")
-        return spectrum_file_path
-
-    @staticmethod
-    def select_spectra_file_folder_through_dialog():
-        """Select spectra file folder through a dialog, and return (1)file folder path"""
-        print("Select spectra file folder through a dialog.")
-        try:
-            spectra_file_folder_path = QFileDialog.getExistingDirectory(parent=None,
-                                                                        caption='Select directory of files',
-                                                                        directory='')
-        except Exception as e:
-            print(f"Error select_spectra_file_folder_through_dialog:\n  |--> {e}")
-        return spectra_file_folder_path
-
-    @staticmethod
-    def input_dialog(parent, title='', property_name=''):
-        text, okPressed = QInputDialog.getText(parent, f"{title}.", f"{property_name.title()}:", QLineEdit.Normal, "")
-        return text, okPressed
-
-    @staticmethod
-    def select_json_file_through_dialog():
-        json_file_path, _ = QFileDialog.getOpenFileName(parent=None, caption='Select json file', directory='cache',
-                                                        filter='Json file (*.json)')
-        return json_file_path
-
-    @staticmethod
-    def rotate_view(graphicsView, angle):
-        # 创建一个 QTransform 对象
-        transform = QTransform()
-
-        # 在变换矩阵上应用旋转
-        transform.rotate(angle)
-
-        # 将变换应用到视图
-        graphicsView.setTransform(transform)
 
 
 class MenuActions:
