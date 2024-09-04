@@ -16,6 +16,8 @@ from PyQt5.QtGui import QColor, QPainter
 from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtWidgets import QComboBox
+from PyQt5.QtWidgets import QSpinBox
+from PyQt5.QtWidgets import QGridLayout
 import json
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5 import (QtWidgets, QtCore, QtGui)
@@ -95,16 +97,24 @@ class MyMainWindow(QMainWindow):
         # right_box2
         self.layoutComboBox = None
         self.outputTextEdit = None
+        self.showRoiButton = None
+        self.roiUpperSpinBox = None
+        self.roiLowerSpinBox = None
         self.showOutputButton = None
+        self.saveFigureButton = None
 
         # slot
         self.show_layout_flag = None
+        self.show_roi_flag_now = False
+        self.draw_rect_flag = None
+        self.show_flag = None
         """Initialize ui"""
         self.initUI()
 
     def initUI(self):
         """ Set main window parameters"""
         print("Initializing UI")
+
         # set window position, title and so on...
         self.setGeometry(200, 200, 2400, 1200)
         self.setWindowTitle('SpectraPro')
@@ -150,7 +160,7 @@ class MyMainWindow(QMainWindow):
         # right_hbox1
         self.histogramWidget = HistogramWidget(width=8, height=2, dpi=100)
         self.roiManager = RoiManager(self.histogramWidget, width=250, height=850)
-        self.figureWidget = FigureWidget(self.histogramWidget, width=12, height=8, dpi=100)
+        self.figureWidget = FigureWidget(self, self.histogramWidget, width=12, height=8, dpi=100)
         self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
 
         # right_hbox2
@@ -160,10 +170,32 @@ class MyMainWindow(QMainWindow):
         self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
         self.layoutComboBox.setFixedHeight(50)
         self.layoutComboBox.setFixedWidth(150)
+
+        self.showRoiButton = QPushButton("Show ROI")
+        self.showRoiButton.clicked.connect(self.figureWidget.toggle_show_rect)
+        self.showRoiButton.setFixedHeight(50)
+        self.showRoiButton.setFixedWidth(150)
+
+        self.roiUpperSpinBox = QSpinBox()
+        self.roiUpperSpinBox.setEnabled(False)
+        self.roiUpperSpinBox.setFixedHeight(50)
+        self.roiUpperSpinBox.setFixedWidth(70)
+        # self.roiUpperSpinBox.valueChanged.connect()
+        self.roiLowerSpinBox = QSpinBox()
+        self.roiLowerSpinBox.setEnabled(False)
+        self.roiLowerSpinBox.setFixedHeight(50)
+        self.roiLowerSpinBox.setFixedWidth(70)
+        # self.roiLowerSpinBox.valueChanged.connect()
+
         self.showOutputButton = QPushButton("Show Layout")
         self.showOutputButton.clicked.connect(self.toggle_show_layout)
         self.showOutputButton.setFixedHeight(50)
         self.showOutputButton.setFixedWidth(150)
+
+        self.saveFigureButton = QPushButton("Save Figure")
+        self.saveFigureButton.clicked.connect(self.figureWidget.save_current_figure)
+        self.saveFigureButton.setFixedHeight(50)
+        self.saveFigureButton.setFixedWidth(150)
 
         # list
         self.listWidget = ListManager.CustomListWidget(self.figureWidget)
@@ -177,10 +209,10 @@ class MyMainWindow(QMainWindow):
         self.allItemUncheckButton.clicked.connect(self.treeManager.uncheck_all_items)
 
         # left_hbox4
-        self.toggleShowTreeButton = QPushButton("Show tree")  # add a button to show/hide treeview
+        self.toggleShowTreeButton = QPushButton("Show Tree")  # add a button to show/hide treeview
         self.toggleShowTreeButton.setChecked(True)  # Set initial status
         self.toggleShowTreeButton.clicked.connect(self.treeManager.toggle_show_tree)
-        self.importCheckedFilesButton = QPushButton("Import checked files")  # add a button to show/hide checked files
+        self.importCheckedFilesButton = QPushButton("Import Checked Files")  # add a button to show/hide checked files
         self.importCheckedFilesButton.clicked.connect(self.listManager.import_checked_files)
 
         """box manager"""
@@ -214,12 +246,24 @@ class MyMainWindow(QMainWindow):
         right_hbox1.addWidget(self.figureManager)
         right_hbox1.addWidget(self.roiManager)
 
+        # roi grid box
+        roi_grid_box = QGridLayout()
+        roi_grid_box.addWidget(self.showRoiButton, 0, 0, 1, 2)
+        roi_grid_box.addWidget(self.roiUpperSpinBox, 1, 0)
+        roi_grid_box.addWidget(self.roiLowerSpinBox, 1, 1)
+
         # right vbox1
         right_vbox1 = QVBoxLayout()
         right_vbox1.addWidget(self.layoutComboBox)
+        right_vbox1.addLayout(roi_grid_box)
         right_vbox1.addWidget(self.showOutputButton)
+        right_vbox1.addWidget(self.saveFigureButton)
+
         right_vbox1.setAlignment(self.layoutComboBox, Qt.AlignLeft)
+        right_vbox1.setAlignment(roi_grid_box, Qt.AlignLeft)
+        right_vbox1.setAlignment(self.showRoiButton, Qt.AlignLeft)
         right_vbox1.setAlignment(self.showOutputButton, Qt.AlignLeft)
+        right_vbox1.setAlignment(self.saveFigureButton, Qt.AlignLeft)
 
         # right hbox2
         right_hbox2 = QHBoxLayout()
@@ -250,6 +294,22 @@ class MyMainWindow(QMainWindow):
             self.outputTextEdit.setVisible(True)
             self.show_layout_flag = 1
 
+    def toggle_show_roi(self, draw_rect_flag, show_flag):
+        self.draw_rect_flag = draw_rect_flag
+        self.show_flag = show_flag
+        print("click")
+        print(self.show_roi_flag_now)
+        print(self.draw_rect_flag)
+        print(self.show_flag)
+        if self.show_roi_flag_now:
+            self.roiUpperSpinBox.setEnabled(False)
+            self.roiLowerSpinBox.setEnabled(False)
+            self.show_roi_flag_now = False
+        else:
+            if self.draw_rect_flag is True and self.show_flag == 'image':
+                self.roiUpperSpinBox.setEnabled(True)
+                self.roiLowerSpinBox.setEnabled(True)
+                self.show_roi_flag_now = True
 
 
 class GeneralMethods:
@@ -831,8 +891,9 @@ class FigureManager(QGraphicsView):
 
 
 class FigureWidget(QWidget):
-    def __init__(self, histogramWidget, width=6, height=4, dpi=100, parent=None):
-        super().__init__(parent)
+    def __init__(self, main_window, histogramWidget, width=6, height=4, dpi=100):
+        super().__init__()
+        self.parent = main_window
         self.histogramWidget = histogramWidget
 
         self.fig = plt.figure(figsize=(width, height), dpi=dpi)
@@ -856,6 +917,8 @@ class FigureWidget(QWidget):
         self.press = False
 
         self.show_flag = 'image'
+        self.fig_title = None
+        self.draw_rect_flag = False
 
     def initFig(self):
         try:
@@ -874,11 +937,11 @@ class FigureWidget(QWidget):
         self.data = read_file.read_spe(list_item_path)
         self.fig_title = list_item_name
         self.show_figue()
-        self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
 
     def show_figue(self):
         if self.show_flag == 'image':
             self.show_image(self.data, fig_title=self.fig_title)
+            self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
         elif self.show_flag == 'graph':
             self.show_graph(self.data, fig_title=self.fig_title)
         else:
@@ -898,12 +961,15 @@ class FigureWidget(QWidget):
         self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
         set_figure.set_text(self.ax, title=fig_title)
         set_figure.set_tick(self.ax, xbins=6, ybins=10)
-        self.canvas.draw()
 
         self.figure_xylim = [x.min(), x.max(), y.min(), y.max()]
         self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
         self.originxmin, self.originxmax = x.min(), x.max()
         self.originymin, self.originymax = y.min(), y.max()
+
+        if self.draw_rect_flag:
+            self.draw_rectangle()
+        self.canvas.draw()
 
     def show_graph(self, data, fig_title='default title'):
         x = data['wavelength']
@@ -925,6 +991,19 @@ class FigureWidget(QWidget):
         self.pass_parameters_to_hist(figure_xylim=self.figure_xylim)
         self.originxmin, self.originxmax = x.min(), x.max()
         self.originymin, self.originymax = y.min(), y.max()
+
+    def draw_rectangle(self):
+        try:
+            face_color = (0.5, 0.1, 0.9, 0.6)
+            x_min = self.figure_xylim[0]
+            y_min = self.figure_xylim[2]
+            x_span = self.figure_xylim[1] - self.figure_xylim[0]
+            y_span = self.figure_xylim[3] - self.figure_xylim[2]
+            self.rect = Rectangle((x_min, y_min), x_span*1.4, y_span, linewidth=1, edgecolor='red',
+                                  facecolor=face_color, linestyle='-')
+            self.ax.add_patch(self.rect)
+        except Exception as e:
+            print(f"  |--> Error draw_rectangle: {e}")
 
     def on_press(self, event):
         try:
@@ -1003,6 +1082,7 @@ class FigureWidget(QWidget):
                 if index == 0:
                     self.show_flag = 'image'
                     self.show_image(self.data, fig_title=self.fig_title)
+                    self.histogramWidget.show_hist(self.data, self.ax, self.canvas)
                 elif index == 1:
                     self.show_flag = 'graph'
                     self.show_graph(self.data, fig_title=self.fig_title)
@@ -1011,8 +1091,51 @@ class FigureWidget(QWidget):
                 self.pass_parameters_to_hist(show_flag=self.show_flag)
             else:
                 print("Error toggle_image_and_graph.")
+            self.pass_roi_flag()
         except Exception as e:
             print(f"  |--> Error toggle_image_and_graph: {e}")
+
+    def toggle_show_rect(self):
+        try:
+            if self.show_flag != 'image':
+                print("Only for image.")
+                return
+            if not self.draw_rect_flag:
+                self.draw_rect_flag = True
+                self.draw_rectangle()
+                self.fig.canvas.draw_idle()
+            else:
+                self.draw_rect_flag = False
+                self.rect.remove()
+                self.fig.canvas.draw_idle()
+            self.pass_roi_flag()
+        except Exception as e:
+            print(f"  |--> Error toggle_show_rect: {e}")
+
+    def pass_roi_flag(self):
+        self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag)
+
+    def save_current_figure(self):
+        try:
+            if self.fig_title is None:
+                print("No figure now.")
+                return
+
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            parent_dir = os.path.dirname(current_dir)
+            pic_dir = os.path.join(parent_dir, 'saved_picture')
+            default_filename = self.fig_title
+            default_filename, _ = os.path.splitext(default_filename)  # delete ext of file
+            default_filepath = os.path.join(pic_dir, default_filename)
+
+            options = QFileDialog.Options()
+            file_path, _ = QFileDialog.getSaveFileName(self, "Save Current Figure", default_filepath,
+                                                       "PNG Files (*.png);;JPEG Files (*.jpg);;All Files (*)",
+                                                       options=options)
+            if file_path:
+                self.fig.savefig(file_path)
+        except Exception as e:
+            print(f"  |--> Error save_current_figure: {e}")
 
     def pass_parameters_to_hist(self, figure_xylim=None, show_flag=None):
         if figure_xylim:
@@ -1041,7 +1164,6 @@ class RoiManager(QGraphicsView):
 class HistogramWidget(QWidget):
     def __init__(self, width=6, height=4, dpi=100, parent=None):
         super().__init__(parent)
-        self.figureWidget = FigureWidget(self)
 
         self.fig = plt.figure(figsize=(width, height), dpi=dpi)
         self.canvas = FigureCanvas(self.fig)
@@ -1094,11 +1216,11 @@ class HistogramWidget(QWidget):
 
             hist, _ = np.histogram(self.intensity_1d, bins=30)
             self.y_max = max(hist)
-            self.ax.set_ylim(0, self.y_max*1.1)
+            self.ax.set_ylim(0, self.y_max * 1.1)
 
             self.draw_rectangle()
 
-            self.rect_edge_size = self.x_span/30
+            self.rect_edge_size = self.x_span / 30
 
             # self.fig.tight_layout()
             self.canvas.draw()
@@ -1108,7 +1230,8 @@ class HistogramWidget(QWidget):
     def draw_rectangle(self):
         try:
             face_color = (0.5, 0.1, 0.9, 0.6)
-            self.rect = Rectangle((self.x_min, 0), self.x_span, self.y_max, linewidth=1, edgecolor='red', facecolor=face_color, linestyle='-')
+            self.rect = Rectangle((self.x_min, 0), self.x_span, self.y_max, linewidth=1, edgecolor='red',
+                                  facecolor=face_color, linestyle='-')
             self.ax.add_patch(self.rect)
         except Exception as e:
             print(f"  |--> Error draw_rectangle: {e}")
