@@ -1,52 +1,36 @@
 import sys
 import os
-import io
-import pprint
-from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication, QWidget, QDialog, QMessageBox
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (QHBoxLayout, QVBoxLayout)
-from PyQt5.QtWidgets import (QLabel, QLineEdit, QTextEdit, QPushButton)
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtCore import QDir, Qt
-from PyQt5.QtWidgets import (QTreeView, QFileSystemModel)
-from PyQt5.QtWidgets import QHeaderView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtWidgets import QStyledItemDelegate
-from PyQt5.QtGui import QColor, QPainter
-from PyQt5.QtWidgets import QInputDialog
-from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtWidgets import QComboBox
-from PyQt5.QtWidgets import QSpinBox
-from PyQt5.QtWidgets import QGridLayout
+import time
+# main window objects
+from PyQt5.QtWidgets import QLabel, QLineEdit, QTextEdit, QPushButton, QComboBox, QSpinBox
+from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QWidget, QMessageBox
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QFileDialog, QInputDialog
 import json
-from PyQt5.QtCore import QThread, pyqtSignal, QObject
-from PyQt5 import (QtWidgets, QtCore, QtGui)
 from PyQt5.QtGui import QCloseEvent
+# tree view
+from PyQt5.QtWidgets import QTreeView, QHeaderView, QStyledItemDelegate
+from PyQt5.QtCore import QDir, Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+# list widget
 from PyQt5.QtWidgets import QListWidget
-from PyQt5.QtWidgets import QSlider
-from PyQt5.QtGui import QPalette, QFont
-from PyQt5.QtCore import QRect
-# for figure
+from PyQt5.QtGui import QIcon, QColor, QPainter
+from PyQt5.QtWidgets import QListWidgetItem
+# graphics view
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QGraphicsProxyWidget
+from PyQt5.QtGui import QTransform
+from PyQt5.QtCore import QRectF
+# math
 import numpy as np
 import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-# for read file
-import spe_loader as sl
-from matplotlib.ticker import MaxNLocator
-import time
 
 matplotlib.use("Qt5Agg")  # 声明使用QT5
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-from matplotlib.transforms import Affine2D
-import mpl_toolkits.axisartist.floating_axes as floating_axes
 from matplotlib.patches import Rectangle
-from PyQt5.QtWidgets import QGraphicsView, QGraphicsWidget, QGraphicsScene, QGraphicsProxyWidget
-from PyQt5.QtGui import QTransform
-from PyQt5.QtCore import QRectF
+from matplotlib.ticker import MaxNLocator
 
-# import my modules
+# my modules
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src import read_file, set_figure, numerical_transform
 
@@ -825,7 +809,7 @@ class ListManager:
             root_item = self.model.invisibleRootItem()
             get_checked_files_data = self.get_checked_files_data(root_item)
             for file_data in get_checked_files_data:
-                file_name = QtWidgets.QListWidgetItem(file_data['text'])
+                file_name = QListWidgetItem(file_data['text'])
                 file_name.setData(1, file_data['file_path'])
                 self.listWidget.addItem(file_name)
         except Exception as e:
@@ -850,13 +834,13 @@ class ListManager:
                 self.get_checked_files_data(child_item)
         return self.checked_files_data
 
-    class CustomListWidget(QtWidgets.QListWidget):
+    class CustomListWidget(QListWidget):
         def __init__(self, figureWidget):
             super().__init__()
             # enable dragging
             self.setDragEnabled(True)
             self.setDropIndicatorShown(True)
-            self.setDefaultDropAction(QtCore.Qt.MoveAction)
+            self.setDefaultDropAction(Qt.MoveAction)
             self.setAcceptDrops(True)
 
             self.figureWidget = figureWidget
@@ -1004,7 +988,8 @@ class FigureWidget(QWidget):
             self.rect_y_min = self.figure_origin_xylim[2]
             self.rect_x_span = self.figure_origin_xylim[1] - self.figure_origin_xylim[0]
             self.rect_y_span = self.figure_origin_xylim[3] - self.figure_origin_xylim[2]
-            self.rect = Rectangle((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min), self.rect_x_span*1.4, self.rect_y_span,
+            self.rect = Rectangle((self.rect_x_min - self.rect_x_span * 0.2, self.rect_y_min), self.rect_x_span * 1.4,
+                                  self.rect_y_span,
                                   linewidth=1, edgecolor='red',
                                   facecolor=face_color, linestyle='-')
             self.ax.add_patch(self.rect)
@@ -1014,7 +999,7 @@ class FigureWidget(QWidget):
     def change_rect_maxlim(self, value):
         try:
             self.rect_y_span = value - self.rect_y_min
-            self.rect.set_xy((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min))
+            self.rect.set_xy((self.rect_x_min - self.rect_x_span * 0.2, self.rect_y_min))
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
         except Exception as e:
@@ -1024,7 +1009,7 @@ class FigureWidget(QWidget):
         try:
             self.rect_y_span = self.rect_y_min + self.rect_y_span - value
             self.rect_y_min = value
-            self.rect.set_xy((self.rect_x_min-self.rect_x_span*0.2, self.rect_y_min))
+            self.rect.set_xy((self.rect_x_min - self.rect_x_span * 0.2, self.rect_y_min))
             self.rect.set_height(self.rect_y_span)
             self.fig.canvas.draw_idle()
         except Exception as e:
