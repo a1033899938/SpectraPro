@@ -75,6 +75,9 @@ class MyMainWindow(QMainWindow):
         self.show_roi_flag_now = False
         self.draw_rect_flag = None
         self.show_flag = None
+        self.spinbox_lim = None
+        self.spinbox_max = None
+        self.spinbox_min = None
         """Initialize ui"""
         self.initUI()
 
@@ -156,7 +159,7 @@ class MyMainWindow(QMainWindow):
             self.roiLowerSpinBox.setEnabled(False)
             self.roiLowerSpinBox.setFixedHeight(50)
             self.roiLowerSpinBox.setFixedWidth(70)
-            self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_mimlim)
+            self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_minlim)
 
             self.showOutputButton = QPushButton("Show Layout")
             # self.showOutputButton.clicked.connect(self.toggle_show_layout)
@@ -274,11 +277,10 @@ class MyMainWindow(QMainWindow):
         except Exception as e:
             print(f"Error main.toggle_show_layout:\n  |--> {e}")
 
-    def toggle_show_roi(self, draw_rect_flag, show_flag, figure_xylim):
+    def toggle_show_roi(self, draw_rect_flag, show_flag):
         try:
             self.draw_rect_flag = draw_rect_flag
             self.show_flag = show_flag
-            self.figure_xylim = figure_xylim
             if self.show_roi_flag_now:
                 self.roiUpperSpinBox.setEnabled(False)
                 self.roiLowerSpinBox.setEnabled(False)
@@ -287,16 +289,28 @@ class MyMainWindow(QMainWindow):
                 if self.draw_rect_flag is True and self.show_flag == 'image':
                     self.roiUpperSpinBox.setEnabled(True)
                     self.roiLowerSpinBox.setEnabled(True)
-                    print(figure_xylim)
-                    self.roiUpperSpinBox.setMinimum(self.figure_xylim[2])
-                    self.roiUpperSpinBox.setMaximum(self.figure_xylim[3])
-                    self.roiLowerSpinBox.setMinimum(self.figure_xylim[2])
-                    self.roiLowerSpinBox.setMaximum(self.figure_xylim[3])
-                    self.roiUpperSpinBox.setValue(self.figure_xylim[3])
-                    self.roiLowerSpinBox.setValue(self.figure_xylim[2])
                     self.show_roi_flag_now = True
         except Exception as e:
             print(f"Error main.toggle_show_roi:\n  |--> {e}")
+
+    def set_spin_box_lim(self, canvas_origin_xylim):
+        self.spinbox_lim = canvas_origin_xylim
+        self.roiUpperSpinBox.setMinimum(self.spinbox_lim[2])
+        self.roiUpperSpinBox.setMaximum(self.spinbox_lim[3])
+        self.roiLowerSpinBox.setMinimum(self.spinbox_lim[2])
+        self.roiLowerSpinBox.setMaximum(self.spinbox_lim[3])
+
+        if self.spinbox_max and self.spinbox_min:
+            self.roiUpperSpinBox.setValue(self.spinbox_max)
+            self.roiLowerSpinBox.setValue(self.spinbox_min)
+
+    def receive_spinbox_value_from_figure(self, value, tag='max'):
+        if tag == 'max':
+            self.spinbox_max = value
+        elif tag == 'min':
+            self.spinbox_min = value
+        else:
+            print("input: tag must be 'max' or 'min'.")
 
 
 if __name__ == '__main__':
