@@ -56,7 +56,7 @@ class HistogramWidget(QWidget):
             self.dragging_xmax = False
             self.dragging_xmid = False
             self.start_xmid_pos = None
-            self.show_flag = 'image'
+            self.figure_show_flag = 'image'
 
             layout = QVBoxLayout()
             layout.addWidget(self.canvas)
@@ -146,7 +146,7 @@ class HistogramWidget(QWidget):
 
     def on_press(self, event):
         try:
-            if event.inaxes != self.ax or self.show_flag == 'graph':
+            if event.inaxes != self.ax or self.figure_show_flag == 'graph':
                 return
 
             # 计算矩形的边缘区域
@@ -178,7 +178,7 @@ class HistogramWidget(QWidget):
 
     def on_move(self, event):
         try:
-            if event.inaxes != self.ax or self.show_flag == 'graph':
+            if event.inaxes != self.ax or self.figure_show_flag == 'graph':
                 return
 
             if not self.dragging_xmin and not self.dragging_xmax and not self.dragging_xmid:
@@ -204,7 +204,7 @@ class HistogramWidget(QWidget):
                 else:
                     print("Error dragging.")
 
-                if self.show_flag != 'graph':
+                if self.figure_show_flag != 'graph':
                     self.update_figure()
                     self.fig.canvas.draw()
         except Exception as e:
@@ -239,7 +239,8 @@ class HistogramWidget(QWidget):
             set_figure.set_text(self.figure_ax, title=self.figure_title)
             set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
 
-            self.figure_ax.add_patch(self.figure_rect)
+            # if self.figure_show_flag == 'Image&Graph':
+            #     self.figure_ax.add_patch(self.figure_rect)
 
             self.figure_canvas.draw()
         except Exception as e:

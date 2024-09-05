@@ -36,6 +36,7 @@ class FigureWidget(QWidget):
             # canvas range
             self.canvas_xylim = None
             self.canvas_origin_xylim = None
+            self.canvas_origin_xylim2 = None
 
             # mouse event
             self.press = False
@@ -165,6 +166,8 @@ class FigureWidget(QWidget):
                 set_figure.set_tick(self.ax, xbins=6, ybins=10)
             if self.show_flag != 'Image&Graph':
                 self.canvas_origin_xylim = [x.min(), x.max(), y.min(), y.max()]
+            else:
+                self.canvas_origin_xylim2 = [x.min(), x.max(), y.min(), y.max()]
             self.pass_parameters_to_hist(self.data, self.ax, self.canvas, self.canvas_xylim, self.canvas_origin_xylim,
                                          self.show_flag, self.rect)
 
@@ -182,11 +185,18 @@ class FigureWidget(QWidget):
                     self.last_click_y = event.ydata  # get Y coordinate of mouse
 
                     if current_time - self.last_click_time < 0.3:
-                        self.canvas_xylim = self.canvas_origin_xylim
-                        self.pass_parameters_to_hist(self.data, self.ax, self.canvas, self.canvas_xylim,
-                                                     self.canvas_origin_xylim, self.show_flag, self.rect)
-                        event.inaxes.set_xlim(self.canvas_xylim[0], self.canvas_xylim[1])
-                        event.inaxes.set_ylim(self.canvas_xylim[2], self.canvas_xylim[3])
+                        if event.inaxes == self.ax:
+                            self.canvas_xylim = self.canvas_origin_xylim
+                            self.pass_parameters_to_hist(self.data, self.ax, self.canvas, self.canvas_xylim,
+                                                         self.canvas_origin_xylim, self.show_flag, self.rect)
+                            event.inaxes.set_xlim(self.canvas_xylim[0], self.canvas_xylim[1])
+                            event.inaxes.set_ylim(self.canvas_xylim[2], self.canvas_xylim[3])
+                        elif event.inaxes == self.ax2:
+                            self.canvas_xylim = self.canvas_origin_xylim2
+                            event.inaxes.set_xlim(self.canvas_xylim[0], self.canvas_xylim[1])
+                            event.inaxes.set_ylim(self.canvas_xylim[2], self.canvas_xylim[3])
+                        else:
+                            print("move on wrong ax.")
                         self.fig.canvas.draw_idle()
                     self.last_click_time = current_time
         except Exception as e:
@@ -285,8 +295,8 @@ class FigureWidget(QWidget):
 
                 else:
                     print("Error combox input.")
-                self.pass_parameters_to_hist(self.data, self.ax, self.canvas,
-                                             self.canvas_xylim, self.canvas_origin_xylim, self.show_flag, self.rect)
+                # self.pass_parameters_to_hist(self.data, self.ax, self.canvas,
+                #                              self.canvas_xylim, self.canvas_origin_xylim, self.show_flag, self.rect)
             else:
                 print("Error toggle_image_and_graph.")
             # self.pass_roi_flag()
