@@ -19,7 +19,7 @@ setup(
     ],  # 这里可以添加依赖包
     author='Junjie Xie',
     author_email='a1033899938@gmail.com',
-    description='A package for processing spectra data from our labs',
+    description='A program for processing spectra data',
     long_description=open('tests/README.md').read(),
     long_description_content_type='text/markdown',
     url="Haven't personal pages now",  # 项目主页
