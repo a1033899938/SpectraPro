@@ -29,6 +29,7 @@ class HistogramWidget(QWidget):
             self.figure_canvas_origin_xylim = None
             self.figure_show_flag = None
             self.figure_title = None
+            self.figure_rect = None
 
             # hist range
             self.hist_x_min = None
@@ -83,7 +84,7 @@ class HistogramWidget(QWidget):
         except Exception as e:
             print(f"Error HistogramWidget.initHist:\n  |--> {e}")
 
-    def receive_parameters_from_figure(self, data, ax, canvas, canvas_xylim, canvas_origin_xylim, show_flag):
+    def receive_parameters_from_figure(self, data, ax, canvas, canvas_xylim, canvas_origin_xylim, show_flag, rect):
         try:
             self.data = data
             self.figure_ax = ax
@@ -91,6 +92,7 @@ class HistogramWidget(QWidget):
             self.figure_canvas_xylim = canvas_xylim
             self.figure_canvas_origin_xylim = canvas_origin_xylim
             self.figure_show_flag = show_flag
+            self.figure_rect = rect
         except Exception as e:
             print(f"Error HistogramWidget.receive_parameters_from_figure:\n  |--> {e}")
 
@@ -202,8 +204,9 @@ class HistogramWidget(QWidget):
                 else:
                     print("Error dragging.")
 
-                self.update_figure()
-                self.fig.canvas.draw()
+                if self.show_flag != 'graph':
+                    self.update_figure()
+                    self.fig.canvas.draw()
         except Exception as e:
             print(f"Error HistogramWidget.on_move:\n  |--> {e}")
 
@@ -235,6 +238,9 @@ class HistogramWidget(QWidget):
 
             set_figure.set_text(self.figure_ax, title=self.figure_title)
             set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
+
+            self.figure_ax.add_patch(self.figure_rect)
+
             self.figure_canvas.draw()
         except Exception as e:
             print(f"Error HistogramWidget.update_figure:\n  |--> {e}")

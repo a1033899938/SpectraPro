@@ -141,6 +141,7 @@ class MyMainWindow(QMainWindow):
             self.layoutComboBox = QComboBox(self)
             self.layoutComboBox.addItem("Image")
             self.layoutComboBox.addItem("Graph")
+            self.layoutComboBox.addItem("Image&Graph")
             self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
             self.layoutComboBox.setFixedHeight(50)
             self.layoutComboBox.setFixedWidth(150)
