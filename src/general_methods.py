@@ -1,3 +1,5 @@
+import time
+from datetime import datetime
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QLineEdit
 from PyQt5.QtGui import QTransform
 """General methods
@@ -60,3 +62,13 @@ class GeneralMethods:
             graphicsView.setTransform(transform)
         except Exception as e:
             print(f"Error GeneralMethods.rotate_view:\n  |--> {e}")
+
+    @staticmethod
+    def get_formatted_time():
+        timestamp = time.time()
+
+        dt = datetime.fromtimestamp(timestamp)
+
+        formatted_time = dt.strftime('%Y-%m-%d %H:%M:%S')
+
+        return formatted_time

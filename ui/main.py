@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (QLabel, QTextEdit, QPushButton, QComboBox, QSpinBox
                              QMainWindow, QApplication, QWidget,
                              QHBoxLayout, QVBoxLayout, QGridLayout, QDesktopWidget)
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont, QFontDatabase
 # math
 import matplotlib
 # my modules
@@ -85,11 +86,16 @@ class MyMainWindow(QMainWindow):
         self.screen_height = self.screen.height()
         self.window_width = int(self.screen_width*0.7)
         self.window_height = int(self.screen_height*0.7 - 50)
+
         self.base_figure_height = int(self.window_height/16)*16
+        self.base_button_height = int(self.window_height/24)
+        self.base_text_height = int(self.base_button_height / 5 * 3)
+        self.base_tree_width = int(self.screen_width/2.5)
         """Initialize ui"""
         self.initUI()
 
     def initUI(self):
+        self.setGlobalFont()
         self.createUiObjects()
         self.setLayout()
 
@@ -120,17 +126,17 @@ class MyMainWindow(QMainWindow):
             self.spectrumFileLabel = QLabel('File path')
             self.spectrumFileTextEdit = QTextEdit()
             self.spectrumFileTextEdit.setReadOnly(True)  # Set to read-only for file path display
-            self.spectrumFileTextEdit.setFixedHeight(30)  # Set height for QTextEdit
+            self.spectrumFileTextEdit.setFixedHeight(self.base_text_height)  # Set height for QTextEdit
 
             # left_hbox2
             self.spectraFolderLabel = QLabel('File folder')
             self.spectraFolderTextEdit = QTextEdit()
             self.spectraFolderTextEdit.setReadOnly(True)  # Set to read-only for file path display
-            self.spectraFolderTextEdit.setFixedHeight(30)  # Set height for QTextEdit
+            self.spectraFolderTextEdit.setFixedHeight(self.base_text_height)  # Set height for QTextEdit
 
             # tree
             self.treeView = TreeManager.CustomTreeView()
-            self.treeView.setMinimumWidth(1000)
+            self.treeView.setMinimumWidth(self.base_tree_width)
             self.treeManager = TreeManager(self, self.treeView)  # Manage the tree actions and slots by self.treeManager
 
             """Add custom actions to menu and connect to slots."""
@@ -161,38 +167,38 @@ class MyMainWindow(QMainWindow):
             self.layoutComboBox.addItem("Graph")
             self.layoutComboBox.addItem("Image&Graph")
             self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
-            self.layoutComboBox.setFixedHeight(50)
-            self.layoutComboBox.setFixedWidth(150)
+            self.layoutComboBox.setFixedHeight(self.base_button_height)
+            self.layoutComboBox.setFixedWidth(self.base_button_height*3)
 
             self.showRoiButton = QPushButton("Show ROI")
             self.showRoiButton.clicked.connect(self.figureWidget.toggle_show_rect)
-            self.showRoiButton.setFixedHeight(50)
-            self.showRoiButton.setFixedWidth(150)
+            self.showRoiButton.setFixedHeight(self.base_button_height)
+            self.showRoiButton.setFixedWidth(self.base_button_height*3)
 
             self.roiUpperSpinBox = QSpinBox()
             # self.roiUpperSpinBox.setEnabled(False)
-            self.roiUpperSpinBox.setFixedHeight(50)
-            self.roiUpperSpinBox.setFixedWidth(70)
+            self.roiUpperSpinBox.setFixedHeight(self.base_button_height)
+            self.roiUpperSpinBox.setFixedWidth(self.base_text_height*2)
             self.roiUpperSpinBox.valueChanged.connect(self.figureWidget.change_rect_maxlim)
             self.roiLowerSpinBox = QSpinBox()
             # self.roiLowerSpinBox.setEnabled(False)
-            self.roiLowerSpinBox.setFixedHeight(50)
-            self.roiLowerSpinBox.setFixedWidth(70)
+            self.roiLowerSpinBox.setFixedHeight(self.base_button_height)
+            self.roiLowerSpinBox.setFixedWidth(self.base_text_height*2)
             self.roiLowerSpinBox.valueChanged.connect(self.figureWidget.change_rect_minlim)
 
             self.showOutputButton = QPushButton("Show Layout")
             self.showOutputButton.clicked.connect(self.toggle_show_layout)
-            self.showOutputButton.setFixedHeight(50)
-            self.showOutputButton.setFixedWidth(150)
+            self.showOutputButton.setFixedHeight(self.base_button_height)
+            self.showOutputButton.setFixedWidth(self.base_button_height*3)
 
             self.saveFigureButton = QPushButton("Save Figure")
             self.saveFigureButton.clicked.connect(self.figureWidget.save_current_figure)
-            self.saveFigureButton.setFixedHeight(50)
-            self.saveFigureButton.setFixedWidth(150)
+            self.saveFigureButton.setFixedHeight(self.base_button_height)
+            self.saveFigureButton.setFixedWidth(self.base_button_height*3)
 
             # list
             self.listWidget = ListManager.CustomListWidget(self.figureWidget)
-            self.listWidget.setMinimumWidth(1000)
+            self.listWidget.setMinimumWidth(self.base_tree_width)
             self.listManager = ListManager(self, self.listWidget, self.treeManager, self.figureWidget)
 
             # left_hbox3
@@ -330,6 +336,22 @@ class MyMainWindow(QMainWindow):
             self.spinbox_min = value
         else:
             print("input: tag must be 'max' or 'min'.")
+
+    def setGlobalFont(self):
+        """
+        Set the font size based on the screen resolution.
+        """
+        screen = QApplication.primaryScreen()
+        dpi = screen.logicalDotsPerInchX()  # Get the DPI of the screen
+
+        # Calculate font size based on DPI
+        base_font_size = 12  # Base font size for 96 DPI
+        scale_factor = dpi / 255.0
+        font_size = base_font_size * scale_factor
+
+        # Set the global font
+        font = QFont('SimSun', round(font_size))
+        QApplication.setFont(font)
 
 
 if __name__ == '__main__':

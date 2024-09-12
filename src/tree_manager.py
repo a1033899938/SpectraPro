@@ -46,11 +46,13 @@ class TreeManager:
             # set header of the tree view
             header = self.parent.treeView.header()  # Set the first column to be resizable but with a default width
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # Set the first column to be resizable
-            header.resizeSection(0, 700)  # Set width of the second column to 700 pixels
-            header.setSectionResizeMode(1, QHeaderView.Interactive)  # Set the second column to be resizable
-            header.resizeSection(1, 10)  # Set width of the first column to 700 pixels
-            header.setSectionResizeMode(2, QHeaderView.Interactive)  # Set the third column to be resizable
-            header.resizeSection(2, 80)  # Set width of the third column to 700 pixels
+            header.resizeSection(0, int(self.parent.base_tree_width)*0.7)  # Set width of the first column to 700 pixels
+            header.setSectionResizeMode(1, QHeaderView.Interactive)
+            header.resizeSection(1, int(self.parent.base_tree_width)*0.01)
+            header.setSectionResizeMode(2, QHeaderView.Interactive)
+            header.resizeSection(2, int(self.parent.base_tree_width)*0.08)
+            header.setSectionResizeMode(3, QHeaderView.Interactive)
+            header.resizeSection(3, int(self.parent.base_tree_width) * 0.5)
 
             # add items to model
             self.addFolderItems(self.spectra_file_folder_path, self.model.invisibleRootItem())
