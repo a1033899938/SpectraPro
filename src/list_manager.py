@@ -1,3 +1,4 @@
+import time
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem
 from PyQt5.QtCore import Qt
 
@@ -82,5 +83,6 @@ class ListManager:
                 list_item = self.itemAt(event.pos())
                 if list_item:
                     self.figureWidget.deal_with_this_file(list_item)
+                    print(f"\n\ntime now: {time.time()}\n\n")
             except Exception as e:
                 print(f"Error ListManager.CustomListWidget.mousePressEvent:\n  |--> {e}")

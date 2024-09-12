@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.patches import Rectangle
 from src import read_file, set_figure, numerical_transform
+from src.general_methods import GeneralMethods
 
 
 class FigureWidget(QWidget):
@@ -32,6 +33,7 @@ class FigureWidget(QWidget):
             self.list_item_path = None
             self.data = None
             self.fig_title = None
+            self.filetype = None
 
             # canvas range
             self.canvas_xylim = None
@@ -68,6 +70,8 @@ class FigureWidget(QWidget):
             self.fig.canvas.mpl_connect("button_press_event", self.on_press)
             self.fig.canvas.mpl_connect("button_release_event", self.on_release)
             self.fig.canvas.mpl_connect("motion_notify_event", self.on_move)
+
+            self.fig.canvas.mpl_connect('pick_event', self.on_pick)
         except Exception as e:
             print(f"Error FigureWidget.initFig:\n  |--> {e}")
 
@@ -88,29 +92,40 @@ class FigureWidget(QWidget):
     def read_data(self):
         try:
             if self.spin_box_min is None and self.spin_box_max is None:
-                self.data = read_file.read_spe(self.list_item_path, strip='all')
+                strip = 'all'
                 print("full strip.")
             elif self.spin_box_min and self.spin_box_max:
-                self.data = read_file.read_spe(self.list_item_path, strip=[self.spin_box_min, self.spin_box_max])
+                strip = [self.spin_box_min, self.spin_box_max]
                 print(f"strip range is: {self.spin_box_min, self.spin_box_max}")
             else:
                 print("Please input minimum and maximum of strip range.")
+            readFile = read_file.read_file(self.list_item_path, strip=strip)
+            self.data = readFile.data
+            self.filetype = readFile.filetype
         except Exception as e:
             print(f"Error FigureWidget.read_data:\n  |--> {e}")
 
     def show_figue(self):
         try:
-            if self.show_flag == 'image':
-                self.show_image(self.data, fig_title=self.fig_title)
-                self.histogramWidget.show_hist()
-            elif self.show_flag == 'graph':
-                self.show_graph(self.data, fig_title=self.fig_title)
-            elif self.show_flag == 'Image&Graph':
-                self.show_image(self.data, fig_title=self.fig_title)
-                self.histogramWidget.show_hist()
-                self.show_graph(self.data, fig_title=self.fig_title)
+            if self.filetype == '.spe':
+                if self.show_flag == 'image':
+                    self.show_image(self.data, fig_title=self.fig_title)
+                    self.histogramWidget.show_hist()
+                elif self.show_flag == 'graph':
+                    self.show_graph(self.data, fig_title=self.fig_title)
+                elif self.show_flag == 'Image&Graph':
+                    self.show_image(self.data, fig_title=self.fig_title)
+                    self.histogramWidget.show_hist()
+                    self.show_graph(self.data, fig_title=self.fig_title)
+                else:
+                    print("Error show_flag.")
+            elif self.filetype == '.txt':
+                if self.show_flag == 'graph':
+                    self.show_graph(self.data, fig_title=self.fig_title)
+                else:
+                    print("File type now: .txt.")
             else:
-                print("Error show_flag.")
+                raise ValueError("Unsupported file type")
         except Exception as e:
             print(f"Error FigureWidget.show_figue:\n  |--> {e}")
 
@@ -370,12 +385,6 @@ class FigureWidget(QWidget):
         except Exception as e:
             print(f"Error FigureWidget.change_rect_minlim:\n  |--> {e}")
 
-    # def pass_roi_flag(self):
-    #     try:
-    #         self.parent.toggle_show_roi(self.draw_rect_flag, self.show_flag)
-    #     except Exception as e:
-    #         print(f"Error FigureWidget.pass_roi_flag:\n  |--> {e}")
-
     def save_current_figure(self):
         try:
             if self.fig_title is None:
@@ -404,3 +413,15 @@ class FigureWidget(QWidget):
                                                                 show_flag, rect)
         except Exception as e:
             print(f"Error FigureWidget.pass_parameters_to_hist:\n  |--> {e}")
+
+    def on_pick(self, event):
+        artist = event.artist
+        if isinstance(artist, plt.Text):
+            self.show_edit_dialog(artist)
+
+    def show_edit_dialog(self, text_artist):
+        new_text, ok = GeneralMethods.input_dialog(self.parent, title='Input text',
+                                                   property_name='Text')
+        if ok:
+            text_artist.set_text(new_text)
+            self.canvas.draw()

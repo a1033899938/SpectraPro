@@ -5,9 +5,9 @@ from matplotlib.ticker import MaxNLocator  # set max number of ticks
 def set_text(ax, xlabel='Wavelength(nm)', ylabel='Intensity(counts)', title='default title',
              xlabel_size=12, ylabel_size=12, title_size=15):
     try:
-        ax.set_xlabel(xlabel, fontsize=xlabel_size)
-        ax.set_ylabel(ylabel, fontsize=ylabel_size)
-        ax.set_title(title, fontsize=title_size)
+        ax.set_xlabel(xlabel, fontsize=xlabel_size, picker=True)
+        ax.set_ylabel(ylabel, fontsize=ylabel_size, picker=True)
+        ax.set_title(title, fontsize=title_size, picker=True)
     except Exception as e:
         print(f"Error save_figure.set_text:\n  |--> {e}")
 

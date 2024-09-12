@@ -60,7 +60,7 @@ class TreeManager:
     def addFolderItems(self, spectra_file_folder_path, parent_item):
         try:
             self.folder_dir.setPath(spectra_file_folder_path)
-            self.fileFilters = ['*.txt', '*.spe', '*.h5', '*.wxd']  # Select the file types to show
+            self.fileFilters = ['*.txt', '*.spe', '*.h5']  # Select the file types to show
             self.folder_dir.setNameFilters(self.fileFilters)
 
             # Add files with filters
