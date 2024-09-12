@@ -2,7 +2,7 @@ import sys
 # main window objects
 from PyQt5.QtWidgets import (QLabel, QTextEdit, QPushButton, QComboBox, QSpinBox,
                              QMainWindow, QApplication, QWidget,
-                             QHBoxLayout, QVBoxLayout, QGridLayout)
+                             QHBoxLayout, QVBoxLayout, QGridLayout, QDesktopWidget)
 from PyQt5.QtCore import Qt
 # math
 import matplotlib
@@ -78,6 +78,14 @@ class MyMainWindow(QMainWindow):
         self.spinbox_lim = None
         self.spinbox_max = None
         self.spinbox_min = None
+
+        """"""
+        self.screen = QDesktopWidget().screenGeometry()  # 自动适应屏幕宽高
+        self.screen_width = self.screen.width()
+        self.screen_height = self.screen.height()
+        self.window_width = int(self.screen_width*0.7)
+        self.window_height = int(self.screen_height*0.7 - 50)
+        self.base_figure_height = int(self.window_height/16)*16
         """Initialize ui"""
         self.initUI()
 
@@ -90,7 +98,8 @@ class MyMainWindow(QMainWindow):
         print("Initializing UI")
         try:
             # set window position, title and so on...
-            self.setGeometry(200, 200, 2400, 1200)
+            self.setGeometry(int(self.window_width*0.1), int(self.window_height*0.1),
+                             self.window_width, self.window_height)
             self.setWindowTitle('SpectraPro')
             self.statusBar().showMessage('Ready')
 
@@ -132,10 +141,19 @@ class MyMainWindow(QMainWindow):
             self.cacheMenu.addAction(self.menuActions.load_cache_action())
 
             # right_hbox1
-            self.histogramWidget = HistogramWidget(width=8, height=2, dpi=100)
-            self.roiManager = RoiManager(self.histogramWidget, width=250, height=850)
-            self.figureWidget = FigureWidget(self, self.histogramWidget, width=12, height=8, dpi=100)
-            self.figureManager = FigureManager(self.figureWidget, width=1250, height=850)
+            width_fW = self.base_figure_height
+            height_fW = width_fW/4*3
+            width_hW = height_fW
+            height_hW = width_hW/4
+            self.histogramWidget = HistogramWidget(width=width_hW/100,
+                                                   height=height_hW/100,
+                                                   dpi=100)
+            self.roiManager = RoiManager(self.histogramWidget)
+            self.figureWidget = FigureWidget(self, self.histogramWidget,
+                                             width=width_fW/100,
+                                             height=height_fW/100,
+                                             dpi=100)
+            self.figureManager = FigureManager(self.figureWidget)
 
             # right_hbox2
             self.layoutComboBox = QComboBox(self)
