@@ -1,4 +1,5 @@
 import time
+import os
 from datetime import datetime
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QLineEdit
 from PyQt5.QtGui import QTransform
@@ -72,3 +73,21 @@ class GeneralMethods:
         formatted_time = dt.strftime('%Y-%m-%d %H:%M:%S')
 
         return formatted_time
+
+    @staticmethod
+    def list_files_in_directory(directory, extensions=None):
+        file_paths = []
+        file_names = []
+        extensions = [ext.lower() for ext in extensions]
+
+        if extensions is None:
+            extensions = []
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                file_name, file_ext = os.path.splitext(file)
+                file_ext = file_ext.lower()
+                if not extensions or file_ext in extensions:
+                    file_path = os.path.join(root, file)
+                    file_paths.append(file_path)
+                    file_names.append(file_name)
+        return file_paths, files, file_names

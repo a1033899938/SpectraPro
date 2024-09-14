@@ -236,7 +236,7 @@ class HistogramWidget(QWidget):
             self.figure_ax.set_xlim(self.figure_canvas_xylim[0], self.figure_canvas_xylim[1])
             self.figure_ax.set_ylim(self.figure_canvas_xylim[2], self.figure_canvas_xylim[3])
 
-            set_figure.set_text(self.figure_ax, title=self.figure_title)
+            set_figure.set_label_and_title(self.figure_ax, title=self.figure_title)
             set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
 
             # if self.figure_show_flag == 'Image&Graph':

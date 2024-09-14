@@ -142,7 +142,7 @@ class FigureWidget(QWidget):
 
             self.ax.clear()
             self.ax.imshow(z, aspect='auto', extent=[x.min(), x.max(), y.min(), y.max()], origin='lower')
-            set_figure.set_text(self.ax, title=fig_title)
+            set_figure.set_label_and_title(self.ax, title=fig_title)
             set_figure.set_tick(self.ax, xbins=6, ybins=10)
 
             self.canvas_xylim = [x.min(), x.max(), y.min(), y.max()]
@@ -170,14 +170,14 @@ class FigureWidget(QWidget):
                 self.ax2.plot(x, y)
                 self.ax2.set_xlim([x.min(), x.max()])
                 self.ax2.set_ylim([y.min(), y.max()])
-                set_figure.set_text(self.ax2, title=fig_title)
+                set_figure.set_label_and_title(self.ax2, title=fig_title)
                 set_figure.set_tick(self.ax2, xbins=6, ybins=10)
             else:
                 self.ax.clear()
                 self.ax.plot(x, y)
                 self.ax.set_xlim([x.min(), x.max()])
                 self.ax.set_ylim([y.min(), y.max()])
-                set_figure.set_text(self.ax, title=fig_title)
+                set_figure.set_label_and_title(self.ax, title=fig_title)
                 set_figure.set_tick(self.ax, xbins=6, ybins=10)
             if self.show_flag != 'Image&Graph':
                 self.canvas_origin_xylim = [x.min(), x.max(), y.min(), y.max()]
@@ -423,5 +423,7 @@ class FigureWidget(QWidget):
         new_text, ok = GeneralMethods.input_dialog(self.parent, title='Input text',
                                                    property_name='Text')
         if ok:
-            text_artist.set_text(new_text)
+            text_artist.set_label_and_title(new_text)
             self.canvas.draw()
+        else:
+            print(f"You cancel inputting text in: {text_artist}.")
