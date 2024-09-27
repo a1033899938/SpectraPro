@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name='SpectraPro',
     version='0.1',
-    packages=find_packages(where='src'),  # source directory
-    package_dir={'': 'src'},  # source directory
+    packages=find_packages(where='origin'),  # source directory
+    package_dir={'': 'origin'},  # source directory
     install_requires=[
         'spe2py',
         'spe_loader',
@@ -20,7 +20,7 @@ setup(
     author='Junjie Xie',
     author_email='a1033899938@gmail.com',
     description='A program for processing spectra data',
-    long_description=open('tests/README.md').read(),
+    long_description=open('tests/origin/README.md').read(),
     long_description_content_type='text/markdown',
     url="Haven't personal pages now",  # 项目主页
     classifiers=[

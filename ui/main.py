@@ -4,18 +4,18 @@ from PyQt5.QtWidgets import (QLabel, QTextEdit, QPushButton, QComboBox, QSpinBox
                              QMainWindow, QApplication, QWidget,
                              QHBoxLayout, QVBoxLayout, QGridLayout, QDesktopWidget)
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtGui import QFont
 # math
 import matplotlib
 # my modules
-from src.menu_actions import MenuActions
-from src.tree_manager import TreeManager
-from src.list_manager import ListManager
-from src.figure_manager import FigureManager
-from src.roi_manager import RoiManager
-from src.figure_widget import FigureWidget
-from src.histogram_widget import HistogramWidget
-from src.output_redirector import OutputRedirector
+from src.ui.menu_actions import MenuActions
+from src.ui.tree_manager import TreeManager
+from src.ui.list_manager import ListManager
+from src.ui.figure_manager import FigureManager
+from src.ui.roi_manager import RoiManager
+from src.ui.figure_widget import FigureWidget
+from src.ui.histogram_widget import HistogramWidget
+from src.ui.output_redirector import OutputRedirector
 matplotlib.use("Qt5Agg")
 
 

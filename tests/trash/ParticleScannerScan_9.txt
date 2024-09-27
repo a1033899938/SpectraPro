@@ -1,0 +1,4 @@
+|| ParticleScannerScan_9
+|--| Tiles
+|----| tile_0          <path>/ParticleScannerScan_9/Tiles/tile_0
+|----| tile_with_centers_0          <path>/ParticleScannerScan_9/Tiles/tile_with_centers_0

@@ -1,0 +1,7 @@
+|| ParticleScannerScan_2
+|--| Particle_0
+|----| CWL.thumb_image_0          <path>/ParticleScannerScan_2/Particle_0/CWL.thumb_image_0
+|----| DF_zscan_0          <path>/ParticleScannerScan_2/Particle_0/DF_zscan_0
+|--| Tiles
+|----| tile_0          <path>/ParticleScannerScan_2/Tiles/tile_0
+|----| tile_with_centers_0          <path>/ParticleScannerScan_2/Tiles/tile_with_centers_0
