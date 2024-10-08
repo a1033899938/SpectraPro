@@ -1,2 +1,0 @@
-|| LumeneraCamera
-|--| snapshot_0

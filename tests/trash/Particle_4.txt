@@ -1,3 +1,0 @@
-|| Particle_4
-|--| DF_scan
-|--| NP_image_0
