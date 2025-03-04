@@ -7,11 +7,11 @@ from matplotlib import ticker
 
 
 def set_label_and_title(ax, 
-                        xlabel='Wavelength(nm)', ylabel='Intensity(counts)', title='default title',
+                        xlabel='Wavelength(nm)', ylabel='Intensity(counts)', title='default title', zlabel='Intensity(counts)',
                         label_fontsize=12, title_fontsize=15,
                         label_font_family='Arial', title_font_family='Arial',
                         label_fontweight='bold', title_fontweight='bold',
-                        label_pad=20, title_pad=20):
+                        label_pad=20, title_pad=20, mode='2d'):
     try:
         label_font_dict = dict(fontsize=label_fontsize,
                                color='k',
@@ -26,27 +26,37 @@ def set_label_and_title(ax,
                                )
         ax.set_xlabel(xlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
         ax.set_ylabel(ylabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
+        if mode == '3d':
+            ax.set_zlabel(zlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
         ax.set_title(title, fontdict=title_font_dict, weight=title_fontweight, pad=title_pad, picker=True)
     except Exception as e:
         print(f"Error save_figure.set_label_and_title:\n  |--> {e}")
 
 
 def set_tick(ax,
-             xbins=6, ybins=6, fontsize=15, fontweight='bold',
+             xbins=6, ybins=6, zbins = 6, fontsize=15, fontweight='bold',
              linewidth=2, direction='in', tick_pad=2,
-             ticks_xlabel=None, ticks_ylabel=None):
+             ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None, mode='2d'):
     try:
         ax.xaxis.set_major_locator(MaxNLocator(nbins=xbins))
         ax.yaxis.set_major_locator(MaxNLocator(nbins=ybins))
         ax.tick_params(axis='both', labelsize=fontsize, width=linewidth, direction=direction)
         ax.xaxis.set_tick_params(pad=tick_pad)
         ax.yaxis.set_tick_params(pad=tick_pad)
+
         for label in ax.get_xticklabels() + ax.get_yticklabels():
             label.set_fontweight(fontweight)
         if ticks_xlabel is not None:
             ax.xaxis.set_ticks(ticks_xlabel)
         if ticks_ylabel is not None:
             ax.yaxis.set_ticks(ticks_ylabel)
+        if mode == '3d':
+            ax.zaxis.set_major_locator(MaxNLocator(nbins=zbins))
+            ax.zaxis.set_tick_params(pad=tick_pad)
+            for label in ax.get_zticklabels():
+                label.set_fontweight(fontweight)
+            if ticks_zlabel is not None:
+                ax.zaxis.set_ticks(ticks_zlabel)
     except Exception as e:
         print(f"Error save_figure.set_tick:\n  |--> {e}")
 

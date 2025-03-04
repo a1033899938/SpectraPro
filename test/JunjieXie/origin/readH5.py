@@ -8,8 +8,8 @@ from scipy.optimize import curve_fit  # 用于拟合
 import pprint # 用于分行打印
 import os # 用于判断文件是否存在
 """PPT"""
-from pptx import Presentation
-from pptx.util import Inches, Cm, Pt
+# from pptx import Presentation
+# from pptx.util import Inches, Cm, Pt
 
 # 5
 nums = [5]

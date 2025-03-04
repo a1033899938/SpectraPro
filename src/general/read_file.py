@@ -146,37 +146,141 @@ def matstruct_to_dict(matstruct):
 
 
 if __name__ == '__main__':
-    print("Run test")
+    import h5py
+    from shutil import copyfile
+    import pySPM
     import matplotlib.pyplot as plt
+    import pprint
+    from src.general import set_figure
+    from src.general.save_figure import save_subfig
+    datapath1 = r'D:\WechatFile\WeChat Files\wxid_4ugho6kb3jdv12\FileStorage\File\2025-01\20250115_OceanVsMorpho\2025-01-15.h5'
+    datapath2 = r'D:\WechatFile\WeChat Files\wxid_4ugho6kb3jdv12\FileStorage\File\2025-01\20250115_OceanVsMorpho\AuNP.csv'
+    figsavepath = r'D:\WechatFile\WeChat Files\wxid_4ugho6kb3jdv12\FileStorage\File\2025-01\20250115_OceanVsMorpho'
 
-    folder_path = r'C:\Users\a1033\Desktop\Contemporary\20241208_SHG\20241208_SHG\800nm-2mw-step2-20s'
-    # folder_path = r'C:\Users\a1033\Desktop\Contemporary\motor2'
-    # folder_path = r'C:\Users\a1033\Nutstore\1\厦门大学光物质相互作用研究组\Users\Zhang lixin\20241208_SHG\20241208_SHG\800nm-2mw-step2-20s'
+    with h5py.File(datapath1, "r") as f:
+        # for key in f.keys():
+        #     # print(f[key], key, f[key].name, f[key].value) # 因为这里有group对象它是没有value属性的,故会异常。另外字符串读出来是字节流，需要解码成字符串。
+        data = f['OceanOpticsSpectrometer']
+        for key in data.keys():
+            if key == '80nmAuNP_this_0':
+                sp = data[key]
+                ref = np.array(sp.attrs['reference'])
+                ref = ref*10
+                bgd = np.array(sp.attrs['background'])
+                bgd = bgd
+                wav = np.array(sp.attrs['wavelengths'])
+                # print(np.shape(ref), np.shape(bgd))
 
-    file_paths = [f for f in os.listdir(folder_path) if f.endswith('.mat')]
+                dfs = (np.array(sp) - bgd) / (ref - bgd)
 
-    sps = []
-    for file in file_paths:
-        sps.append(file)
+                fig = plt.figure(figsize=(8, 6))
+                ax = fig.add_subplot(111)
+                ax.plot(wav, bgd)
+                title = 'Dark Field Scattering-background_Ocean'
+                set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                               label_fontsize=25, title_fontsize=25,
+                                               label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                               label_fontweight='bold', title_fontweight='bold',
+                                               label_pad=8, title_pad=15)
+                set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+                set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                                    linewidth=3, tick_pad=5, direction='in',
+                                    ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+                fig.tight_layout()
+                plt.savefig(os.path.join(figsavepath, 'background_Ocean.png'))
 
-    si = []
-    for file in sps:
-        RF = read_file(os.path.join(folder_path, file), show_data_flag=False)
-        si.append(RF.data['intensity'])
-        wav = RF.data['wavelength']
-        print(wav)
+                fig = plt.figure(figsize=(8, 6))
+                ax = fig.add_subplot(111)
+                ax.plot(wav, ref)
+                title = 'Dark Field Scattering-reference_Ocean'
+                set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                               label_fontsize=25, title_fontsize=25,
+                                               label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                               label_fontweight='bold', title_fontweight='bold',
+                                               label_pad=8, title_pad=15)
+                set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+                set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                                    linewidth=3, tick_pad=5, direction='in',
+                                    ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+                fig.tight_layout()
+                plt.savefig(os.path.join(figsavepath, 'reference_Ocean.png'))
 
-    # RF = read_file(os.path.join(folder_path, hBN_file), show_data_flag=False)
-    # hBN = RF.data['intensity']
-    #
-    # RF = read_file(os.path.join(folder_path, hBN_NP_file), show_data_flag=False)
-    # hBN_NP = RF.data['intensity']
-    #
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111)
+                fig = plt.figure(figsize=(8, 6))
+                ax = fig.add_subplot(111)
+                ax.plot(wav, np.array(sp), label='origin_Ocean')
+                title = 'Dark Field Scattering-origin_Ocean'
+                set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                               label_fontsize=25, title_fontsize=25,
+                                               label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                               label_fontweight='bold', title_fontweight='bold',
+                                               label_pad=8, title_pad=15)
+                set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+                set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                                    linewidth=3, tick_pad=5, direction='in',
+                                    ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+                fig.tight_layout()
+                plt.savefig(os.path.join(figsavepath, 'origin_Ocean.png'))
 
-    # for sp in si:
-    #     ax.plot(wav, sp)
-    # ax.plot(wav, hBN - si[0])
-    # ax.plot(wav, hBN_NP - si)
+    import pandas as pd
+    df = pd.read_csv(datapath2, encoding="utf-8")
+    wav = np.array(df.iloc[11:-1, 0])
+    bgd = np.array(df.iloc[11:-1, 1])
+    ref = np.array(df.iloc[11:-1, 2])
+    spe = np.array(df.iloc[11:-1, 3])
+
+    wav = wav.astype(float)
+    bgd = bgd.astype(float)
+    ref = ref.astype(float)
+    spe = spe.astype(float)
+
+    print(len(wav), len(bgd), len(ref), len(spe))
+
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111)
+    ax.plot(wav, bgd)
+    title = 'Dark Field Scattering-background_Morpho'
+    set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                   label_fontsize=25, title_fontsize=25,
+                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                   label_fontweight='bold', title_fontweight='bold',
+                                   label_pad=8, title_pad=15)
+    set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+    set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                        linewidth=3, tick_pad=5, direction='in',
+                        ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+    fig.tight_layout()
+    plt.savefig(os.path.join(figsavepath, 'background_Morpho.png'))
+
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111)
+    ax.plot(wav, ref)
+    title = 'Dark Field Scattering-reference_Morpho'
+    set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                   label_fontsize=25, title_fontsize=25,
+                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                   label_fontweight='bold', title_fontweight='bold',
+                                   label_pad=8, title_pad=15)
+    set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+    set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                        linewidth=3, tick_pad=5, direction='in',
+                        ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+    fig.tight_layout()
+    plt.savefig(os.path.join(figsavepath, 'reference_Morpho.png'))
+
+    fig = plt.figure(figsize=(8, 6))
+    ax = fig.add_subplot(111)
+    ax.plot(wav, spe)
+    title = 'Dark Field Scattering-origin_Morpho'
+    set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(a.u.)',
+                                   label_fontsize=25, title_fontsize=25,
+                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
+                                   label_fontweight='bold', title_fontweight='bold',
+                                   label_pad=8, title_pad=15)
+    set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+    set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+                        linewidth=3, tick_pad=5, direction='in',
+                        ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
+    fig.tight_layout()
+    plt.savefig(os.path.join(figsavepath, 'origin_Morpho.png'))
+    # ax.set_ylim(-0.01, 0.02)
     plt.show()
