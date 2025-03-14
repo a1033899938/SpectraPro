@@ -5,13 +5,14 @@ from matplotlib.ticker import FuncFormatter
 import matplotlib as mpl
 from matplotlib import ticker
 
-
-def set_label_and_title(ax, 
+"""设置label和title的参数"""
+"""文本、字体大小、字体类型、字体粗细、字体与图像的距离"""
+def set_label_and_title(ax, mode='2d',
                         xlabel='Wavelength(nm)', ylabel='Intensity(counts)', title='default title', zlabel='Intensity(counts)',
-                        label_fontsize=12, title_fontsize=15,
-                        label_font_family='Arial', title_font_family='Arial',
+                        label_fontsize=25, title_fontsize=25,
+                        label_font_family='Times New Roman', title_font_family='Times New Roman',
                         label_fontweight='bold', title_fontweight='bold',
-                        label_pad=20, title_pad=20, mode='2d'):
+                        label_pad=15, title_pad=15):
     try:
         label_font_dict = dict(fontsize=label_fontsize,
                                color='k',
@@ -33,6 +34,7 @@ def set_label_and_title(ax,
         print(f"Error save_figure.set_label_and_title:\n  |--> {e}")
 
 
+"""设置刻度的参数"""
 def set_tick(ax,
              xbins=6, ybins=6, zbins = 6, fontsize=15, fontweight='bold',
              linewidth=2, direction='in', tick_pad=2,
@@ -72,8 +74,8 @@ def set_scientific_y_ticks(ax,
     ax.yaxis.get_offset_text().set_fontsize(sci_fontsize)
     ax.yaxis.get_offset_text().set_fontweight(sci_fontweight)
 
-
-def set_spines(ax, bottom_linewidth=2, left_linewidth=2, right_linewidth=0, top_linewidth=0):
+"""设置figure框的线条宽度"""
+def set_spines(ax, bottom_linewidth=3, left_linewidth=3, right_linewidth=3, top_linewidth=3):
     ax.spines['bottom'].set_linewidth(bottom_linewidth)
     ax.spines['left'].set_linewidth(left_linewidth)
     ax.spines['right'].set_linewidth(right_linewidth)

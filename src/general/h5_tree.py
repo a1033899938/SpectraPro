@@ -142,7 +142,7 @@ if __name__ == '__main__':
     for item in results:
         print(item['text'])
 
-    # save_fullpath = r'D:\GitProject\SpectraPro\test\data_processing\20240925\tree'
+    # save_fullpath = r'D:\GitProject\SpectraPro\test\Data_process\20240925\tree'
     # for key in f.keys():
     #     if key != 'nplab_log':
     #         parent_path = f'/{key}'
