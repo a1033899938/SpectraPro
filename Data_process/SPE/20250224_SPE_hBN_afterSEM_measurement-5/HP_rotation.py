@@ -135,7 +135,7 @@ rots, ints = zip(*sorted_zipped_lists)
 # 将结果转换回列表（因为 zip 返回的是元组）
 rots = list(rots)
 ints = list(ints)
-rots = np.radians(rots)
+rots = np.radians(rots)*2
 
 fig0 = plt.figure(figsize=(8, 6))
 ax0 = fig0.add_subplot(111, polar=True)

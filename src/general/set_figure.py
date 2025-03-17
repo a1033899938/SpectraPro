@@ -37,12 +37,18 @@ def set_label_and_title(ax, mode='2d',
 """设置刻度的参数"""
 def set_tick(ax,
              xbins=6, ybins=6, zbins = 6, fontsize=15, fontweight='bold',
-             linewidth=2, direction='in', tick_pad=2,
+             linewidth=2, linelength=5, direction='in', tick_pad=2,
              ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None, mode='2d'):
     try:
-        ax.xaxis.set_major_locator(MaxNLocator(nbins=xbins))
-        ax.yaxis.set_major_locator(MaxNLocator(nbins=ybins))
-        ax.tick_params(axis='both', labelsize=fontsize, width=linewidth, direction=direction)
+        if xbins != 0:
+            ax.xaxis.set_major_locator(MaxNLocator(nbins=xbins))
+        if ybins != 0:
+            ax.yaxis.set_major_locator(MaxNLocator(nbins=ybins))
+
+        ax.tick_params(axis='both', labelsize=fontsize, width=linewidth, length=linelength, direction=direction)
+        ax.tick_params(axis='both', which='minor', direction='in', width=1.5, length=4)
+        # ax.tick_params(axis='both', which='minor')
+
         ax.xaxis.set_tick_params(pad=tick_pad)
         ax.yaxis.set_tick_params(pad=tick_pad)
 

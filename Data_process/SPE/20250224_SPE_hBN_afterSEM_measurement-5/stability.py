@@ -34,7 +34,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 
 datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\20250224_SPE_hBN_afterSEM_measurement-5.h5"
-save_fig = 1
+save_fig = 0
 
 """fig0"""
 with h5py.File(datapath1, "r") as f:
@@ -63,10 +63,11 @@ with h5py.File(datapath1, "r") as f:
             max_differences = np.abs(wav - 900)
             max_index = np.argmin(max_differences)
 
+            Z = sp[0:100, min_index:max_index]  # 前一百条
             x = wav[min_index:max_index]
-            y = np.arange(sp.shape[0])
+            # y = np.arange(sp.shape[0])
+            y = np.arange(100)
             X, Y = np.meshgrid(x, y)
-            Z = sp[:, min_index:max_index]
 
             for i in y:
                 ax0.plot(Y[i], X[i], Z[i], color=plt.cm.viridis(i / len(y)),
@@ -100,7 +101,7 @@ with h5py.File(datapath1, "r") as f:
             set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
             set_figure.set_tick(ax0, xbins=6, ybins=10, fontsize=10, fontweight='bold',
                                 linewidth=3, tick_pad=5, direction='in',
-                                ticks_xlabel=np.arange(0, sp.shape[0]+1, 50),
+                                ticks_xlabel=np.arange(0, 100+1, 50),
                                 ticks_ylabel=np.arange(400, 901, 100), mode='3d')  # Normalized
             ax0.set_xlabel(xlabel='Measurement  sequence', labelpad=15)
             ax0.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
@@ -111,7 +112,7 @@ with h5py.File(datapath1, "r") as f:
             ax0.view_init(elev=20, azim=45)  # elev 是仰角，azim 是方位角
             plt.tight_layout()
             ax0.grid(True)
-            # plt.show()
+            plt.show()
             # print(len('_2mW_m3_stability_0'))
             if save_fig == 1:
                 from src.general.save_figure import save_subfig
