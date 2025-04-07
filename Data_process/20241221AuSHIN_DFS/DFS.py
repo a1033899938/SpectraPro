@@ -77,7 +77,7 @@ for idx, sp in enumerate(sps):
 # set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
 #                     linewidth=3, tick_pad=5, direction='in',
 #                     ticks_xlabel=np.linspace(500, 1000, 11))
-set_figure.set_legend(ax, legend_labels=legend_labels, font_size=20)
+# set_figure.set_legend(ax, legend_labels=legend_labels, font_size=20)
 
 # for idx, sp in enumerate(sps):
 #     sp = (sp - sub)
@@ -113,6 +113,6 @@ set_figure.set_legend(ax, legend_labels=legend_labels, font_size=20)
 #     save_filename += '.png'
 #     print(save_filename)
 #     # set_figure.set_scientific_y_ticks(ax, sci_fontsize=15, sci_fontweight='bold')
-    save_subfig(fig, save_filename)
+#     save_subfig(fig, save_filename)
 plt.show()
 

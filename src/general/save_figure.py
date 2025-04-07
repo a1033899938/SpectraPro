@@ -71,7 +71,6 @@ def get_subplots_number_of_rows_and_cols(fig):
 
 if __name__ == '__main__':
     import numpy as np
-    import matplotlib.pyplot as plt
     from src.general import set_figure
 
     data = np.random.rand(5, 5)

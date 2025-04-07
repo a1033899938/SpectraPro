@@ -202,7 +202,7 @@ if __name__ == '__main__':
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
-    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-4\20250224_SPE_hBN_afterSEM_measurement-4.h5"
+    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-4\measurement-4.h5"
     save_fig = 1
 
     """fig0"""
@@ -214,6 +214,7 @@ if __name__ == '__main__':
         gamma_fits = np.zeros([6, 4])
         mag_max = np.zeros([6, 4])
         for key in data.keys():
+            print(key)
             fig0 = plt.figure(figsize=(8, 6))
             ax0 = fig0.add_subplot(111)
 
@@ -273,8 +274,8 @@ if __name__ == '__main__':
                            0, 540, 0,
                            0, 570, 0],
                           [100000, 540, 10,
-                            100000, 565, 12,
-                            100000, 580, 10])
+                            100000, 565, 100,
+                            100000, 580, 26])
                 min_differences_for_fit = np.abs(wav - 510)
                 min_index_for_fit = np.argmin(min_differences_for_fit)
                 max_differences_for_fit = np.abs(wav - 900)
@@ -339,11 +340,11 @@ if __name__ == '__main__':
 
         for i in y:
             ax0.plot(Y[i], X[i], Z[i], 'o-', markeredgecolor='black', markerfacecolor=plt.cm.viridis(i / len(y)), markersize=8, linewidth=1, alpha=1)
-            ax0.plot(Y[i], X[i], np.zeros_like(Z[i])+5, color='gray', alpha=1)
+            ax0.plot(Y[i], X[i], np.zeros_like(Z[i]), color='gray', alpha=1)
 
             polygon = [
-                [Y[i, 0], X[i, 0], 5],  # 左下
-                [Y[i, -1], X[i, -1], 5],  # 右下
+                [Y[i, 0], X[i, 0], 0],  # 左下
+                [Y[i, -1], X[i, -1], 0],  # 右下
             ]
             for j in range(len(x) - 1, -1, -1):  # 依次添加点，使得polygon成为一个完整的闭合多边形
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
@@ -366,7 +367,7 @@ if __name__ == '__main__':
         # ax0.grid(True)
         ax0.view_init(elev=20, azim=45)
         # ax0.view_init(elev=0, azim=0)
-        ax0.set_zlim([5, 7])
+        ax0.set_zlim([0, 12])
         plt.tight_layout()
 
         # from src.general.save_figure import save_subfig

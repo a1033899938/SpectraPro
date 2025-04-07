@@ -1,18 +1,54 @@
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator  # set max number of ticks
-# from matplotlib.ticker import ScalarFormatter
-from matplotlib.ticker import FuncFormatter
-import matplotlib as mpl
+from matplotlib.ticker import MaxNLocator
 from matplotlib import ticker
+from matplotlib.ticker import MultipleLocator
+from matplotlib.ticker import FixedLocator, FixedFormatter
+from mpl_toolkits.mplot3d import Axes3D
 
-"""设置label和title的参数"""
-"""文本、字体大小、字体类型、字体粗细、字体与图像的距离"""
 def set_label_and_title(ax, mode='2d',
-                        xlabel='Wavelength(nm)', ylabel='Intensity(counts)', title='default title', zlabel='Intensity(counts)',
-                        label_fontsize=25, title_fontsize=25,
-                        label_font_family='Times New Roman', title_font_family='Times New Roman',
-                        label_fontweight='bold', title_fontweight='bold',
-                        label_pad=15, title_pad=15):
+                        title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(counts)', zlabel='Intensity(counts)',
+                        title_fontsize=25, label_fontsize=25,
+                        title_font_family='Times New Roman', label_font_family='Times New Roman',
+                        title_fontweight='bold', label_fontweight='bold',
+                        title_pad=15, label_pad=15,
+                        axis_order=(0, 1, 2),
+                        xlabel_rotation=None, ylabel_rotation=None, zlabel_rotation=None,
+                        title_ha='center', title_va='center',
+                        xlabel_ha='center', ylabel_ha='center', zlabel_ha='center',
+                        xlabel_va='center', ylabel_va='center', zlabel_va='center'):
+    """
+    设置标题和标签的参数
+    :param ax: axis
+    :param mode: 2d or 3d
+    :param title:
+    :param xlabel:
+    :param ylabel:
+    :param zlabel:
+    :param title_fontsize: 字体大小
+    :param label_fontsize:
+    :param title_font_family: 字体类型
+    :param label_font_family:
+    :param title_fontweight: 字体粗细
+    :param label_fontweight:
+    :param title_pad: 字体与图框的距离
+    :param label_pad:
+    :param axis_order: 数值越小，轴的显示优先级越高。
+                        优先级最高的轴占据“左侧”位置。
+                        次优先级轴占据“右侧”位置。
+                        最低优先级轴默认在“底部”。常见：(1, 2, 0)将z轴移到坐标
+    :param xlabel_rotation: 标签角度（默认不一定是零）
+    :param ylabel_rotation:
+    :param zlabel_rotation:
+    :param title_ha: 横向位置
+    :param title_va: 纵向位置
+    :param xlabel_ha:
+    :param ylabel_ha:
+    :param zlabel_ha:
+    :param xlabel_va:
+    :param ylabel_va:
+    :param zlabel_va:
+    :return:
+    """
     try:
         label_font_dict = dict(fontsize=label_fontsize,
                                color='k',
@@ -25,20 +61,66 @@ def set_label_and_title(ax, mode='2d',
                                weight=title_fontweight,
                                style='normal',
                                )
-        ax.set_xlabel(xlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
-        ax.set_ylabel(ylabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
+        ax.set_xlabel(xlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True, ha=xlabel_ha, va=xlabel_va)
+        ax.set_ylabel(ylabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True, ha=ylabel_ha, va=ylabel_va)
         if mode == '3d':
-            ax.set_zlabel(zlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True)
-        ax.set_title(title, fontdict=title_font_dict, weight=title_fontweight, pad=title_pad, picker=True)
+            ax.set_zlabel(zlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True, ha=zlabel_ha, va=zlabel_va)
+            ax.zaxis._axinfo['juggled'] = axis_order
+
+        if xlabel_rotation is not None:
+            ax.xaxis.set_rotate_label(False)
+            xlabel = ax.xaxis.get_label()
+            xlabel.set_rotation(xlabel_rotation)
+        if ylabel_rotation is not None:
+            ax.yaxis.set_rotate_label(False)
+            ylabel = ax.yaxis.get_label()
+            ylabel.set_rotation(ylabel_rotation)
+        if zlabel_rotation is not None:
+            ax.zaxis.set_rotate_label(False)
+            zlabel = ax.zaxis.get_label()
+            zlabel.set_rotation(zlabel_rotation)
+
+        ax.set_title(title, fontdict=title_font_dict, weight=title_fontweight, pad=title_pad, picker=True, ha=title_ha, va=title_va)
     except Exception as e:
         print(f"Error save_figure.set_label_and_title:\n  |--> {e}")
 
 
 """设置刻度的参数"""
-def set_tick(ax,
-             xbins=6, ybins=6, zbins = 6, fontsize=15, fontweight='bold',
-             linewidth=2, linelength=5, direction='in', tick_pad=2,
-             ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None, mode='2d'):
+def set_tick(ax, mode='2d',
+             xbins=6, ybins=6, zbins = 6, show_xlabel_every_ticks=None, show_ylabel_every_ticks=None, show_zlabel_every_ticks=None,
+             hide_tick=None, hide_tick_label=None,
+             fontsize=13, fontweight='bold',
+             linewidth=3, linelength=5, direction='in', ticklabel_pad=5,
+             ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None,
+             change_ticks_xlabel=None, change_ticks_ylabel=None, change_ticks_zlabel=None,
+             ticks_xlabel_rotation=None, ticks_ylabel_rotation=None, ticks_zlabel_rotation=None):
+    """
+    :param ax: 目标坐标轴
+    :param mode: 2d or 3d
+    :param xbins: x轴的最大刻度数
+    :param ybins: ...
+    :param zbins: ...
+    :param show_label_every_ticks: 每几个刻度显示一个标签（如[2, 3, _]表示x轴每2个刻度一个标签，y轴每2个刻度一个标签，）
+    :param hide_tick: 需隐藏的刻度（如['x', 'z']）
+    :param hide_tick_label: 需隐藏的刻度标签
+    :param fontsize: 刻度字体大小
+    :param fontweight: 刻度字体粗细
+    :param linewidth: 刻度线宽
+    :param linelength: 刻度长度
+    :param direction: 刻度方向
+    :param ticklabel_pad: 刻度文本距离（距刻度）
+    :param ticks_xlabel: 刻度文本(与xbins冲突，这个优先级高)
+    :param ticks_ylabel:
+    :param ticks_zlabel:
+    :param change_ticks_xlabel: 修改实际要显示的刻度标签
+    :param change_ticks_ylabel:
+    :param change_ticks_zlabel:
+    :param ticks_xlabel_rotation: 刻度标签的角度（默认不一定是0）
+    :param ticks_ylabel_rotation:
+    :param ticks_zlabel_rotation:
+    :return:
+    """
+
     try:
         if xbins != 0:
             ax.xaxis.set_major_locator(MaxNLocator(nbins=xbins))
@@ -49,22 +131,90 @@ def set_tick(ax,
         ax.tick_params(axis='both', which='minor', direction='in', width=1.5, length=4)
         # ax.tick_params(axis='both', which='minor')
 
-        ax.xaxis.set_tick_params(pad=tick_pad)
-        ax.yaxis.set_tick_params(pad=tick_pad)
+        ax.xaxis.set_tick_params(pad=ticklabel_pad)
+        ax.yaxis.set_tick_params(pad=ticklabel_pad)
 
         for label in ax.get_xticklabels() + ax.get_yticklabels():
             label.set_fontweight(fontweight)
+
+        # 设置刻度范围
         if ticks_xlabel is not None:
             ax.xaxis.set_ticks(ticks_xlabel)
         if ticks_ylabel is not None:
             ax.yaxis.set_ticks(ticks_ylabel)
+
+        # 修改刻度文本
+        if change_ticks_xlabel is not None:
+            ax.set_xticklabels(change_ticks_xlabel)
+        if change_ticks_ylabel is not None:
+            ax.set_yticklabels(change_ticks_ylabel)
+
+        if show_xlabel_every_ticks:
+            # 打印默认的 Locator 和 Formatter 类型
+            ticks = ax.get_xticks()
+            tickslabels = ax.get_xticklabels()
+            ax.xaxis.set_major_locator(FixedLocator(ticks))  # 固定刻度位置
+            new_labels = [label.get_text() if i % show_xlabel_every_ticks == 0 else "" for i, label in enumerate(tickslabels)]
+            ax.set_xticklabels(new_labels)
+
+        if show_ylabel_every_ticks:
+            # 打印默认的 Locator 和 Formatter 类型
+            ticks = ax.get_yticks()
+            tickslabels = ax.get_yticklabels()
+            ax.yaxis.set_major_locator(FixedLocator(ticks))  # 固定刻度位置
+            new_labels = [label.get_text() if i % show_ylabel_every_ticks == 0 else "" for i, label in enumerate(tickslabels)]
+            ax.set_yticklabels(new_labels)
+
+        if ticks_xlabel_rotation is not None:
+            ax.xaxis.set_tick_params(rotation=ticks_xlabel_rotation)
+        if ticks_ylabel_rotation is not None:
+            ax.yaxis.set_tick_params(rotation=ticks_ylabel_rotation)
+
+        if hide_tick:
+            # 隐藏刻度
+            if 'x' in hide_tick:
+                ax.set_xticks([])  # 完全隐藏
+
+            if 'y' in hide_tick:
+                ax.set_yticks([])
+
+        if hide_tick_label:
+            # 仅隐藏文本但保留刻度线
+            if 'x' in hide_tick_label:
+                ax.set_xticklabels([])
+            if 'y' in hide_tick_label:
+                ax.set_yticklabels([])
+
         if mode == '3d':
             ax.zaxis.set_major_locator(MaxNLocator(nbins=zbins))
-            ax.zaxis.set_tick_params(pad=tick_pad)
+            ax.zaxis.set_tick_params(pad=ticklabel_pad)
             for label in ax.get_zticklabels():
                 label.set_fontweight(fontweight)
+
             if ticks_zlabel is not None:
                 ax.zaxis.set_ticks(ticks_zlabel)
+
+            if change_ticks_zlabel is not None:
+                ax.set_zticklabels(change_ticks_ylabel)
+
+            if show_zlabel_every_ticks:
+                # 打印默认的 Locator 和 Formatter 类型
+                ticks = ax.get_zticks()
+                tickslabels = ax.get_zticklabels()
+                ax.zaxis.set_major_locator(FixedLocator(ticks))  # 固定刻度位置
+                new_labels = [label.get_text() if i % show_zlabel_every_ticks == 0 else "" for i, label in enumerate(tickslabels)]
+                ax.set_zticklabels(new_labels)
+
+            if ticks_zlabel_rotation is not None:
+                ax.zaxis.set_ticks(rotation=ticks_zlabel_rotation)
+
+            if hide_tick:
+                if 'z' in hide_tick:
+                    ax.set_zticks([])
+
+            if hide_tick_label:
+                if 'z' in hide_tick_label:
+                    ax.set_zticklabels([])
     except Exception as e:
         print(f"Error save_figure.set_tick:\n  |--> {e}")
 
@@ -81,23 +231,56 @@ def set_scientific_y_ticks(ax,
     ax.yaxis.get_offset_text().set_fontweight(sci_fontweight)
 
 """设置figure框的线条宽度"""
-def set_spines(ax, bottom_linewidth=3, left_linewidth=3, right_linewidth=3, top_linewidth=3):
-    ax.spines['bottom'].set_linewidth(bottom_linewidth)
-    ax.spines['left'].set_linewidth(left_linewidth)
-    ax.spines['right'].set_linewidth(right_linewidth)
-    ax.spines['top'].set_linewidth(top_linewidth)
+def set_spines(ax, bottom_linewidth=3, left_linewidth=3, right_linewidth=3, top_linewidth=3, polar_linewidth=3, mode='2d'):
+    if mode == '2d':
+        ax.spines['bottom'].set_linewidth(bottom_linewidth)
+        ax.spines['left'].set_linewidth(left_linewidth)
+        ax.spines['right'].set_linewidth(right_linewidth)
+        ax.spines['top'].set_linewidth(top_linewidth)
+    elif mode == 'polar':
+        ax.spines['polar'].set_linewidth(polar_linewidth)  # 极坐标的脊线宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(polar_linewidth)  # 设置所有脊线宽度（可以按需指定特定方向的脊线）
 
 
-def set_legend(ax, legend_labels,
+def set_legend(ax, legend_labels = None,
                font_size=12, fontfamily='Arial', fontweight='bold',
                location='upper right'):
+    """
+
+    :param ax:
+    :param legend_labels:
+    :param font_size:
+    :param fontfamily:
+    :param fontweight:
+    :param location: 输入字符或者一个长度为4的list，num 1和num 2为legend中某点的位置，num 1为水平位置(范围为 0~1)，num 2为垂直位置(范围为 0~1)。该点的位置位于legend的num 3位置，num 3的范围如下：
+                    'best'	0
+                    'upper right'	1
+                    'upper left'	2
+                    'lower left'	3
+                    'lower right'	4
+                    'right'	        5
+                    'center left'	6
+                    'center right'	7
+                    'lower center'	8
+                    'upper center'	9
+                    'center'	    10
+                    num4表示轴和legend之间的填充，默认值为None（有一定填充），设置为0即取消填充
+    :return:
+    """
     legend_font_dict = dict(size=font_size,
                             family=fontfamily,
                             weight=fontweight,
                             style='normal',
                             )
-    legend = ax.legend(legend_labels,
-                       loc=location, prop=legend_font_dict, frameon=False)
+    if legend_labels is None:
+        handles, labels = ax.get_legend_handles_labels()
+        legend_labels = labels
+
+    if type(location) is str:
+        legend = ax.legend(legend_labels, loc=location, prop=legend_font_dict, frameon=False)
+    else:
+        legend = ax.legend(legend_labels, bbox_to_anchor=(location[0], location[1]), loc=location[2], borderaxespad=location[3], prop=legend_font_dict, frameon=False)
     return legend
 
 
@@ -112,8 +295,14 @@ def set_text(ax, x_text, y_text, text, fontfamily='Arial', fontsize=12, fontweig
 
 if __name__ == '__main__':
     fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.plot(range(5))
-    set_label_and_title(ax)
-    set_tick(ax, xbins=3, ybins=2)
+    ax = fig.add_subplot(111, projection='3d')
+    import numpy as np
+    x = np.arange(0, 6, 1)
+    y = np.random.random(size=len(x))
+    # ax.plot(x, y)
+    ax.plot([0, 1], [0, 1], [0, 1])
+    ax.view_init(elev=20, azim=-45)
+    set_label_and_title(ax, mode='3d', axis_order=(1, 2, 0))
+    set_tick(ax, ticks_xlabel=np.arange(0, 6, 1), show_xlabel_every_ticks=2, show_ylabel_every_ticks=3)
+    fig.tight_layout()
     plt.show()

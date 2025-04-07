@@ -17,8 +17,8 @@ num_colors = 20
 colors = default_colors * (num_colors // len(default_colors) + 1)  # 复制颜色列表以确保足够多的颜色
 colors = colors[:num_colors]  # 截取前 num_colors 条颜色
 
-folder_path = r'C:\Users\a1033\Desktop\Contemporary\240806-240808\20240914process\8#'
-extensions = ['.txt', '.spe']
+folder_path = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\SPE\20250318"
+extensions = ['.spe']
 
 fig = plt.figure(figsize=(8, 6), dpi=100)
 ax = fig.add_subplot(111)

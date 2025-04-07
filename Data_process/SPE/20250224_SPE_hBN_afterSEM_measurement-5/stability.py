@@ -1,37 +1,28 @@
-import os.path
-from scipy.optimize import curve_fit
 import h5py
+import os
+from scipy.optimize import curve_fit
 from src.general import set_figure
+from src.general.draw_figure import *
+from src.general.edit_data import *
+from src.general.filter import *
+from src.general.curve_functions import *
+from src.general.save_data import *
 
-def gaussian(x, A, mu, sigma):
-    return A * np.exp(- (x - mu) ** 2 / (2 * sigma ** 2))
+def the_figure(ax, key):
+    set_figure.set_label_and_title(ax, title=f'hBN-after-SEM-process PL-Continuous Collection\n{key[13:-15]}', xlabel='Measurement  sequence', ylabel='Wavelength(nm)', mode='3d', zlabel_rotation=90, axis_order=(1, 2, 0))
+    set_figure.set_spines(ax)
+    set_figure.set_tick(ax, ticks_xlabel=np.arange(0, 301, 50), ticks_ylabel=np.arange(400, 901, 100), mode='3d')  # Normalized
+    ax.set_box_aspect([1, 1, 1])
+    ax.view_init(elev=20, azim=-45)  # elev 是仰角，azim 是方位角
+    plt.tight_layout()
+    ax.grid(True)
 
-
-def double_gaussian(x, A1, mu1, sigma1, A2, mu2, sigma2):
-    return A1 * np.exp(- (x - mu1) ** 2 / (2 * sigma1 ** 2)) + A2 * np.exp(- (x - mu2) ** 2 / (2 * sigma2 ** 2))
-
-
-def lorentzian(x, A, x0, gamma):
-    """
-    洛伦兹函数
-    :param x: 自变量
-    :param A: 峰值面积
-    :param x0: 峰值中心位置
-    :param gamma: 半高全宽 (FWHM)
-    :return: 洛伦兹函数值
-    """
-    return (A / np.pi) * (0.5 * gamma) / ((x - x0) ** 2 + (0.5 * gamma) ** 2)
-
-def lorentzian_plus_gaussian(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3):
-    peak1 = lorentzian(x, A1, x1, gamma1)
-    peak2 = gaussian(x, A2, x2, gamma2)
-    peak3 = lorentzian(x, A3, x3, gamma3)
-    return peak1 + peak2 + peak3
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import numpy as np
+def the_figure1(ax, key):
+    set_figure.set_label_and_title(ax, title=f'Stability of Peak-1\n{key[13:-15]}', xlabel="Time(s)", ylabel='Intensity(counts)')
+    set_figure.set_spines(ax)
+    set_figure.set_tick(ax, ticks_xlabel=np.arange(0, 301, 100))
+    ax1.set_ylim(0, np.max(ints_now) * 1.1)
+    plt.tight_layout()
 
 datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\20250224_SPE_hBN_afterSEM_measurement-5.h5"
 save_fig = 0
@@ -48,73 +39,83 @@ with h5py.File(datapath1, "r") as f:
     legend_labels = []
     for key in data.keys():
         if 'stability' in key:
-            fig0 = plt.figure(figsize=(12, 9))
-            ax0 = fig0.add_subplot(111, projection='3d')
-            sp = data[key]
-            print(np.shape(np.array(sp)))
-            sp_time = sp.attrs['integration_time'] / 1000
-            sp = np.array(sp)
-            print(sp)
-            sp = sp / sp_time
-            sp = sp - bgd
-            # print(sp)
-            min_differences = np.abs(wav - 400)
-            min_index = np.argmin(min_differences)
-            max_differences = np.abs(wav - 900)
-            max_index = np.argmin(max_differences)
+            # fig = plt.figure(figsize=(12, 9))
+            # ax = fig.add_subplot(111, projection='3d')
+            # sp = data[key]
+            # sp_time = sp.attrs['integration_time'] / 1000
+            # sp = np.array(sp)
+            # sp = sp / sp_time
+            # sp = sp - bgd
+            #
+            # """三维时序图"""
+            # Z = []
+            # for line in sp:
+            #     Z.append(remove_spikes(line, window_size=5, threshold=3))
+            # Z = np.array(Z)
+            # x, Z = choose_range(wav, Z, min_val=400, max_val=900, axis=1)
+            # draw_cascade(ax, x, Z, highlight_maximum=True, plot_maximum=True)
+            # """三维时序图"""
+            #
+            # # 导出数据之后，修正key
+            # if key == 'hBN_afterSEM_5kV_2min_100KX_2mW_m3_stability_0':
+            #     key = 'hBN_afterSEM_5kV_5min_100KX_2mW_m3_stability_0'
+            # elif key == 'hBN_afterSEM_10kV_5min_100KX_2mW_m3_stability_0':
+            #     key = 'hBN_afterSEM_10kV_2min_100KX_2mW_m3_stability_0'
+            # elif key == 'hBN_afterSEM_15kV_2min_100KX_2mW_m3_stability_0':
+            #     key = 'hBN_afterSEM_15kV_5min_100KX_2mW_m3_stability_0'
+            # elif key == 'hBN_afterSEM_15kV_1min_100KX_2mW_m3_stability_0':
+            #     key = 'hBN_afterSEM_15kV_2min_100KX_2mW_m3_stability_0'
+            # the_figure(ax, key)
+            #
+            # if save_fig == 1:
+            #     fig.savefig(os.path.join(os.path.dirname(datapath1), 'stability', f'{key[13:-15]}.png'))
+            # plt.close(fig)
+            #
+            #
+            # ints_now = []
+            # cws_now = []
+            # gammas_now = []
+            # times_now = []
+            # for i, line in enumerate(Z):
+            #     x = x
+            #     y = line
+            #     times_now.append(i*1)
+            #
+            #     """三峰拟合"""
+            #     p0 = [100, 537, 6,
+            #             20, 550, 10,
+            #              20, 577, 6]
+            #
+            #     bounds = ([0, 535, 0,
+            #                0, 540, 0,
+            #                0, 570, 0],
+            #               [100000, 540, 10,
+            #                 100000, 565, 12,
+            #                 100000, 580, 10])
+            #     min_differences_for_fit = np.abs(x - 510)
+            #     min_index_for_fit = np.argmin(min_differences_for_fit)
+            #     max_differences_for_fit = np.abs(x - 700)
+            #     max_index_for_fit = np.argmin(max_differences_for_fit)
+            #
+            #     x_for_fit, y_for_fit = choose_range(x, y, min_val=510, max_val=700)
+            #     popt, pcov = curve_fit(lorentzian_2_plus_gaussian_1, x_for_fit, y_for_fit, p0=p0, bounds=bounds)
+            #     A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3 = popt
+            #     mag_now = (A1/np.pi)/(gamma1/2)
+            #     ints_now.append(mag_now)
+            #     cws_now.append(x1)
+            #     gammas_now.append(gamma1)
 
-            Z = sp[0:100, min_index:max_index]  # 前一百条
-            x = wav[min_index:max_index]
-            # y = np.arange(sp.shape[0])
-            y = np.arange(100)
-            X, Y = np.meshgrid(x, y)
+            """读取数据"""
+            times_now, ints_now = read_lines_txt(fr"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\stability\txt\times_ints_{key[13:-15]}.txt")
+            """保存PL线形拟合数据"""
+            # save_lines_txt(times_now, ints_now, save_full_path=os.path.join(r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\stability\txt", f'times_ints_{key[13:-15]}.txt'))
 
-            for i in y:
-                ax0.plot(Y[i], X[i], Z[i], color=plt.cm.viridis(i / len(y)),
-                         linestyle='-', linewidth=1, alpha=1)
-                ax0.plot(Y[i], X[i], np.zeros_like(Z[i]), color='gray', alpha=1)
-
-                polygon = [
-                    [Y[i, 0], X[i, 0], 0],  # 左下
-                    [Y[i, -1], X[i, -1], 0],  # 右下
-                ]
-                for j in range(len(x) - 1, -1, -1):  # 依次添加点，使得polygon成为一个完整的闭合多边形
-                    polygon.append([Y[i, j], X[i, j], Z[i, j]])
-                ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
-
-            # 导出数据之后，修正key
-            if key == 'hBN_afterSEM_5kV_2min_100KX_2mW_m3_stability_0':
-                key = 'hBN_afterSEM_5kV_5min_100KX_2mW_m3_stability_0'
-            elif key == 'hBN_afterSEM_10kV_5min_100KX_2mW_m3_stability_0':
-                key = 'hBN_afterSEM_5kV_2min_100KX_2mW_m3_stability_0'
-            elif key == 'hBN_afterSEM_15kV_2min_100KX_2mW_m3_stability_0':
-                key = 'hBN_afterSEM_5kV_5min_100KX_2mW_m3_stability_0'
-            elif key == 'hBN_afterSEM_15kV_1min_100KX_2mW_m3_stability_0':
-                key = 'hBN_afterSEM_5kV_2min_100KX_2mW_m3_stability_0'
-
-            title = f'hBN-after-SEM-process Time-Resolved PL\n{key}'
-            set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                           label_fontsize=25, title_fontsize=25,
-                                           label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                           label_fontweight='bold', title_fontweight='bold',
-                                           label_pad=15, title_pad=15, mode='3d')
-            set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-            set_figure.set_tick(ax0, xbins=6, ybins=10, fontsize=10, fontweight='bold',
-                                linewidth=3, tick_pad=5, direction='in',
-                                ticks_xlabel=np.arange(0, 100+1, 50),
-                                ticks_ylabel=np.arange(400, 901, 100), mode='3d')  # Normalized
-            ax0.set_xlabel(xlabel='Measurement  sequence', labelpad=15)
-            ax0.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
-            ax0.zaxis.set_rotate_label(False)
-            ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
-
-            ax0.set_box_aspect([1, 1, 1])
-            ax0.view_init(elev=20, azim=45)  # elev 是仰角，azim 是方位角
-            plt.tight_layout()
-            ax0.grid(True)
-            plt.show()
-            # print(len('_2mW_m3_stability_0'))
+            fig1 = plt.figure(figsize=(8, 6))
+            ax1 = fig1.add_subplot(111)
+            ax1.plot(times_now, ints_now, color='#1f77b4', linewidth=2)
+            the_figure1(ax1, key)
             if save_fig == 1:
-                from src.general.save_figure import save_subfig
-                plt.savefig(os.path.join(os.path.dirname(datapath1), 'stability', f'{key[:-19]}.png'))
-            # plt.close()
+                fig1.savefig(os.path.join(os.path.dirname(datapath1), 'stability', f'stability_{key[13:-15]}.png'))
+
+            plt.close(fig1)
+plt.show()
