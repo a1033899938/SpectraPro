@@ -9,7 +9,7 @@ import scipy.io as sio
 
 
 class read_file:
-    def __init__(self, filepath, strip='all', show_data_flag=True):
+    def __init__(self, filepath, strip='all', type='graph', show_data_flag=True):
         self.filepath = filepath
         self.strip = strip
         self.show_data_flag = show_data_flag

@@ -204,7 +204,7 @@ if __name__ == '__main__':
         ax0 = fig0.add_subplot(111, projection='3d')
         sps = []
         for key in keys_afterSEM:
-            sp = data[key]
+            sps = data[key]
             bgd = np.array(sp.attrs['background'])
             wav = np.array(sp.attrs['wavelengths'])
             sp_time = sp.attrs['integration_time'] / 1000

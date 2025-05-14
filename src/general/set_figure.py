@@ -10,7 +10,7 @@ def set_label_and_title(ax, mode='2d',
                         title_fontsize=25, label_fontsize=25,
                         title_font_family='Times New Roman', label_font_family='Times New Roman',
                         title_fontweight='bold', label_fontweight='bold',
-                        title_pad=15, label_pad=15,
+                        title_pad=17, label_pad=15,
                         axis_order=(0, 1, 2),
                         xlabel_rotation=None, ylabel_rotation=None, zlabel_rotation=None,
                         title_ha='center', title_va='center',
@@ -89,7 +89,7 @@ def set_label_and_title(ax, mode='2d',
 def set_tick(ax, mode='2d',
              xbins=6, ybins=6, zbins = 6, show_xlabel_every_ticks=None, show_ylabel_every_ticks=None, show_zlabel_every_ticks=None,
              hide_tick=None, hide_tick_label=None,
-             fontsize=13, fontweight='bold',
+             fontsize=17, fontweight='bold',
              linewidth=3, linelength=5, direction='in', ticklabel_pad=5,
              ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None,
              change_ticks_xlabel=None, change_ticks_ylabel=None, change_ticks_zlabel=None,
@@ -244,7 +244,7 @@ def set_spines(ax, bottom_linewidth=3, left_linewidth=3, right_linewidth=3, top_
 
 
 def set_legend(ax, legend_labels = None,
-               font_size=12, fontfamily='Arial', fontweight='bold',
+               font_size=15, fontfamily='Arial', fontweight='bold',
                location='upper right'):
     """
 
