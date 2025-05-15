@@ -1,5 +1,20 @@
 import numpy as np
 
+
+def find_val_idx(x, val):
+    """
+    查找数组中最接近给定值的元素索引
+
+    参数:
+    x (array-like): 输入数组
+    val (float): 要查找的值
+
+    返回:
+    int: 最接近给定值的元素索引
+    """
+    idx = np.argmin(np.abs(x - val))
+    return idx
+
 def choose_range(x, y, *args, min_val, max_val, axis=0):
     """
     选择x范围为min到max，同时对y等参数也取相同索引范围的数据

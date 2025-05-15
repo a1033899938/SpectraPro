@@ -5,17 +5,17 @@ from matplotlib.ticker import MultipleLocator
 from matplotlib.ticker import FixedLocator, FixedFormatter
 from mpl_toolkits.mplot3d import Axes3D
 
-def set_label_and_title(ax, mode='2d',
-                        title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(counts)', zlabel='Intensity(counts)',
-                        title_fontsize=25, label_fontsize=25,
-                        title_font_family='Times New Roman', label_font_family='Times New Roman',
-                        title_fontweight='bold', label_fontweight='bold',
-                        title_pad=17, label_pad=15,
+def set_label_and_title(ax, mode='2d', colorbar=None,
+                        title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(counts)', zlabel='Intensity(counts)', colorbar_label='colorbar_label',
+                        title_fontsize=32, label_fontsize=30, colorbar_fontsize=30,
+                        title_font_family='Times New Roman', label_font_family='Times New Roman', colorbar_font_family='Times New Roman',
+                        title_fontweight='bold', label_fontweight='bold', colorbar_fontweight='bold',
+                        title_pad=17, label_pad=15, colorbar_label_pad=25,
                         axis_order=(0, 1, 2),
-                        xlabel_rotation=None, ylabel_rotation=None, zlabel_rotation=None,
+                        xlabel_rotation=None, ylabel_rotation=None, zlabel_rotation=None, colorbar_rotation=90,
                         title_ha='center', title_va='center',
-                        xlabel_ha='center', ylabel_ha='center', zlabel_ha='center',
-                        xlabel_va='center', ylabel_va='center', zlabel_va='center'):
+                        xlabel_ha='center', ylabel_ha='center', zlabel_ha='center', colorbar_ha='center',
+                        xlabel_va='center', ylabel_va='center', zlabel_va='center', colorbar_va='center'):
     """
     设置标题和标签的参数
     :param ax: axis
@@ -47,6 +47,9 @@ def set_label_and_title(ax, mode='2d',
     :param xlabel_va:
     :param ylabel_va:
     :param zlabel_va:
+    :param colorbar_rotation: colorbar标签旋转角度
+    :param colorbar_ha: colorbar标签水平对齐方式
+    :param colorbar_va: colorbar标签垂直对齐方式
     :return:
     """
     try:
@@ -61,6 +64,12 @@ def set_label_and_title(ax, mode='2d',
                                weight=title_fontweight,
                                style='normal',
                                )
+        colorbar_font_dict = dict(fontsize=colorbar_fontsize,
+                                  color='k',
+                                  family=colorbar_font_family,
+                                  weight=colorbar_fontweight,
+                                  style='normal',
+                                  )
         ax.set_xlabel(xlabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True, ha=xlabel_ha, va=xlabel_va)
         ax.set_ylabel(ylabel, fontdict=label_font_dict, weight=label_fontweight, labelpad=label_pad, picker=True, ha=ylabel_ha, va=ylabel_va)
         if mode == '3d':
@@ -81,22 +90,44 @@ def set_label_and_title(ax, mode='2d',
             zlabel.set_rotation(zlabel_rotation)
 
         ax.set_title(title, fontdict=title_font_dict, weight=title_fontweight, pad=title_pad, picker=True, ha=title_ha, va=title_va)
+
+        # 新增：完善colorbar设置
+        if colorbar is not None:
+            # 设置colorbar标签
+            colorbar.set_label(
+                colorbar_label,
+                fontdict=colorbar_font_dict,
+                weight=colorbar_fontweight,
+                labelpad=colorbar_label_pad,
+                rotation=colorbar_rotation,
+                ha=colorbar_ha,
+                va=colorbar_va
+            )
+
+            # 设置colorbar刻度字体
+            for tick in colorbar.ax.get_yticklabels() if colorbar.orientation == 'vertical' else colorbar.ax.get_xticklabels():
+                tick.set_family(label_font_family)
+                tick.set_size(label_fontsize)
+
     except Exception as e:
         print(f"Error save_figure.set_label_and_title:\n  |--> {e}")
 
 
 """设置刻度的参数"""
-def set_tick(ax, mode='2d',
+def set_tick(ax, mode='2d', colorbar=None,
              xbins=6, ybins=6, zbins = 6, show_xlabel_every_ticks=None, show_ylabel_every_ticks=None, show_zlabel_every_ticks=None,
              hide_tick=None, hide_tick_label=None,
-             fontsize=17, fontweight='bold',
+             fontsize=20, fontweight='bold',
              linewidth=3, linelength=5, direction='in', ticklabel_pad=5,
              ticks_xlabel=None, ticks_ylabel=None, ticks_zlabel=None,
              change_ticks_xlabel=None, change_ticks_ylabel=None, change_ticks_zlabel=None,
-             ticks_xlabel_rotation=None, ticks_ylabel_rotation=None, ticks_zlabel_rotation=None):
+             ticks_xlabel_rotation=None, ticks_ylabel_rotation=None, ticks_zlabel_rotation=None,
+             colorbar_ticks=None, colorbar_ticklabels=None, colorbar_ticklabels_rotation=None,
+             colorbar_fontsize=25, colorbar_fontweight=None, colorbar_linewidth=None, colorbar_linelength=None):
     """
     :param ax: 目标坐标轴
     :param mode: 2d or 3d
+    :param colorbar: colorbar对象(如果有)
     :param xbins: x轴的最大刻度数
     :param ybins: ...
     :param zbins: ...
@@ -118,6 +149,13 @@ def set_tick(ax, mode='2d',
     :param ticks_xlabel_rotation: 刻度标签的角度（默认不一定是0）
     :param ticks_ylabel_rotation:
     :param ticks_zlabel_rotation:
+    :param colorbar_ticks: colorbar刻度位置
+    :param colorbar_ticklabels: colorbar刻度标签
+    :param colorbar_ticklabels_rotation: colorbar刻度标签旋转角度
+    :param colorbar_fontsize: colorbar刻度字体大小
+    :param colorbar_fontweight: colorbar刻度字体粗细
+    :param colorbar_linewidth: colorbar刻度线宽
+    :param colorbar_linelength: colorbar刻度线长度
     :return:
     """
 
@@ -215,6 +253,34 @@ def set_tick(ax, mode='2d',
             if hide_tick_label:
                 if 'z' in hide_tick_label:
                     ax.set_zticklabels([])
+
+        # 新增：colorbar设置
+        if colorbar is not None:
+            # 设置colorbar刻度位置
+            if colorbar_ticks is not None:
+                colorbar.set_ticks(colorbar_ticks)
+
+            # 设置colorbar刻度标签
+            if colorbar_ticklabels is not None:
+                colorbar.set_ticklabels(colorbar_ticklabels)
+
+            # 设置colorbar刻度标签旋转角度
+            if colorbar_ticklabels_rotation is not None:
+                for tick in colorbar.ax.get_yticklabels() if colorbar.orientation == 'vertical' else colorbar.ax.get_xticklabels():
+                    tick.set_rotation(colorbar_ticklabels_rotation)
+
+            # 设置colorbar刻度字体
+            cbar_fontsize = colorbar_fontsize if colorbar_fontsize is not None else fontsize
+            cbar_fontweight = colorbar_fontweight if colorbar_fontweight is not None else fontweight
+            for tick in colorbar.ax.get_yticklabels() if colorbar.orientation == 'vertical' else colorbar.ax.get_xticklabels():
+                tick.set_size(cbar_fontsize)
+                tick.set_weight(cbar_fontweight)
+
+            # 设置colorbar刻度线
+            cbar_linewidth = colorbar_linewidth if colorbar_linewidth is not None else linewidth
+            cbar_linelength = colorbar_linelength if colorbar_linelength is not None else linelength
+            colorbar.ax.tick_params(width=cbar_linewidth, length=cbar_linelength)
+
     except Exception as e:
         print(f"Error save_figure.set_tick:\n  |--> {e}")
 
@@ -294,15 +360,30 @@ def set_text(ax, x_text, y_text, text, fontfamily='Arial', fontsize=12, fontweig
 
 
 if __name__ == '__main__':
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    def the_figure1(ax, cbar):
+        """拟合曲线"""
+        set_label_and_title(ax, title=f'', xlabel='X', ylabel='Y', colorbar=cbar, colorbar_label='Intensity(counts)', colorbar_fontsize=30)
+        set_spines(ax)
+        set_tick(ax, colorbar=cbar, colorbar_fontsize=23)  # Normalized
+        plt.tight_layout()
+
     import numpy as np
-    x = np.arange(0, 6, 1)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    # 生成数据
+    x = np.arange(0, 6, 1)  # 0到5的整数
     y = np.random.random(size=len(x))
-    # ax.plot(x, y)
-    ax.plot([0, 1], [0, 1], [0, 1])
-    ax.view_init(elev=20, azim=-45)
-    set_label_and_title(ax, mode='3d', axis_order=(1, 2, 0))
-    set_tick(ax, ticks_xlabel=np.arange(0, 6, 1), show_xlabel_every_ticks=2, show_ylabel_every_ticks=3)
-    fig.tight_layout()
+
+    # 创建网格
+    X, Y = np.meshgrid(x, x)  # 使用x两次创建正方形网格
+    Z = np.random.rand(len(x), len(x))  # 正确生成随机矩阵
+
+    # 绘制伪彩色图
+    im = ax.pcolor(X, Y, Z)
+
+    # 添加colorbar
+    cbar = fig.colorbar(im)
+
+    the_figure1(ax, cbar)
     plt.show()
