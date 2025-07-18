@@ -6,7 +6,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.ticker import MaxNLocator
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtCore import Qt
-from src.general import set_figure, numerical_transform
+from src.general.numerical import numerical_transform
+from src.general.figure import set_figure
 
 
 class HistogramWidget(QWidget):

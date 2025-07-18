@@ -1,9 +1,9 @@
 import h5py
 
-from src.general import set_figure
-from src.general.draw_figure import *
-from src.general.edit_data import *
-from src.general.filter import *
+from src.general.figure import set_figure
+from src.general import *
+from src.general import *
+from src.general import *
 
 def the_figure(ax, fig):
     set_figure.set_label_and_title(ax, title=f'Stability of Measurement System', xlabel='Measurement Sequence', ylabel='Wavelength(nm)', mode='3d', zlabel_rotation=90, label_pad=25, axis_order=(1, 2, 0))

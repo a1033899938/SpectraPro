@@ -118,8 +118,8 @@ if __name__ == '__main__':
     # target_path = 'OceanOpticsSpectrometer/hBN_afterSEM_mapping_0'
     # move_h5_group(h5_file, source_path, target_path)
 
-    # h5_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9.h5"
+    # h5_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9(1).h5"
     # delete_h5_group(h5_file, "OceanOpticsSpectrometer/hBN_afterSEM_mapping_1")
     # delete_h5_group(h5_file, "OceanOpticsSpectrometer/hBN_afterSEM_mapping_4")
-    # delete_h5_group(h5_file, "hBN_afterSEM_mapping_3")
+    # delete_h5_group(h5_file, "nplab_log")
     # delete_h5_group(h5_file, "hBN_afterSEM_mapping_4")

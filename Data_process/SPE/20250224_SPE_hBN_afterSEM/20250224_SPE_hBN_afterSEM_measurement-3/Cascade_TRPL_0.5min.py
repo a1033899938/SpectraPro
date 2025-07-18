@@ -7,7 +7,7 @@ from selenium.webdriver.common.devtools.v85.network import emulate_network_condi
 from setuptools.command.rotate import rotate
 from sympy import rotations
 
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
     import re
     import numpy as np

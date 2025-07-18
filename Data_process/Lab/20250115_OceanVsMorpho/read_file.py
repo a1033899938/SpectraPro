@@ -1,10 +1,6 @@
 import os
 import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -147,11 +143,10 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
+
     datapath1 = r'D:\WechatFile\WeChat Files\wxid_4ugho6kb3jdv12\FileStorage\File\2025-01\20250115_OceanVsMorpho\2025-01-15.h5'
     datapath2 = r'D:\WechatFile\WeChat Files\wxid_4ugho6kb3jdv12\FileStorage\File\2025-01\20250115_OceanVsMorpho\AuNP.csv'
 

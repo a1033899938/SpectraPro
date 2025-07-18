@@ -1,17 +1,19 @@
+import os.path
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
-from src.general import set_figure
-from src.general.curve_functions import *
-from src.general.save_data import *
+from src.general.figure import set_figure
+from src.general.numerical.curve_functions import *
+from src.general.load_data.read_2d_mat_from_txt import *
+
 
 def the_figure(ax):
-    set_figure.set_label_and_title(ax, title='Excitation Polarization', xlabel='', ylabel='', label_pad=25)
+    set_figure.set_label_and_title(ax, title='Excitation Polarization', xlabel='', ylabel='')
     set_figure.set_spines(ax, mode='polar')
-    set_figure.set_tick(ax, ticks_xlabel=np.radians(np.arange(0, 360, 45)), ticks_ylabel=np.arange(0, 1.2, 0.2))
+    set_figure.set_tick(ax, ticks_xlabel=np.radians(np.arange(0, 360, 45)), ticks_ylabel=np.arange(0, 1.2, 0.2), ticks_xlabel_pad=20)
     ax.axes.get_yticklabels()[0].set_visible(False)  # 隐藏y轴（极轴）第一个标签
     ax.axes.get_yticklabels()[-1].set_visible(False)  # 隐藏y轴（极轴）最后一个标签
-    set_figure.set_legend(ax, legend_labels = ['Excitaion', 'Emission'], location=[1, 1, 6, 0])
+    set_figure.set_legend(ax, legend_labels = ['Excitaion', 'Emission'], location=(1, 1, 3, 0))
     ax.grid(True)
 
 
@@ -19,14 +21,19 @@ datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\2025
 save_fig = 1
 
 """读取数据"""
-rots_ex, ints_ex = read_lines_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Excitation.txt'))
-rots_em, ints_em = read_lines_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Emission.txt'))
+data1 = read_2d_array_from_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Excitation.txt'), delimiter=' ')
+rots_ex = data1[:, 0]
+ints_ex = data1[:, 1]
+
+data2 = read_2d_array_from_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Emission.txt'), delimiter=' ')
+rots_em = data2[:, 0]
+ints_em = data2[:, 1]
 
 # 归一化数据
 ints_ex = ints_ex / np.max(ints_ex)
 ints_em = ints_em / np.max(ints_em)
 
-fig0 = plt.figure(figsize=(8, 6))
+fig0 = plt.figure(figsize=(12, 8), dpi=200)
 ax0 = fig0.add_subplot(111, polar=True)
 ax0.scatter(rots_ex, ints_ex, linewidth=3, color='#1f77b4')
 ax0.scatter(rots_em, ints_em, linewidth=3, color='#d62728')

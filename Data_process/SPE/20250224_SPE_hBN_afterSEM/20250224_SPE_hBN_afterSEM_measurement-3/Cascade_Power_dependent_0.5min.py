@@ -5,7 +5,7 @@ import spe_loader as sl
 import h5py
 from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
     import re
     import numpy as np
@@ -262,7 +262,7 @@ if __name__ == '__main__':
     ax0.set_box_aspect([1, 1, 1])
     ax0.view_init(elev=20, azim=45)
     # plt.tight_layout()
-    from src.general.save_figure import save_subfig
+    from src.general import save_subfig
     plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\0.5min\0.5min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3_logI.png')
     # plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\0.5min\0.5min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3.png')
 

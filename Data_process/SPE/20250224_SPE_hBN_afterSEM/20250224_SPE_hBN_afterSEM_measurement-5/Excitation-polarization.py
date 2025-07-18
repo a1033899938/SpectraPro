@@ -1,20 +1,15 @@
 import os.path
 from scipy.optimize import curve_fit
-import numpy as np
-import h5py
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
-from src.general import set_figure
-from src.general.edit_data import *
-from src.general.curve_functions import *
-from src.general.save_data import *
+from src.general.figure import set_figure
+from src.general.numerical.curve_functions import *
+from src.general.load_data.read_2d_mat_from_txt import *
 
 def the_figure(ax):
-    set_figure.set_label_and_title(ax, title='Excitation Polarization', xlabel='', ylabel='', label_pad=25)
+    set_figure.set_label_and_title(ax, title='Excitation Polarization', xlabel='', ylabel='')
     set_figure.set_spines(ax, mode='polar')
-    set_figure.set_tick(ax, ticks_xlabel=np.radians(np.arange(0, 360, 45)), ticks_ylabel=np.arange(0, 251, 50))
+    set_figure.set_tick(ax, ticks_xlabel=np.radians(np.arange(0, 360, 45)), ticks_ylabel=np.arange(0, 251, 50), ticks_xlabel_pad=20)
     ax.axes.get_yticklabels()[0].set_visible(False)  # 隐藏y轴（极轴）第一个标签
     ax.grid(True)
 
@@ -58,11 +53,13 @@ save_fig = 1
 # rots = np.radians(rots)*2
 
 """读取数据"""
-rots, ints = read_lines_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Excitation.txt'))
+data = read_2d_array_from_txt(os.path.join(os.path.dirname(datapath1), f'rots_ints-Excitation.txt'), delimiter=' ')
+rots = data[:, 0]
+ints = data[:, 1]
 """保存PL线形拟合数据"""
 # save_lines_txt(rots, ints, save_full_path=os.path.join(os.path.dirname(datapath1), f'rots_ints-Excitation.txt'))
 
-fig0 = plt.figure(figsize=(8, 6))
+fig0 = plt.figure(figsize=(12, 8), dpi=200)
 ax0 = fig0.add_subplot(111, polar=True)
 ax0.scatter(rots, ints, linewidth=3)
 

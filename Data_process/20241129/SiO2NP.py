@@ -1,10 +1,10 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.read_file import read_file
-from src.general import set_figure
+from src.general.load_data import read_file
+from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
-from src.general.save_figure import save_subfig
+from src.general import save_subfig
 # print(np.mean([2.8, 2.84, 2.82, 2.8, 2.74, 2.78]))
 print(11.5/26)
 '''

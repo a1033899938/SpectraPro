@@ -1,6 +1,6 @@
 import h5py
-from src.general.h5_methods import *
-from src.general.save_figure import save_subfig
+from src.general import *
+from src.general import save_subfig
 
 file_path = r'C:\Users\a1033\Desktop\Contemporary\20240620\2024-05-31.h5'
 f = h5py.File(file_path, "r")

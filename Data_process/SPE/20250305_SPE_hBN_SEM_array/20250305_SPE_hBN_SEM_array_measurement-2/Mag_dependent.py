@@ -7,10 +7,10 @@ import h5py
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 
-from src.general import set_figure
-from src.general.curve_functions import *
-from src.general.edit_data import choose_range
-from src.general.save_data import *
+from src.general.figure import set_figure
+from src.general import *
+from src.general import choose_range
+from src.general import *
 
 def the_figure(ax, key):
     """拟合曲线"""

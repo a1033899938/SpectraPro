@@ -1,6 +1,6 @@
-from src.general.read_file import read_file
+from src.general.load_data import read_file
 from src.ui.general_methods import GeneralMethods
-from src.general import set_figure
+from src.general.figure import set_figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
@@ -60,7 +60,7 @@ i = 0
 sps = []
 for file_path, file_name in zip(file_paths, file_names):
     i += 1
-    readFile = read_file(file_path, strip=[39,52], show_data_flag=False)
+    readFile = read_file(file_path, strip=[39, 52], show_data_flag=False)
     data = readFile.data
     x = data['wavelength']
     y = data['intensity']
@@ -156,7 +156,7 @@ fig = plt.figure(figsize=(8, 6))
 ax = fig.add_subplot(111, polar=True)
 ax.scatter(rots, ints, c='none', marker='^', edgecolors='#d62728', s=40, linewidths=1.5)
 
-set_figure.set_label_and_title(ax, title = 'Laser-Polarization', xlabel='', ylabel='', label_pad=25)
+set_figure.set_label_and_title(ax, title ='Laser-Polarization', xlabel='', ylabel='', label_pad=25)
 # set_figure.set_spines(ax0)
 # set_figure.set_tick(ax0, xbins=16, ybins=10, fontsize=10, fontweight='bold',
 #                     linewidth=3, tick_pad=5, direction='in',
@@ -182,7 +182,7 @@ i = 0
 sps = []
 for file_path, file_name in zip(file_paths, file_names):
     i += 1
-    readFile = read_file(file_path, strip=[45,56], show_data_flag=False)
+    readFile = read_file(file_path, strip=[45, 56], show_data_flag=False)
     data = readFile.data
     x = data['wavelength']
     y = data['intensity']

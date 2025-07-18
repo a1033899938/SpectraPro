@@ -1,10 +1,6 @@
 import os
 import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -147,11 +143,10 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
+
     datapath1 = r'D:\XmuNetDisk\2025-02-20.h5'
     datapath2 = r'D:\XmuNetDisk\2025-02-20（2）.h5'
 
@@ -287,8 +282,6 @@ if __name__ == '__main__':
     ax2.set_ylim(0,1)
     ax3.set_ylim(0,1)
     ax4.set_ylim(0,1)
-
-    from src.general.save_figure import save_subfig
 
     plt.savefig(r'D:\\XmuNetDisk\\WSe2_TBL_PL.png')
     plt.show()

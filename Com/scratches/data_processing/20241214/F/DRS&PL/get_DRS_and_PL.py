@@ -3,13 +3,13 @@ import pprint
 import pprint
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.read_file import read_file
-from src.general import set_figure
+from src.general.load_data import read_file
+from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
-from src.general.save_figure import save_subfig
+from src.general import save_subfig
 from matplotlib.lines import Line2D
 from scipy.optimize import curve_fit
-from src.general.sort_by_number import sort_files
+from src.general import sort_files
 import copy
 import re
 import pandas as pd

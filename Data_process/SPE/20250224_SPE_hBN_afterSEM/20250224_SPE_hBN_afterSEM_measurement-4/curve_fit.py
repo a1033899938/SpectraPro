@@ -4,10 +4,10 @@ import numpy as np
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from scipy.optimize import curve_fit
 
-from src.general.edit_data import *
-from src.general.curve_functions import *
-from src.general import set_figure
-from src.general.save_data import *
+from src.general import *
+from src.general import *
+from src.general.figure import set_figure
+from src.general import *
 
 
 

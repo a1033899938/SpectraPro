@@ -1,10 +1,9 @@
-import os
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.read_file import read_file
-from src.general import set_figure
+from src.general.load_data import read_file
+from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
-from src.general.save_figure import save_subfig
+
 # print(np.mean([2.8, 2.84, 2.82, 2.8, 2.74, 2.78]))
 print(11.5/26)
 '''
@@ -42,9 +41,6 @@ def gaussian(x, A, mu, sigma):
 
 def double_gaussian(x, A1, mu1, sigma1, A2, mu2, sigma2):
     return A1 * np.exp(- (x - mu1) ** 2 / (2 * sigma1 ** 2)) + A2 * np.exp(- (x - mu2) ** 2 / (2 * sigma2 ** 2))
-
-
-from scipy.optimize import curve_fit
 
 
 fig = plt.figure(figsize=(8, 6), dpi=100)

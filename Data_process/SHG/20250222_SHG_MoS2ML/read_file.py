@@ -3,7 +3,7 @@ import numpy as np
 import pprint
 import spe_loader as sl
 import h5py
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
 
 
@@ -208,7 +208,7 @@ if __name__ == '__main__':
                         ticks_xlabel=np.linspace(400, 1100, 8))  # Normalized
     set_figure.set_legend(ax1, legend_labels=legend_labels, font_size=15, location='upper right')
 
-    from src.general.save_figure import save_subfig
+    from src.general import save_subfig
     plt.savefig(r'D:\\XmuNetDisk\\20250222_SHG_NP_DF.png')
     fig.tight_layout()
     plt.show()

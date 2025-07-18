@@ -5,7 +5,7 @@ import spe_loader as sl
 import h5py
 from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
     import re
     import numpy as np
@@ -281,6 +281,6 @@ if __name__ == '__main__':
     set_figure.set_legend(ax0, legend_labels=legend_labels_afterSEM, font_size=15, location='upper right')
     # ax0.grid(True)
     plt.tight_layout()
-    from src.general.save_figure import save_subfig
+    from src.general import save_subfig
     plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-2\\cascade&2d\\20250224_SPE_hBN_afterSEM_measurement-2_Graph_decrease_power_energy.png')
     plt.show()

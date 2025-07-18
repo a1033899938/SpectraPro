@@ -1,12 +1,6 @@
 import os
-import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -149,15 +143,10 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
-    from scipy.optimize import curve_fit
-    import re
+    from src.general.figure import set_figure
     import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
 
 
     def gaussian(x, A, mu, sigma):
@@ -169,7 +158,6 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
@@ -263,7 +251,6 @@ if __name__ == '__main__':
     ax0.set_box_aspect([1, 1, 1])
     ax0.view_init(elev=20, azim=45)
     # plt.tight_layout()
-    from src.general.save_figure import save_subfig
     plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\0.5min\0.5min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3_normalized_by_power.png')
 
     plt.show()

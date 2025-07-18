@@ -1,12 +1,6 @@
 import os
-import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -149,15 +143,10 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
-    from scipy.optimize import curve_fit
-    import re
+    from src.general.figure import set_figure
     import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
 
 
     def gaussian(x, A, mu, sigma):
@@ -276,41 +265,52 @@ if __name__ == '__main__':
         return data
 
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
-    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\20250224_SPE_hBN_afterSEM_measurement-3.h5"
+    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\measurement-3.h5"
+
+
+    def the_figure0(ax):
+        """拟合曲线"""
+        set_figure.set_label_and_title(ax, title=f'Time-Resolved PL', xlabel='Time(s)', ylabel='Wavelength(nm)', zlabel='Intensity(cts)', zlabel_rotation=90, mode='3d', x_label_pad=25, xlabel_rotation=-30, z_label_pad=20, title_pad=0)
+        set_figure.set_spines(ax)
+        set_figure.set_tick(ax, ticks_xlabel=np.arange(0, 200, 20), ticks_ylabel=np.arange(400, 901, 100), mode='3d', ticks_xlabel_rotation=35)  # Normalized
+        ax.zaxis.set_rotate_label(False)
+        ax.set_box_aspect([1, 1, 1])
+        ax.view_init(elev=20, azim=-45)  # elev 是仰角，azim 是方位角
+        ax.grid(True)
+        plt.tight_layout()
+
+    def the_figure1(ax):
+        """拟合曲线"""
+        set_figure.set_label_and_title(ax, title=f'Time-Resolved PL', xlabel='Time(min)', ylabel='Wavelength(nm)', zlabel='Intensity(cts)', zlabel_rotation=90, mode='3d', x_label_pad=25, xlabel_rotation=-30, z_label_pad=20, title_pad=0)
+        set_figure.set_spines(ax)
+        set_figure.set_tick(ax, ticks_xlabel=np.arange(400, 901, 100))  # Normalized
+        plt.tight_layout()
 
     """fig0"""
     with h5py.File(datapath1, "r") as f:
         data = f['OceanOpticsSpectrometer']
         print(np.shape(data['1min_10uW_time_series_2_0']))
-        keys_1min_time_resolution = []
-        keys_1min_time_resolution.append('1min_10uW_time_series_2_0')
-        keys_1min_time_resolution.append('1min_20uW_time_series_2_0')
-        keys_1min_time_resolution.append('1min_50uW_time_series_2_0')
-        keys_1min_time_resolution.append('1min_100uW_time_series_0')
-        keys_1min_time_resolution.append('1min_500uW_time_series_0')
-        keys_1min_time_resolution.append('1min_1000uW_time_series_0')
-        keys_1min_time_resolution.append('1min_2000uW_time_series_0')
-        keys_1min_time_resolution.append('1min_3000uW_time_series_0')
-        keys_1min_time_resolution.append('1min_2000uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_1000uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_500uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_200uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_100uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_50uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_20uW_back_time_series_0')
-        keys_1min_time_resolution.append('1min_10uW_back_time_series_0')
-
+        keys_1min_time_resolution = ['1min_10uW_time_series_2_0', '1min_20uW_time_series_2_0',
+                                     '1min_50uW_time_series_2_0', '1min_100uW_time_series_0',
+                                     '1min_500uW_time_series_0', '1min_1000uW_time_series_0',
+                                     '1min_2000uW_time_series_0', '1min_3000uW_time_series_0',
+                                     '1min_2000uW_back_time_series_0', '1min_1000uW_back_time_series_0',
+                                     '1min_500uW_back_time_series_0', '1min_200uW_back_time_series_0',
+                                     '1min_100uW_back_time_series_0', '1min_50uW_back_time_series_0',
+                                     '1min_20uW_back_time_series_0', '1min_10uW_back_time_series_0']
 
         titles_1min_time_resolution = ['10uW', '20uW', '50uW', '100uW', '500uW', '1000uW', '2000uW', '3000uW',
                                   '2000uW_back', '1000uW_back', '500uW_back', '200uW_back', '100uW_back', '50uW_back',
                                   '20uW_back', '10uW_back']
         # plt.close('all')
         for idx, key in enumerate(keys_1min_time_resolution):
-            fig0 = plt.figure(figsize=(12, 9))
+            # if key != '1min_20uW_back_time_series_0':
+            if key != '1min_500uW_back_time_series_0':
+                continue
+            fig0 = plt.figure(figsize=(8*1.5, 6*1.5))
             ax0 = fig0.add_subplot(111, projection='3d')
             sps = data[key]
             bgd = np.array(sps.attrs['background'])
@@ -325,7 +325,7 @@ if __name__ == '__main__':
             x = wav
             print(np.shape(x))
             Z = np.array(sps)
-            y = np.arange(Z.shape[0])
+            y = np.arange(Z.shape[0])*10
 
             # """IQR法去噪点"""
             # for row in range(Z.shape[0]):
@@ -390,7 +390,7 @@ if __name__ == '__main__':
             print(np.shape(y))
             X, Y = np.meshgrid(x, y)
 
-            for i in y:
+            for i in np.arange(Z.shape[0]):
                 ax0.plot(Y[i], X[i], Z[i], color=plt.cm.viridis(i / len(y)),
                          linestyle='-', linewidth=1, alpha=1)
                 ax0.plot(Y[i], X[i], np.zeros_like(Z[i]), color='gray', alpha=1)
@@ -403,26 +403,7 @@ if __name__ == '__main__':
                     polygon.append([Y[i, j], X[i, j], Z[i, j]])
                 ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-            title = f'hBN-after-SEM-process_1min Time-Resolved PL\n{titles_1min_time_resolution[idx]}'
-            set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                           label_fontsize=25, title_fontsize=25,
-                                           label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                           label_fontweight='bold', title_fontweight='bold',
-                                           label_pad=15, title_pad=15, mode='3d')
-            set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-            set_figure.set_tick(ax0, xbins=6, ybins=10, fontsize=10, fontweight='bold',
-                                linewidth=3, tick_pad=5, direction='in',
-                                ticks_xlabel=np.arange(0, 20, 2),
-                                ticks_ylabel=np.arange(400, 901, 100), mode='3d')  # Normalized
-            ax0.set_xlabel(xlabel='Measurement  sequence', labelpad=15)
-            ax0.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
-            ax0.zaxis.set_rotate_label(False)
-            ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
-
-            ax0.set_box_aspect([1, 1, 1])
-            ax0.view_init(elev=20, azim=45)  # elev 是仰角，azim 是方位角
-            # plt.tight_layout()
-            ax0.grid(True)
+            the_figure0(ax0)
 
             # from src.general.save_figure import save_subfig
             # plt.savefig(f'D:\\ExpData\\SPE\\20250224_SPE_hBN_afterSEMprocess\\measurement-3\\1min_time_resolved_PL\\{titles_1min_time_resolution[idx]}.png')

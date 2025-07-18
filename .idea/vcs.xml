@@ -3,6 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/spe2py" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/Extension Library/spe2py" vcs="Git" />
   </component>
 </project>

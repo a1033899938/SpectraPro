@@ -3,7 +3,7 @@ import numpy as np
 import pprint
 import spe_loader as sl
 import h5py
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.signal import find_peaks
     from scipy.optimize import curve_fit
 
@@ -338,7 +338,7 @@ if __name__ == '__main__':
     ax3.set_xlim(700, 1000)
     ax4.set_xlim(700, 1000)
 
-    from src.general.save_figure import save_subfig
+    from src.general import save_subfig
     plt.savefig(r'D:\\XmuNetDisk\\WSe2_TBL_PL.png')
 
     print("A1_ax1:")

@@ -1,10 +1,11 @@
-from src.general.read_file import read_file
+from src.general.load_data.read_file import *
 from src.ui.general_methods import GeneralMethods
-from src.general import set_figure
+from src.general.figure import set_figure
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 from scipy.optimize import curve_fit
+
 
 
 def elliptical_polarization_malus_law(theta, I0, Ex, Ey, delta):
@@ -62,7 +63,7 @@ i = 0
 sps = []
 for file_path, file_name in zip(file_paths, file_names):
     i += 1
-    readFile = read_file(file_path, strip=[45,56], show_data_flag=False)
+    readFile = read_file(file_path, strip=[45, 56], show_data_flag=False)
     data = readFile.data
     x = data['wavelength']
     y = data['intensity']
@@ -74,22 +75,24 @@ for file_path, file_name in zip(file_paths, file_names):
 
     x = x[min_index:max_index]
     y = y[min_index:max_index]
+
+    wav = x
     sps.append(y)
 
     rots.append(int(file_name.split('_')[-1][1:4]))
     ints.append(np.max(y))
     ax0.plot(x, y, label=file_name)
 
-    title = f'Laser polarization-{i}'
-    set_figure.set_label_and_title(ax0, title=title, xlabel='Rotation(Degree)', ylabel='Intensity(counts)',
-                                   label_fontsize=25, title_fontsize=25,
-                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                   label_fontweight='bold', title_fontweight='bold',
-                                   label_pad=15, title_pad=15)
-    set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-    set_figure.set_tick(ax0, xbins=16, ybins=0, fontsize=10, fontweight='bold',
-                        linewidth=3, tick_pad=5, direction='in',
-                        ticks_xlabel=np.arange(440, 461, 5))  # Normalized
+    # title = f'Laser polarization-{i}'
+    # set_figure.set_label_and_title(ax0, title=title, xlabel='Rotation(Degree)', ylabel='Intensity(counts)',
+    #                                label_fontsize=25, title_fontsize=25,
+    #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+    #                                label_fontweight='bold', title_fontweight='bold',
+    #                                label_pad=15, title_pad=15)
+    # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+    # set_figure.set_tick(ax0, xbins=16, ybins=0, fontsize=10, fontweight='bold',
+    #                     linewidth=3, tick_pad=5, direction='in',
+    #                     ticks_xlabel=np.arange(440, 461, 5))  # Normalized
 
 fig = plt.figure(figsize=(12, 9))
 ax = fig.add_subplot(111, projection='3d')
@@ -111,28 +114,27 @@ for i in y:
         polygon.append([Y[i, j], X[i, j], Z[i, j]])
     ax.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-title = f'Excitation-Polarization'
-set_figure.set_label_and_title(ax, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                               label_fontsize=25, title_fontsize=25,
-                               label_font_family='Times New Roman', title_font_family='Times New Roman',
-                               label_fontweight='bold', title_fontweight='bold',
-                               label_pad=15, title_pad=15, mode='3d')
-set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=10, fontweight='bold',
-                    linewidth=3, tick_pad=5, direction='in',
-                    ticks_xlabel=np.arange(0, 721, 120),
-                    ticks_ylabel=np.arange(np.min(x), np.max(x)+1, 5), mode='3d')  # Normalized
-ax.set_xlabel(xlabel='Angle(degree)', labelpad=15)
-ax.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
-ax.zaxis.set_rotate_label(False)
-ax.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
+# title = f'Excitation-Polarization'
+# set_figure.set_label_and_title(ax, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
+#                                label_fontsize=25, title_fontsize=25,
+#                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+#                                label_fontweight='bold', title_fontweight='bold',
+#                                label_pad=15, title_pad=15, mode='3d')
+# set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+# set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=10, fontweight='bold',
+#                     linewidth=3, tick_pad=5, direction='in',
+#                     ticks_xlabel=np.arange(0, 721, 120),
+#                     ticks_ylabel=np.arange(np.min(x), np.max(x)+1, 5), mode='3d')  # Normalized
+# ax.set_xlabel(xlabel='Angle(degree)', labelpad=15)
+# ax.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
+# ax.zaxis.set_rotate_label(False)
+# ax.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
 
 # ax0.set_box_aspect([1, 1, 1])
 ax.view_init(elev=20, azim=45)  # elev 是仰角，azim 是方位角
 plt.tight_layout()
 # ax.grid(True)
 if save_fig == 1:
-    from src.general.save_figure import save_subfig
     plt.savefig(fr"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\ARS\20250318\LaserPolarization\Laser_Polarization_3d.png")
 
 # 将两个列表组合在一起，并根据 list1 排序
@@ -146,12 +148,21 @@ ints = list(ints)
 rots = np.array(rots)
 ints = np.array(ints)
 rots = np.radians(rots)*4
+import os
+
+np.savez(os.path.join(os.path.dirname(folder_path), 'wav_sps_excitation.npz'),
+             wav=wav,
+             sps=sps)
+
+np.savez(os.path.join(os.path.dirname(folder_path), 'rots_ints_excitation.npz'),
+             rots=rots,
+             ints=ints)
 
 fig = plt.figure(figsize=(12, 9))
 ax = fig.add_subplot(111, polar=True)
 ax.scatter(rots, ints, linewidth=3)
 
-set_figure.set_label_and_title(ax, title = 'Excitation-Polarization', xlabel='', ylabel='', label_pad=25)
+set_figure.set_label_and_title(ax, title ='Excitation-Polarization', xlabel='', ylabel='', label_pad=25)
 # set_figure.set_spines(ax0)
 # set_figure.set_tick(ax0, xbins=16, ybins=10, fontsize=10, fontweight='bold',
 #                     linewidth=3, tick_pad=5, direction='in',
@@ -171,7 +182,6 @@ for spine in ax.spines.values():
     spine.set_linewidth(3)  # 设置所有脊线宽度（可以按需指定特定方向的脊线）
 
 if save_fig == 1:
-    from src.general.save_figure import save_subfig
     plt.savefig(fr"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\ARS\20250318\LaserPolarization\Laser_Polarization_2d.png")
 
 plt.show()

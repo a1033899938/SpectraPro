@@ -1,11 +1,7 @@
-import os
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.read_file import read_file
-from src.general import set_figure
+from src.general.load_data import read_file
 from src.ui.general_methods import GeneralMethods
-from src.general.save_figure import save_subfig
-from scipy.optimize import curve_fit
 
 
 def gaussian(x, A, mu, sigma):

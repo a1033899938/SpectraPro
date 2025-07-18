@@ -1,12 +1,6 @@
 import os
-import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -149,15 +143,10 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
-    from scipy.optimize import curve_fit
-    import re
+    from src.general.figure import set_figure
     import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
 
 
     def gaussian(x, A, mu, sigma):
@@ -169,11 +158,21 @@ if __name__ == '__main__':
 
 
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
-    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\20250224_SPE_hBN_afterSEM_measurement-3.h5"
+    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\measurement-3.h5"
+    def the_figure0(ax, powers):
+        """拟合曲线"""
+        set_figure.set_label_and_title(ax, title=f'Power-dependent PL', xlabel='Excitation Power(uW)', ylabel='Wavelength(nm)', zlabel='Normalized Intensity(a.u.)', zlabel_rotation=90, mode='3d', x_label_pad=32, xlabel_rotation=-30, z_label_pad=25, title_pad=0)
+        set_figure.set_spines(ax)
+        ticks_xlabel = np.arange(0, len(powers), 2)
+        set_figure.set_tick(ax, ticks_xlabel=ticks_xlabel, change_ticks_xlabel=[powers[i] for i in ticks_xlabel if i < len(powers)], ticks_ylabel=np.arange(400, 901, 100), mode='3d', ticks_xlabel_rotation=35, ticks_zlabel_pad=10)  # Normalized
+        ax.zaxis.set_rotate_label(False)
+        ax.set_box_aspect([1, 1, 1])
+        ax.view_init(elev=20, azim=-45)  # elev 是仰角，azim 是方位角
+        ax.grid(True)
+        plt.tight_layout()
 
     """fig0"""
     with h5py.File(datapath1, "r") as f:
@@ -190,19 +189,20 @@ if __name__ == '__main__':
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_2000uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_1000uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_500uW_back_0')
-        keys_afterSEM.append('hBN_afterSEM_5kV_1min_200uW_back_0')
+        # keys_afterSEM.append('hBN_afterSEM_5kV_1min_200uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_100uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_50uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_20uW_back_0')
         keys_afterSEM.append('hBN_afterSEM_5kV_1min_10uW_back_0')
         legend_labels_afterSEM = ['10uW', '20uW', '50uW', '100uW', '500uW', '1000uW', '2000uW', '3000uW',
-                                  '2000uW*', '1000uW*', '500uW*', '200uW*', '100uW*', '50uW*',
+                                  '2000uW*', '1000uW*', '500uW*', # '200uW*',
+                                  '100uW*', '50uW*',
                                   '20uW*', '10uW*']
-
-        fig0 = plt.figure(figsize=(12, 9))
+        powers = [10, 20, 50, 100 , 500 ,1000, 2000, 3000, 2000, 1000, 500, 100, 50, 20, 10]
+        fig0 = plt.figure(figsize=(8*1.5, 6*1.5))
         ax0 = fig0.add_subplot(111, projection='3d')
         sps = []
-        for key in keys_afterSEM:
+        for i, key in enumerate(keys_afterSEM):
             sp = data[key]
             bgd = np.array(sp.attrs['background'])
             wav = np.array(sp.attrs['wavelengths'])
@@ -211,6 +211,7 @@ if __name__ == '__main__':
             sp = sp / sp_time
             bgd = bgd / bgd_time
             sp = np.array(sp) - bgd
+            sp = sp / powers[i]
             sps.append(sp)
 
         x = wav
@@ -239,30 +240,31 @@ if __name__ == '__main__':
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
             ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-    title = f'hBN-after-SEM-process_5kV_1min\n Excitation power-dependent PL spectra'
-    set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                   label_fontsize=25, title_fontsize=25,
-                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                   label_fontweight='bold', title_fontweight='bold',
-                                   label_pad=15, title_pad=15, mode='3d')
-    set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-    set_figure.set_tick(ax0, xbins=6, ybins=10, fontsize=10, fontweight='bold',
-                        linewidth=3, tick_pad=5, direction='in',
-                        ticks_xlabel=np.arange(0, len(keys_afterSEM), 1),
-                        ticks_ylabel=np.arange(400, 901, 50), mode='3d')  # Normalized
-    plt.xticks(np.arange(0, len(legend_labels_afterSEM)), legend_labels_afterSEM, rotation=-60)
-    ax0.set_xlabel(xlabel='Excitation Power(uW)', labelpad=30)
-    ax0.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
-    ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
-    ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
-    # ax0.set_zlabel(zlabel='log(I)', rotation=90, labelpad=15)
-
-    ax0.grid(True)
-    ax0.set_box_aspect([1, 1, 1])
-    ax0.view_init(elev=20, azim=45)
-    # plt.tight_layout()
-    from src.general.save_figure import save_subfig
-    # plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\1min\1min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3_logI.png')
-    plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\1min\1min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3.png')
+    the_figure0(ax0, powers)
+    # title = f'hBN-after-SEM-process_5kV_1min\n Excitation power-dependent PL spectra'
+    # set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
+    #                                label_fontsize=25, title_fontsize=25,
+    #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+    #                                label_fontweight='bold', title_fontweight='bold',
+    #                                label_pad=15, title_pad=15, mode='3d')
+    # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+    # set_figure.set_tick(ax0, xbins=6, ybins=10, fontsize=10, fontweight='bold',
+    #                     linewidth=3, tick_pad=5, direction='in',
+    #                     ticks_xlabel=np.arange(0, len(keys_afterSEM), 1),
+    #                     ticks_ylabel=np.arange(400, 901, 50), mode='3d')  # Normalized
+    # plt.xticks(np.arange(0, len(legend_labels_afterSEM)), legend_labels_afterSEM, rotation=-60)
+    # ax0.set_xlabel(xlabel='Excitation Power(uW)', labelpad=30)
+    # ax0.set_ylabel(ylabel='Wavelength(nm)', labelpad=15)
+    # ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
+    # ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
+    # # ax0.set_zlabel(zlabel='log(I)', rotation=90, labelpad=15)
+    #
+    # ax0.grid(True)
+    # ax0.set_box_aspect([1, 1, 1])
+    # ax0.view_init(elev=20, azim=45)
+    # # plt.tight_layout()
+    # from src.general.save_figure import save_subfig
+    # # plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\1min\1min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3_logI.png')
+    # plt.savefig(r'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-3\1min\1min_cascade\\20250224_SPE_hBN_afterSEM_measurement-3.png')
 
     plt.show()

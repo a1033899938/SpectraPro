@@ -1,12 +1,10 @@
 import h5py
 import os
 from scipy.optimize import curve_fit
-from src.general import set_figure
-from src.general.draw_figure import *
-from src.general.edit_data import *
-from src.general.filter import *
-from src.general.curve_functions import *
-from src.general.save_data import *
+from src.general.figure import set_figure
+from src.general import *
+import numpy as np
+from matplotlib import pyplot as plt
 
 def the_figure(ax, key):
     set_figure.set_label_and_title(ax, title=f'hBN-after-SEM-process PL-Continuous Collection\n{key[13:-15]}', xlabel='Measurement  sequence', ylabel='Wavelength(nm)', mode='3d', zlabel_rotation=90, axis_order=(1, 2, 0))
@@ -106,13 +104,15 @@ with h5py.File(datapath1, "r") as f:
             #     gammas_now.append(gamma1)
 
             """读取数据"""
-            times_now, ints_now = read_lines_txt(fr"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\stability\txt\times_ints_{key[13:-15]}.txt")
+            data = np.load(fr"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\stability\txt\times_ints_{key[13:-15]}.txt")
+            times_now = data[:, 0]
+            ints_now = data[:, 1]
             """保存PL线形拟合数据"""
             # save_lines_txt(times_now, ints_now, save_full_path=os.path.join(r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-5\stability\txt", f'times_ints_{key[13:-15]}.txt'))
 
             fig1 = plt.figure(figsize=(8, 6))
             ax1 = fig1.add_subplot(111)
-            ax1.plot(times_now, ints_now, color='#1f77b4', linewidth=2)
+            # ax1.plot(times_now, ints_now, color='#1f77b4', linewidth=2)
             the_figure1(ax1, key)
             if save_fig == 1:
                 fig1.savefig(os.path.join(os.path.dirname(datapath1), 'stability', f'stability_{key[13:-15]}.png'))

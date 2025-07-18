@@ -1,6 +1,6 @@
 """打开文件夹，将指定"""
 import json
-from src.general.h5_tree import *
+from src.general import *
 import h5py
 
 tree_json_path = r'D:\GitProject\SpectraPro\test\JunjieXie\data_processing\20240925\tree.json'

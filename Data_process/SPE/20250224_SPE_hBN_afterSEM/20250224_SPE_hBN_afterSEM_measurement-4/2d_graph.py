@@ -1,8 +1,8 @@
 import h5py
-from src.general import set_figure
+from src.general.figure import set_figure
 import matplotlib.pyplot as plt
-from src.general.edit_data import *
-from src.general.curve_functions import *
+from src.general import *
+from src.general import *
 
 def the_figure(ax, fig, legend_labels_afterSEM):
     set_figure.set_label_and_title(ax, title='hBN-after-SEM-process\nPL spectra')

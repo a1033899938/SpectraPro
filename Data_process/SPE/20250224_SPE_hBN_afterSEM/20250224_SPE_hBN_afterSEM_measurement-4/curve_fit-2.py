@@ -1,12 +1,6 @@
 import os
-import numpy as np
-import pprint
 import spe_loader as sl
-import h5py
-from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
-import src.spe2py.spe2py as spe
 import scipy.io as sio
 
 
@@ -149,17 +143,21 @@ def matstruct_to_dict(matstruct):
 
 if __name__ == '__main__':
     import h5py
-    from shutil import copyfile
-    import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
-    import re
     import numpy as np
-    from mpl_toolkits.mplot3d import Axes3D
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+
+    def the_figure(ax):
+        """拟合曲线"""
+        set_figure.set_label_and_title(ax, title=f'', ylabel='Intensity(cts)')
+        set_figure.set_spines(ax)
+        set_figure.set_tick(ax, ticks_xlabel=np.arange(500, 701, 50))  # Normalized
+        set_figure.set_scientific_y_ticks(ax, sci_fontsize=20)
+        plt.tight_layout()
 
     def gaussian(x, A, mu, sigma):
         return A * np.exp(- (x - mu) ** 2 / (2 * sigma ** 2))
@@ -198,7 +196,6 @@ if __name__ == '__main__':
         return peak1 + peak2 + peak3
 
     import matplotlib.pyplot as plt
-    import matplotlib.ticker as ticker
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
@@ -213,10 +210,10 @@ if __name__ == '__main__':
         wav_fits = np.zeros([6, 4])
         gamma_fits = np.zeros([6, 4])
         mag_max = np.zeros([6, 4])
+        fig0 = plt.figure(figsize=(8, 6))
+        ax0 = fig0.add_subplot(111)
         for key in data.keys():
             print(key)
-            fig0 = plt.figure(figsize=(8, 6))
-            ax0 = fig0.add_subplot(111)
 
             sp = data[key]
             bgd = np.array(sp.attrs['background'])
@@ -227,9 +224,9 @@ if __name__ == '__main__':
             bgd = bgd / bgd_time
             sp = np.array(sp) - bgd
 
-            min_differences = np.abs(wav - 400)
+            min_differences = np.abs(wav - 500)
             min_index = np.argmin(min_differences)
-            max_differences = np.abs(wav - 900)
+            max_differences = np.abs(wav - 700)
             max_index = np.argmin(max_differences)
 
             x = wav[min_index:max_index]
@@ -306,27 +303,27 @@ if __name__ == '__main__':
                 y_fit1 = lorentzian(x_for_fit, A1, x1, gamma1)
                 y_fit2 = gaussian(x_for_fit, A2, x2, gamma2)
                 y_fit3 = lorentzian(x_for_fit, A3, x3, gamma3)
-                ax0.plot(x, y_fit, 'r-', label='Fitted Gaussian')
-                ax0.plot(x_for_fit, y_fit1, 'b--', label='Fitted Gaussian')
-                ax0.plot(x_for_fit, y_fit2, 'g--', label='Fitted Gaussian')
-                ax0.plot(x_for_fit, y_fit3, 'm--', label='Fitted Gaussian', linewidth=2)
+                # ax0.plot(x, y_fit, 'r-', label='Fitted Gaussian')
+                # ax0.plot(x_for_fit, y_fit1, 'b--', label='Fitted Gaussian')
+                # ax0.plot(x_for_fit, y_fit2, 'g--', label='Fitted Gaussian')
+                # ax0.plot(x_for_fit, y_fit3, 'm--', label='Fitted Gaussian', linewidth=2)
             except Exception as e:
                 print(e)
 
-            title = f'{key[:-2]}'
-            set_figure.set_label_and_title(ax0, title=title, ylabel='Intensity(counts)',
-                                           label_fontsize=25, title_fontsize=25,
-                                           label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                           label_fontweight='bold', title_fontweight='bold',
-                                           label_pad=15, title_pad=15)
-            set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-            set_figure.set_tick(ax0, xbins=16, ybins=10, fontsize=10, fontweight='bold',
-                                linewidth=3, tick_pad=5, direction='in',
-                                ticks_xlabel=np.arange(400, 901, 50))  # Normalized
-            # ax0.grid(True)
-            plt.tight_layout()
+            the_figure(ax0)
+            # title = f'{key[:-2]}'
+            # set_figure.set_label_and_title(ax0, title=title, ylabel='Intensity(counts)',
+            #                                label_fontsize=25, title_fontsize=25,
+            #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+            #                                label_fontweight='bold', title_fontweight='bold',
+            #                                label_pad=15, title_pad=15)
+            # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+            # set_figure.set_tick(ax0, xbins=16, ybins=10, fontsize=10, fontweight='bold',
+            #                     linewidth=3, tick_pad=5, direction='in',
+            #                     ticks_xlabel=np.arange(400, 901, 50))  # Normalized
+            # # ax0.grid(True)
+            # plt.tight_layout()
             if save_fig == 1:
-                from src.general.save_figure import save_subfig
                 plt.savefig(fr'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-4\curve_fit-2\20250224_SPE_hBN_afterSEM_measurement4_curve_fit-{key}.png')
 
         """peak1"""
@@ -350,25 +347,25 @@ if __name__ == '__main__':
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
             ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-        title = f'Linewidth of peak-1'
-        set_figure.set_label_and_title(ax0, title=title, xlabel='Exposure time(min)', ylabel='Intensity(counts)',
-                                       label_fontsize=20, title_fontsize=25,
-                                       label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                       label_fontweight='bold', title_fontweight='bold',
-                                       label_pad=15, title_pad=5, mode='3d')
-        set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-        set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
-                            linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
-        plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
-        ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
-        ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
-        ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
-        ax0.set_zlabel(zlabel='FWHM(nm)', rotation=90, labelpad=15)
-        # ax0.grid(True)
-        ax0.view_init(elev=20, azim=45)
-        # ax0.view_init(elev=0, azim=0)
-        ax0.set_zlim([0, 12])
-        plt.tight_layout()
+        # title = f'Linewidth of peak-1'
+        # set_figure.set_label_and_title(ax0, title=title, xlabel='Exposure time(min)', ylabel='Intensity(counts)',
+        #                                label_fontsize=20, title_fontsize=25,
+        #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+        #                                label_fontweight='bold', title_fontweight='bold',
+        #                                label_pad=15, title_pad=5, mode='3d')
+        # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+        # set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
+        #                     linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
+        # plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
+        # ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
+        # ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
+        # ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
+        # ax0.set_zlabel(zlabel='FWHM(nm)', rotation=90, labelpad=15)
+        # # ax0.grid(True)
+        # ax0.view_init(elev=20, azim=45)
+        # # ax0.view_init(elev=0, azim=0)
+        # ax0.set_zlim([0, 12])
+        # plt.tight_layout()
 
         # from src.general.save_figure import save_subfig
         if save_fig == 1:
@@ -395,24 +392,24 @@ if __name__ == '__main__':
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
             ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-        title = f'Magnitude of peak-1'
-        set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                       label_fontsize=20, title_fontsize=25,
-                                       label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                       label_fontweight='bold', title_fontweight='bold',
-                                       label_pad=15, title_pad=5, mode='3d')
-        set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-        set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
-                            linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
-        plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
-        ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
-        ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
-        ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
-        ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
-        # ax0.grid(True)
-        ax0.view_init(elev=20, azim=45)
-        # ax0.view_init(elev=0, azim=0)
-        plt.tight_layout()
+        # title = f'Magnitude of peak-1'
+        # set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
+        #                                label_fontsize=20, title_fontsize=25,
+        #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+        #                                label_fontweight='bold', title_fontweight='bold',
+        #                                label_pad=15, title_pad=5, mode='3d')
+        # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+        # set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
+        #                     linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
+        # plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
+        # ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
+        # ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
+        # ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
+        # ax0.set_zlabel(zlabel='Intensity(counts)', rotation=90, labelpad=15)
+        # # ax0.grid(True)
+        # ax0.view_init(elev=20, azim=45)
+        # # ax0.view_init(elev=0, azim=0)
+        # plt.tight_layout()
 
         # from src.general.save_figure import save_subfig
         if save_fig == 1:
@@ -426,6 +423,7 @@ if __name__ == '__main__':
         y = np.arange(0, 6, 1)
         X, Y = np.meshgrid(x, y)
         Z = wav_fits
+        np.save(os.path.join(os.path.dirname(datapath1), fr'wavlength_fit.npy'), Z)
 
         for i in y:
             ax0.plot(Y[i], X[i], Z[i], 'o-', markeredgecolor='black', markerfacecolor=plt.cm.viridis(i / len(y)), markersize=8, linewidth=1, alpha=1)
@@ -439,25 +437,25 @@ if __name__ == '__main__':
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
             ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-        title = f'Center-wavelength of peak-1'
-        set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                       label_fontsize=20, title_fontsize=25,
-                                       label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                       label_fontweight='bold', title_fontweight='bold',
-                                       label_pad=15, title_pad=5, mode='3d')
-        set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-        set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
-                            linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
-        plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
-        ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
-        ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
-        ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
-        ax0.set_zlabel(zlabel='Wavelength(nm)', rotation=90, labelpad=15)
-        # ax0.grid(True)
-        ax0.view_init(elev=20, azim=45)
-        # ax0.view_init(elev=0, azim=0)
-        ax0.set_zlim([535, 540])
-        plt.tight_layout()
+        # title = f'Center-wavelength of peak-1'
+        # set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
+        #                                label_fontsize=20, title_fontsize=25,
+        #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+        #                                label_fontweight='bold', title_fontweight='bold',
+        #                                label_pad=15, title_pad=5, mode='3d')
+        # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+        # set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
+        #                     linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
+        # plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
+        # ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
+        # ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
+        # ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
+        # ax0.set_zlabel(zlabel='Wavelength(nm)', rotation=90, labelpad=15)
+        # # ax0.grid(True)
+        # ax0.view_init(elev=20, azim=45)
+        # # ax0.view_init(elev=0, azim=0)
+        # ax0.set_zlim([535, 540])
+        # plt.tight_layout()
 
         # from src.general.save_figure import save_subfig
         if save_fig == 1:
@@ -484,26 +482,25 @@ if __name__ == '__main__':
                 polygon.append([Y[i, j], X[i, j], Z[i, j]])
             ax0.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
 
-        title = f'Maximum of curve'
-        set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
-                                       label_fontsize=20, title_fontsize=25,
-                                       label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                       label_fontweight='bold', title_fontweight='bold',
-                                       label_pad=15, title_pad=5, mode='3d')
-        set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-        set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
-                            linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
-        plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
-        ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
-        ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
-        ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
-        ax0.set_zlabel(zlabel='Peak Intensity(counts)', rotation=90, labelpad=15)
-        # ax0.grid(True)
-        ax0.view_init(elev=20, azim=45)
-        # ax0.view_init(elev=0, azim=0)
-        plt.tight_layout()
+        # title = f'Maximum of curve'
+        # set_figure.set_label_and_title(ax0, title=title, xlabel='Process time(min)', ylabel='Intensity(counts)',
+        #                                label_fontsize=20, title_fontsize=25,
+        #                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+        #                                label_fontweight='bold', title_fontweight='bold',
+        #                                label_pad=15, title_pad=5, mode='3d')
+        # set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+        # set_figure.set_tick(ax0, xbins=6, ybins=5, fontsize=15, fontweight='bold',
+        #                     linewidth=3, tick_pad=5, direction='in', mode='3d')  # Normalized
+        # plt.xticks(np.arange(0, 6), ['5', '10', '15', '5*', '10*', '15*'], rotation=0)
+        # ax0.set_ylabel(ylabel='Exposure Time(min)', labelpad=15)
+        # ax0.set_xlabel(xlabel='EHT(kV)', labelpad=15)
+        # ax0.zaxis.set_rotate_label(False)  # 关闭默认旋转设置
+        # ax0.set_zlabel(zlabel='Peak Intensity(counts)', rotation=90, labelpad=15)
+        # # ax0.grid(True)
+        # ax0.view_init(elev=20, azim=45)
+        # # ax0.view_init(elev=0, azim=0)
+        # plt.tight_layout()
 
-        from src.general.save_figure import save_subfig
         if save_fig == 1:
             plt.savefig(
                 fr'D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-4\curve_fit-2\20250224_SPE_hBN_afterSEM_measurement4_curve_fit-paras_phase_Maximum_of_peaks.png')

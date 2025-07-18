@@ -6,8 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.patches import Rectangle
-from src.general import read_file
-from src.general import set_figure, numerical_transform
+from src.general.load_data import read_file
+from src.general.numerical import numerical_transform
+from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
 
 

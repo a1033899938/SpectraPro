@@ -6,10 +6,10 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 import h5py
 
-from src.general import set_figure
-from src.general.curve_functions import *
-from src.general.edit_data import *
-from src.general.save_data import *
+from src.general.figure import set_figure
+from src.general import *
+from src.general import *
+from src.general import *
 
 def the_figure(ax, key):
     set_figure.set_label_and_title(ax, title=f'{key[:-2]}', ylabel='Intensity(counts)')

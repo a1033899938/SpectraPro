@@ -4,10 +4,10 @@ import os
 import h5py
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from src.general import set_figure
-from src.general.curve_functions import *
-from src.general.edit_data import *
-from src.general.draw_figure import *
+from src.general.figure import set_figure
+from src.general import *
+from src.general import *
+from src.general import *
 
 def wavlength_to_energy(wavelength):
     return 1240 / wavelength

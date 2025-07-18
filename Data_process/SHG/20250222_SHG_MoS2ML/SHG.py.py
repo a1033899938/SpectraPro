@@ -1,17 +1,9 @@
-import os
-import pprint
-import pprint
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.read_file import read_file
-from src.general import set_figure
+from src.general.load_data import read_file
 from src.ui.general_methods import GeneralMethods
-from src.general.save_figure import save_subfig
-from src.general.sort_by_number import sort_files
-import copy
+from src.general import sort_files
 import re
-import pandas as pd
-import scipy.io as sio
 
 '''
 curve colors
@@ -57,9 +49,6 @@ def double_gaussian(x, A1, mu1, sigma1, A2, mu2, sigma2):
     return A1 * np.exp(- (x - mu1) ** 2 / (2 * sigma1 ** 2)) + A2 * np.exp(- (x - mu2) ** 2 / (2 * sigma2 ** 2))
 
 
-from scipy.optimize import curve_fit
-
-
 def find_nearest_idx(lst, target):
     # 计算每个元素与目标值的差值，返回最小值的索引
     return min(range(len(lst)), key=lambda i: abs(lst[i] - target))
@@ -96,15 +85,15 @@ for num, sp in zip(num_file, sps):
     # save_subfig(fig, save_filename)
     # plt.close(fig)
 title = 'MoS2 SHG'
-set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(Contrast, Normalized)',
-                               label_fontsize=25, title_fontsize=25,
-                               label_font_family='Times New Roman', title_font_family='Times New Roman',
-                               label_fontweight='bold', title_fontweight='bold',
-                               label_pad=8, title_pad=15)
-set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
-                    linewidth=3, tick_pad=5, direction='in'
-                    )
+# set_figure.set_label_and_title(ax, title=title, ylabel='Intensity(Contrast, Normalized)',
+#                                label_fontsize=25, title_fontsize=25,
+#                                label_font_family='Times New Roman', title_font_family='Times New Roman',
+#                                label_fontweight='bold', title_fontweight='bold',
+#                                label_pad=8, title_pad=15)
+# set_figure.set_spines(ax, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
+# set_figure.set_tick(ax, xbins=6, ybins=10, fontsize=15, fontweight='bold',
+#                     linewidth=3, tick_pad=5, direction='in'
+#                     )
 
 # num_file = angles_deg = pd.to_numeric(num_file)
 # fig = plt.figure(figsize=(8, 6), dpi=100)

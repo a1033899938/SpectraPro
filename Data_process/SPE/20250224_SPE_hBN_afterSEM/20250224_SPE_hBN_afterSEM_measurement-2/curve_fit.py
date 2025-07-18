@@ -5,7 +5,7 @@ import spe_loader as sl
 import h5py
 from selenium.webdriver.common.devtools.v85.network import emulate_network_conditions
 
-from src.general.winspec import SpeFile
+from src.general import SpeFile
 import src.spe2py.spe2py as spe
 import scipy.io as sio
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
     import pySPM
     import matplotlib.pyplot as plt
     import pprint
-    from src.general import set_figure
+    from src.general.figure import set_figure
     from scipy.optimize import curve_fit
     import re
     import numpy as np
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     import numpy as np
 
-    datapath1 = r'D:\XmuNetDisk\20250224_SPE_hBN_afterSEM (1)\20250224_SPE_hBN_afterSEM_test2.h5'
+    datapath1 = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-2\measurement-2.h5"
 
     """fig1"""
     with h5py.File(datapath1, "r") as f:
@@ -294,72 +294,50 @@ if __name__ == '__main__':
                 print(e)
 
             title = f'Excitation power: {legend_labels_afterSEM[i]}'
-            set_figure.set_label_and_title(ax0, title=title, ylabel='Intensity(counts)',
-                                           label_fontsize=25, title_fontsize=25,
-                                           label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                           label_fontweight='bold', title_fontweight='bold',
-                                           label_pad=15, title_pad=15)
-            set_figure.set_spines(ax0, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-            set_figure.set_tick(ax0, xbins=16, ybins=10, fontsize=15, fontweight='bold',
-                                linewidth=3, tick_pad=5, direction='in',
-                                ticks_xlabel=np.arange(400, 901, 50))  # Normalized
-            # set_figure.set_legend(ax0, legend_labels=legend_labels_afterSEM, font_size=15, location='upper right')
-            # ax0.grid(True)
+            set_figure.set_label_and_title(ax0, title=title, ylabel='Intensity(cts)')
+            set_figure.set_spines(ax0)
+            set_figure.set_tick(ax0, ticks_xlabel=np.arange(400, 901, 50))  # Normalized
             plt.text(570, np.max(y)*0.9, f'A1 = {A1:.2f}, mu1 = {x1:.2f}, sigma1 = {gamma1:.2f} \nA2 = {A2:.2f}, mu2 = {x2:.2f}, sigma2 = {gamma2:.2f} \nA3 = {A2:.2f}, mu3 = {x3:.2f}, sigma3 = {gamma3:.2f}', fontdict=None, fontweight='bold', fontsize=15, color='black')
             plt.tight_layout()
             # from src.general.save_figure import save_subfig
             # plt.savefig(f'D:\\ExpData\\SPE\\20250224_SPE_hBN_afterSEMprocess\\measurement-2\\curve_fit\\curve_fit_{key}.png')
 
     """fig1 ax1"""
-    fig1 = plt.figure(figsize=(24, 6))
-    ax1 = fig1.add_subplot(131)
-    ax1.plot(excitation_power, mag_fits, 'o-', markersize=10)
+    fig1 = plt.figure(figsize=(8, 6*1.1))
+    ax1 = fig1.add_subplot(111)
+    ax1.plot(excitation_power, mag_fits, 'o--', markersize=15, markerfacecolor='none', markeredgewidth=2)
 
-    title = f'Excitation power-denpendent intensity\nof peak 1'
-    set_figure.set_label_and_title(ax1, title=title, xlabel='Excitation Power(uW)', ylabel='Intensity(counts)',
-                                   label_fontsize=25, title_fontsize=25,
-                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                   label_fontweight='bold', title_fontweight='bold',
-                                   label_pad=15, title_pad=15)
-    set_figure.set_spines(ax1, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-    set_figure.set_tick(ax1, xbins=len(excitation_power), ybins=10, fontsize=15, fontweight='bold',
-                        linewidth=3, tick_pad=5, direction='in',
-                        ticks_xlabel=np.linspace(0, 3000, 7))  # Normalized
+    title = f'Power-denpendent intensity\nof peak 1'
+    set_figure.set_label_and_title(ax1, title=title, xlabel='Excitation Power(uW)', ylabel='Intensity(cts)')
+    set_figure.set_spines(ax1)
+    set_figure.set_tick(ax1, ticks_xlabel=np.linspace(0, 3000, 7))  # Normalized
     # ax1.grid(True)
 
     """fig1 ax2"""
-    ax2 = fig1.add_subplot(132)
-    ax2.plot(excitation_power, wav_fits, 'o-', markersize=10)
+    fig2 = plt.figure(figsize=(8*1.1, 6*1.1))
+    ax2 = fig2.add_subplot(111)
+    ax2.plot(excitation_power, wav_fits, 'o--', markersize=13, markerfacecolor='none', markeredgewidth=2)
 
-    title = f'Excitation power-denpendent center wavelength\nof peak 1'
-    set_figure.set_label_and_title(ax2, title=title, xlabel='Excitation Power(uW)', ylabel='Wavelength(nm)',
-                                   label_fontsize=25, title_fontsize=25,
-                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                   label_fontweight='bold', title_fontweight='bold',
-                                   label_pad=15, title_pad=15)
-    set_figure.set_spines(ax2, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-    set_figure.set_tick(ax2, xbins=len(excitation_power), ybins=10, fontsize=15, fontweight='bold',
-                        linewidth=3, tick_pad=5, direction='in',
-                        ticks_xlabel=np.linspace(0, 3000, 7),
+    title = f'Power-denpendent Center Wavelength\nof peak 1'
+    set_figure.set_label_and_title(ax2, title=title, xlabel='Excitation Power(uW)', ylabel='Wavelength(nm)')
+    set_figure.set_spines(ax2)
+    set_figure.set_tick(ax2, ticks_xlabel=np.linspace(0, 3000, 7),
                         ticks_ylabel=np.linspace(535, 540, 6))  # Normalized
     ax2.set_ylim([535, 540])
     # ax2.grid(True)
+    plt.tight_layout()
 
     """fig1 ax3"""
-    ax3 = fig1.add_subplot(133)
-    ax3.plot(excitation_power, gamma_fits, 'o-', markersize=10)
+    fig3 = plt.figure(figsize=(8*1.1, 6*1.1))
+    ax3 = fig3.add_subplot(111)
+    ax3.plot(excitation_power, gamma_fits, 'o--', markersize=13, markerfacecolor='none', markeredgewidth=2)
 
-    title = f'Excitation power-denpendent linewidth\nof peak 1'
-    set_figure.set_label_and_title(ax3, title=title, xlabel='Excitation Power(uW)', ylabel='FWHM(nm)',
-                                   label_fontsize=25, title_fontsize=25,
-                                   label_font_family='Times New Roman', title_font_family='Times New Roman',
-                                   label_fontweight='bold', title_fontweight='bold',
-                                   label_pad=15, title_pad=15)
-    set_figure.set_spines(ax3, bottom_linewidth=3, left_linewidth=3, top_linewidth=3, right_linewidth=3)
-    set_figure.set_tick(ax3, xbins=len(excitation_power), ybins=10, fontsize=15, fontweight='bold',
-                        linewidth=3, tick_pad=5, direction='in',
-                        ticks_xlabel=np.linspace(0, 3000, 7))  # Normalized
+    title = f'Power-denpendent Linewidth\nof peak 1'
+    set_figure.set_label_and_title(ax3, title=title, xlabel='Excitation Power(uW)', ylabel='FWHM(nm)')
+    set_figure.set_spines(ax3)
+    set_figure.set_tick(ax3, ticks_xlabel=np.linspace(0, 3000, 7))  # Normalized
     ax3.set_ylim([0, 10])
+    plt.tight_layout()
     # ax3.grid(True)
 
     plt.tight_layout()
