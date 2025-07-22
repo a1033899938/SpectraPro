@@ -1,4 +1,4 @@
-from src.general.load_data.read_2d_mat_from_txt import *
+from src.general.load_data.load_data_from_txt import *
 import os
 from src.general.numerical.edit_data import *
 from matplotlib import pyplot as plt

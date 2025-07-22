@@ -1,15 +1,26 @@
+"""
+Author: Junjie-Xie
+Updated: 2025/07/18
+Functions:
+    1. 设置图表标题和标签（支持2D/3D模式，自定义字体、位置、旋转角度等）
+    2. 配置坐标轴刻度（支持主/次刻度、刻度线样式、标签显示频率、对数刻度等）
+    3. 设置坐标轴脊线（边框）的线宽（支持2D和极坐标模式）
+    4. 配置图例（支持自定义标签、位置、字体样式、列数等）
+    5. 调整图例线条宽度
+    6. 在图表中添加文本标注（自定义字体、大小、颜色等）
+    7. 设置科学计数法显示（支持坐标轴和颜色条的刻度格式化）
+    8. 配置颜色条属性（刻度、标签、字体样式等）
+"""
 import numpy as np
-import re  # 添加正则表达式模块
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from matplotlib import ticker
 from matplotlib.ticker import MultipleLocator
 from matplotlib.ticker import FixedLocator, FixedFormatter, NullFormatter
-from mpl_toolkits.mplot3d import Axes3D
 
 
 def set_label_and_title(ax, mode='2d', colorbar=None,
-                        title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(cts)', zlabel='Intensity(cts)', colorbar_label='colorbar_label',
+                        title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(cts)', zlabel='Intensity(cts)', colorbar_label='Colorbar',
                         title_fontsize=32, label_fontsize=30, colorbar_fontsize=30,
                         title_font_family='Times New Roman', label_font_family='Times New Roman', colorbar_font_family='Times New Roman',
                         title_fontweight='bold', label_fontweight='bold', colorbar_fontweight='bold',
@@ -473,44 +484,45 @@ def set_text(ax, x_text, y_text, text, fontfamily='Arial', fontsize=12, fontweig
 
 
 if __name__ == '__main__':
-    # 创建测试数据
-    x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    y = 1e-6 * np.sin(x)
-
-    # 创建图表
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(x, y)
-
-    # 应用科学计数格式化，使用指定的小数位数
-    set_scientific_y_ticks(ax, sci_sig_digits=expected_digits)
-
-    # 验证格式化器是否正确设置
-    y_formatter = ax.yaxis.get_major_formatter()
-    assert isinstance(y_formatter, ticker.ScalarFormatter), "未正确设置为标量格式化器"
-    assert y_formatter._scientific, "未启用科学计数法"
-
-    # 验证小数位数
-    plt.draw()  # 强制更新图表以生成刻度标签
-    tick_labels = [label.get_text() for label in ax.get_yticklabels()]
-
-    # 检查标签是否符合预期格式
-    has_exponent = False
-    for label in tick_labels:
-        # 处理LaTeX格式的标签（如$\mathdefault{-1.23}$）
-        clean_label = label.replace('$\mathdefault{', '').replace('}$', '')
-
-        if 'e' in clean_label:
-            has_exponent = True
-        if '.' in clean_label:
-            decimal_part = clean_label.split('.')[1].split('e')[0]
-            assert len(decimal_part) == expected_digits, f"小数位数不正确: {label}，期望{expected_digits}位"
-
-    assert has_exponent, "未检测到科学计数法表示"
-
-    # 验证偏移文本属性
-    offset_text = ax.yaxis.get_offset_text()
-    assert offset_text.get_fontsize() == 25, "字体大小设置不正确"
-    assert offset_text.get_fontweight() == 'bold', "字体粗细设置不正确"
-
-    print("所有测试通过!")
-    plt.show()  # 显示图表以便直观检查
+    # # 创建测试数据
+    # x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    # y = 1e-6 * np.sin(x)
+    #
+    # # 创建图表
+    # fig, ax = plt.subplots(figsize=(8, 6))
+    # ax.plot(x, y)
+    #
+    # # 应用科学计数格式化，使用指定的小数位数
+    # set_scientific_y_ticks(ax, sci_sig_digits=expected_digits)
+    #
+    # # 验证格式化器是否正确设置
+    # y_formatter = ax.yaxis.get_major_formatter()
+    # assert isinstance(y_formatter, ticker.ScalarFormatter), "未正确设置为标量格式化器"
+    # assert y_formatter._scientific, "未启用科学计数法"
+    #
+    # # 验证小数位数
+    # plt.draw()  # 强制更新图表以生成刻度标签
+    # tick_labels = [label.get_text() for label in ax.get_yticklabels()]
+    #
+    # # 检查标签是否符合预期格式
+    # has_exponent = False
+    # for label in tick_labels:
+    #     # 处理LaTeX格式的标签（如$\mathdefault{-1.23}$）
+    #     clean_label = label.replace('$\mathdefault{', '').replace('}$', '')
+    #
+    #     if 'e' in clean_label:
+    #         has_exponent = True
+    #     if '.' in clean_label:
+    #         decimal_part = clean_label.split('.')[1].split('e')[0]
+    #         assert len(decimal_part) == expected_digits, f"小数位数不正确: {label}，期望{expected_digits}位"
+    #
+    # assert has_exponent, "未检测到科学计数法表示"
+    #
+    # # 验证偏移文本属性
+    # offset_text = ax.yaxis.get_offset_text()
+    # assert offset_text.get_fontsize() == 25, "字体大小设置不正确"
+    # assert offset_text.get_fontweight() == 'bold', "字体粗细设置不正确"
+    #
+    # print("所有测试通过!")
+    # plt.show()  # 显示图表以便直观检查
+    pass

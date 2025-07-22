@@ -1,7 +1,7 @@
 """
 Author: Junjie-Xie
 Updated: 2025/7/18
-Functions: 显示进度条
+Functions: 生成并显示进度条，通过字符可视化当前任务进度（支持自定义进度条长度，实时更新进度百分比）
 """
 import sys
 

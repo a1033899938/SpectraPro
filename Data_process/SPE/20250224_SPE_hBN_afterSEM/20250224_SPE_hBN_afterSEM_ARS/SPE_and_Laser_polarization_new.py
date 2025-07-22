@@ -1,6 +1,4 @@
-import os.path
-
-from src.general.load_data import read_file
+from src.ui import read_file
 from src.ui.general_methods import GeneralMethods
 from src.general.figure import set_figure
 import matplotlib.pyplot as plt

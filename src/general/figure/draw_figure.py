@@ -1,9 +1,14 @@
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.signal import find_peaks
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from src.general.figure.set_figure import *
 from scipy.optimize import curve_fit
-from src.general.numerical.curve_functions import *
 
-def draw_mapping(mapping, title='', xlabel='X', ylabel='Y', colorbar_label='Intensity(cts)'):
+from src.general.figure.set_figure import *
+from src.general.numerical.curve_functions import *
+from src.general.numerical.edit_data import *
+
+def draw_mapping(mapping, fig=None, ax=None, colormap='viridis', x: np.ndarray=None, y: np.ndarray=None):
     """
     作二维扫描图像
     :param mapping: 二维数组
@@ -11,25 +16,166 @@ def draw_mapping(mapping, title='', xlabel='X', ylabel='Y', colorbar_label='Inte
     """
     mapping_range = [mapping.shape[0], mapping.shape[1]]
 
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111)
-    x = range(mapping_range[0])
-    y = range(mapping_range[1])
+    if x is None or y is None:
+        print("默认形式为xy数组")
+        x = range(mapping_range[0])
+        y = range(mapping_range[1])
+    else:
+        print("以给定的x, y作为xy轴")
+        if len(x) != mapping_range[0] or len(y) != mapping_range[1]:
+            raise ValueError(f"数组不匹配. x, y, mapping的尺寸分别为: {len(x)}, {len(y)}, {mapping_range}")
+
+    if fig is None or ax is None:
+        print("fig或ax为None, 新建fig和ax以作图")
+        fig = plt.figure(figsize=(12*1.2, 8), dpi=100)
+        ax = fig.add_subplot(111)
+
     X, Y = np.meshgrid(x, y)
     Z = mapping
-    im = ax.pcolor(X, Y, np.transpose(Z), cmap='viridis')
+    im = ax.pcolor(X, Y, np.transpose(Z), cmap=colormap)
 
     # 添加颜色条
     cbar = fig.colorbar(im)
 
-    """设置figure参数"""
-    set_label_and_title(ax, title=title, xlabel=xlabel, ylabel=ylabel, colorbar=cbar, colorbar_label=colorbar_label)
-    set_spines(ax)
-    set_tick(ax, colorbar=cbar)  # Normalized
-    set_scientific_y_ticks(ax, cbar, sci_position=(3, 0))
-    plt.tight_layout()
+    return fig, ax, cbar
 
-    return fig
+def draw_cascade_3d(x, y, Z, ax: plt.axis, normalize=False, connect_peaks: bool=False, find_peak_args: dict=None, draw_polygon: bool=True, alpha: float=0.5):
+    """
+    作三维瀑布图
+    :param x: 单副图的自变量
+    :param y: 不同图之间的关系参数阵列，长度为图的数量（如时间，range(len(Z.shape[]))）
+    :param Z: 函数值矩阵，为单副图因变量的组合
+    :param ax:
+    :param alpha:
+    :param draw_polygon:
+    :param find_peak_args:
+    :param connect_peaks:
+    :param normalize:
+    :return:
+    """
+
+    X, Y = np.meshgrid(x, y)
+
+    # 存储每条曲线的最大值点
+    peak_x = []
+    peak_y = []
+    peak_z = []
+
+    # 设置find_peaks的默认参数
+    if find_peak_args is None:
+        find_peak_args = {'height': 0, 'prominence': 0.1}
+        # height: 设置峰值的最小高度阈值。只有高度大于或等于该值的峰值才会被检测到。
+        # prominence: 设置峰值的最小 “突出度”（prominence）。突出度表示峰值与其两侧最近的 “山谷”（局部最小值）之间的高度差。
+
+    if normalize is True:
+        Z = Z / np.max(Z)
+
+    lines_num = len(y)
+    for i in range(lines_num):
+        ax.plot(Y[i], X[i], Z[i], color=plt.cm.viridis(i / lines_num),
+                 linestyle='-', linewidth=1, alpha=1)
+
+        # 绘制基线
+        ax.plot(Y[i], X[i], np.zeros_like(Z[i]), color='gray', alpha=1)
+
+        if draw_polygon:
+            polygon = [
+                [Y[i, 0], X[i, 0], 0],  # 左下
+                [Y[i, -1], X[i, -1], 0],  # 右下
+            ]
+            for j in range(len(x) - 1, -1, -1):  # 依次添加点，使得polygon成为一个完整的闭合多边形
+                polygon.append([Y[i, j], X[i, j], Z[i, j]])
+            ax.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / lines_num), alpha=alpha))
+
+        # 如果需要，连接各曲线的最大值点
+        if connect_peaks:
+            # 找出最大值点
+            peaks, _ = find_peaks(Z[i] / np.max(Z[i]), **find_peak_args)
+            peak_x.append(X[i][peaks[0]])
+            peak_y.append(Y[i][peaks[0]])
+            peak_z.append(Z[i][peaks[0]])
+            ax.plot(peak_y, peak_x, peak_z, 'ro-', linewidth=1, markersize=3, markeredgecolor='r', markerfacecolor='none', label='连接各曲线最大值')
+
+def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, axis=0, figsize=(6, 10)):
+    if axis == 0:
+        pass
+    elif axis == 1:
+        ys = np.transpose(ys)
+    else:
+        print("error axis")
+
+    n_subplots = np.shape(ys)[0]
+    fig, axes = plt.subplots(
+        n_subplots, ncols=1,  # 垂直排列
+        sharex=True,  # 共享 X 轴
+        figsize=figsize,  # 画布尺寸（可调整）
+        gridspec_kw={"hspace": space}  # 减小子图间距
+    )
+
+    # 3. 逐个子图绘制数据
+    for i, ax in enumerate(axes):
+        print(i)
+        y = ys[i, :]
+        ax.plot(x, y, color="black", linewidth=1.2)  # 绘制谱线
+        if args is not None:
+            for arg in args:
+                zs = arg
+                z = zs[i, :]
+                ax.plot(x, z, color="red", linewidth=1.2)
+
+
+        if les is not None:
+            # label
+            ax.text(
+                0.03, 0.85, f"{les[i]}",  # 位置：左上方
+                transform=ax.transAxes,  # 基于子图的相对坐标
+                fontsize=10,
+                fontweight="bold"
+            )
+
+        # 隐藏顶部/右侧边框，简化样式
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        # ax.set_yticks([])  # 隐藏 Y 轴刻度（若需保留可自定义）
+
+    # 4. 统一设置 X 轴（仅最下方子图显示 X 轴）
+    # axes[-1].set_xlabel("Photon Energy (eV)", fontsize=12)  # X 轴标题
+    # axes[-1].set_xlim(1.3, 2.1)  # 统一 X 轴范围
+
+    # 5. 手动标注特征峰
+    # 示例：在第一个子图标注 IX 峰
+    # axes[0].scatter(1.4, generate_spectrum(np.array([1.4]), 293),
+    #                 color="red", label="IX", zorder=5)
+    # axes[0].text(1.42, 10, "IX", fontsize=9, color="red")
+
+    # 6. 显示图像
+    plt.tight_layout()
+    return fig, axes
+
+
+def peak_component_evolution(wav, sps, peak_wavs, ax, axis=0):
+    try:
+        if axis == 0:
+            pass
+        elif axis == 1:
+            sps = np.transpose(sps)
+        else:
+            print("axis error")
+
+        lines = np.shape(sps)[0]  # 光谱条数
+
+        peaks = np.zeros([len(peak_wavs), lines])  # 峰数
+        for i in range(lines):
+            sp = sps[i, :]
+            for j, peak_wav in enumerate(peak_wavs):
+                peak = find_val_idx(x=wav, y=sp, x1=peak_wav)
+                peaks[j, i] = peak
+
+        for j, peak_wav in enumerate(peak_wavs):
+            ax.plot(range(lines), peaks[j, :], label=peak_wav)
+    except Exception as e:
+        print(e)
+    return peaks
 
 def draw_power_dependent(powers, ints, ax=None):
     bounds = ([0, 0],
@@ -42,82 +188,19 @@ def draw_power_dependent(powers, ints, ax=None):
     if ax is not None:
         ax.plot(powers, ints_fit, '-', color='#d62728', linewidth=2)
 
-def draw_cascade(ax, x, Z, bot_z=0, highlight_maximum=False, plot_maximum=False):
-    """
-
-    :param ax: matplotlib axes
-    :param x: 一维数列 x（如波长）
-    :param Z: 二维矩阵 Z (波长需对应Z的第二维，即len(x) = Z.shape[1])
-    """
-    if Z.shape[1] != len(x):
-        print("error: Z.shape[0] != len(x), try transpose Z ?")
-        draw_flag = 0
-    else:
-        y = np.arange(Z.shape[0])
-        X, Y = np.meshgrid(x, y)
-        draw_flag = 1
-
-    if draw_flag == 1:
-        for i in y:
-            ax.plot(Y[i, :], X[i, :], Z[i, :], color=plt.cm.viridis(i / len(y)),
-                     linestyle='-', linewidth=1, alpha=1)
-            ax.plot(Y[i, :], X[i, :], np.zeros_like(Z[i])+bot_z, color='gray', alpha=1)
-
-            polygon = [
-                [Y[i, 0], X[i, 0], 0+bot_z],  # 左下
-                [Y[i, -1], X[i, -1], 0+bot_z],  # 右下
-            ]
-            for j in range(len(x) - 1, -1, -1):  # 依次添加点，使得polygon成为一个完整的闭合多边形
-                polygon.append([Y[i, j], X[i, j], Z[i, j]])
-            ax.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=0.5))
-
-        if bot_z != 0:
-            ax.set_zlim(bot_z, )
-
-        # 将峰值位置连成曲线
-        if highlight_maximum is True:
-            # 找到每行最大值的索引
-            max_indices = np.argmax(Z, axis=1)
-            # 获取对应的x,y,z坐标
-            max_x = x[max_indices]
-            max_y = y
-            max_z = Z[range(len(y)), max_indices]
-
-            # 绘制最大值连线
-            ax.plot(max_y, max_x, max_z,
-                    'r-', linewidth=2, alpha=0.5,
-                    label='Column Maxima')
-
-            # 在每个最大值点添加标记
-            ax.scatter(max_y, max_x, max_z,
-                       c='red', s=5, alpha=0.2,
-                       marker='o', edgecolors='white')
-
-        # 将峰值的Sequence曲线画在波长最大值位置的平面上
-        if plot_maximum is True:
-            # 找到每行最大值的索引
-            max_indices = np.argmax(Z, axis=1)
-            # 找到每行的最大值
-            max_z = Z[range(len(y)), max_indices]
-            max_x = np.ones(np.shape(y)) * x[-1]  # 波长最大值位置
-
-            # 绘制最大值连线
-            ax.plot(y, max_x, max_z,
-                    'g-', linewidth=2, alpha=0.5,
-                    label='Column Maxima')
-
-            # 在每个最大值点添加标记
-            ax.scatter(y, max_x, max_z,
-                       c='green', s=5, alpha=0.2,
-                       marker='o', edgecolors='white')
-
-        if highlight_maximum is True or plot_maximum is True:
-            return max_z
-    else:
-        print("didn't draw cascade!")
-
 if __name__ == '__main__':
-    filepath = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\m4\PL_mapping.npy"
-    data = np.load(filepath)
-    draw_mapping(data, title='PL Mapping')
-    plt.show()
+    # 测试draw_mapping
+    # from src.my_style.my_figure import *
+    # mapping = np.random.random([100, 100])
+    # x = np.linspace(200, 1000, 100)
+    # y = np.linspace(5, 10, 100)
+    # fig, ax, cbar = draw_mapping(mapping, x=x, y=y, colormap='coolwarm')
+    # the_mapping(ax, cbar=cbar)
+    # plt.show()
+
+
+    # filepath = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\m4\PL_mapping.npy"
+    # data = np.load(filepath)
+    # draw_mapping(data, title='PL Mapping')
+    # plt.show()
+    pass

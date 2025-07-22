@@ -1,8 +1,16 @@
+"""
+Author: Junjie-Xie
+Updated: 2025/07/18
+Functions:
+    1. 基础函数：线性函数、高斯函数、洛伦兹函数、Voigt函数
+    2. 物理模型函数：功率饱和曲线、部分偏振光马吕斯定律、椭圆偏振光马吕斯定律
+    3. 组合函数：双高斯函数、双洛伦兹函数、三洛伦兹函数、两洛伦兹加一高斯函数
+"""
+
 import numpy as np
 from scipy.special import wofz  # Faddeeva 函数，用于计算 Voigt 函数
 
-"""常见"""
-
+"""基础函数"""
 def linear(x, k, b):
     """
     :param x: 自变量
@@ -18,7 +26,7 @@ def gaussian(x, A, mu, sigma):
     :param x: 自变量
     :param A: 峰值幅度
     :param mu: 峰值中心位置
-    :param sigma: 半高全宽(FWHM)
+    :param sigma: 标准差 (FWHM≈2.3548*sigma)
     :return:
     """
     """高斯峰函数：A-振幅，x0-中心位置，sigma-标准差（半高宽≈2.3548*sigma）"""
@@ -28,19 +36,29 @@ def lorentzian(x, A, x0, gamma):
     """
     洛伦兹函数
     :param x: 自变量
-    :param A: 峰值面积
+    :param A: 峰值面积 (幅值=2A/(π*gamma))
     :param x0: 峰值中心位置
     :param gamma: 半高全宽 (FWHM)
     :return: 洛伦兹函数值
     """
-    """洛伦兹峰函数：A-振幅，x0-中心位置，gamma-半高宽"""
     return (A / np.pi) * (0.5 * gamma) / ((x - x0) ** 2 + (0.5 * gamma) ** 2)
 
-def double_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2):
-    peak1 = lorentzian(x, A1, x1, gamma1)
-    peak2 = lorentzian(x, A2, x2, gamma2)
-    return peak1 + peak2
+def voigt(x, A, mu, sigma, gamma):
+    """
+       Voigt线形函数（高斯-洛伦兹卷积）
 
+       :param x: 自变量（如波长、频率）
+       :param amplitude: 振幅（缩放因子）
+       :param center: 峰中心位置
+       :param gauss_std: 高斯成分的标准差
+       :param lorentz_hwhm: 洛伦兹成分的半高半宽（HWHM）
+       :return: Voigt函数值
+       """
+
+    z = (x - mu + 1j * gamma) / (sigma * np.sqrt(2))
+    return A * np.real(wofz(z)) / (sigma * np.sqrt(2 * np.pi))
+
+"""物理模型函数"""
 def power_saturation(P, P_sat, I_inf):
     """
     用于拟合PL强度随功率增大而饱和的数据
@@ -65,9 +83,6 @@ def partial_polarized_malus_law(theta, I0, DOP, phi):
     # 计算完全偏振光和非偏振光的光强
     I_p = I0 * DOP  # 完全偏振光的光强
     I_u = I0 * (1 - DOP)  # 非偏振光的光强
-
-    # # 将角度转换为弧度
-    # theta_rad = math.radians(theta)
 
     # 计算完全偏振光部分的透射光强（马吕斯定律）
     I_p_transmitted = I_p * (np.cos(theta + phi) ** 2)
@@ -98,33 +113,36 @@ def elliptical_polarization_malus_law(theta, I0, Ex, Ey, delta):
         2 * Ex * Ey * np.cos(theta) * np.sin(theta) * np.cos(delta)
     )
 
-    # # 计算线偏振度（Degree of Linear Polarization）
-    # dolp_numerator = np.sqrt((Ex ** 2 - Ey ** 2) ** 2 + 4 * (Ex * Ey * np.cos(delta)) ** 2)
-    # dolp_denominator = Ex ** 2 + Ey ** 2
-    # dolp = dolp_numerator / dolp_denominator if dolp_denominator != 0 else 0
-    # print(f"dolp = {dolp}")
+    # 计算线偏振度（Degree of Linear Polarization）
+    dolp_numerator = np.sqrt((Ex ** 2 - Ey ** 2) ** 2 + 4 * (Ex * Ey * np.cos(delta)) ** 2)
+    dolp_denominator = Ex ** 2 + Ey ** 2
+    dolp = dolp_numerator / dolp_denominator if dolp_denominator != 0 else 0
+    print(f"dolp = {dolp}")
     return I_transmitted
 
-def voigt(x, A, mu, sigma, gamma):
-    """
-    Voigt线形函数
-    参数：
-        x: 自变量（如波长、频率）
-        A: 振幅（缩放因子）
-        mu: 峰中心
-        sigma: 高斯成分的标准差
-        gamma: 洛伦兹成分的半高宽（HWHM）
-    返回：
-        拟合值
-    """
-    z = (x - mu + 1j * gamma) / (sigma * np.sqrt(2))
-    return A * np.real(wofz(z)) / (sigma * np.sqrt(2 * np.pi))
 
-"""组合"""
+"""组合函数"""
+def double_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2):
+    peak1 = lorentzian(x, A1, x1, gamma1)
+    peak2 = lorentzian(x, A2, x2, gamma2)
+    return peak1 + peak2
+
+def triple_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3):
+    peak1 = lorentzian(x, A1, x1, gamma1)
+    peak2 = lorentzian(x, A2, x2, gamma2)
+    peak3 = lorentzian(x, A3, x3, gamma3)
+    return peak1 + peak2 + peak3
+
 def double_gaussian(x, A1, mu1, sigma1, A2, mu2, sigma2):
     peak1 = gaussian(x, A1, mu1, sigma1)
     peak2 = gaussian(x, A2, mu2, sigma2)
     return peak1 + peak2
+
+def triple_gaussian(x, A1, mu1, sigma1, A2, mu2, sigma2, A3, mu3, sigma3):
+    peak1 = gaussian(x, A1, mu1, sigma1)
+    peak2 = gaussian(x, A2, mu2, sigma2)
+    peak3 = gaussian(x, A3, mu3, sigma3)
+    return peak1 + peak2 + peak3
 
 def lorentzian_2_plus_gaussian_1(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3):
     peak1 = lorentzian(x, A1, x1, gamma1)
@@ -132,8 +150,3 @@ def lorentzian_2_plus_gaussian_1(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamm
     peak3 = lorentzian(x, A3, x3, gamma3)
     return peak1 + peak2 + peak3
 
-def triple_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3):
-    peak1 = lorentzian(x, A1, x1, gamma1)
-    peak2 = lorentzian(x, A2, x2, gamma2)
-    peak3 = lorentzian(x, A3, x3, gamma3)
-    return peak1 + peak2 + peak3

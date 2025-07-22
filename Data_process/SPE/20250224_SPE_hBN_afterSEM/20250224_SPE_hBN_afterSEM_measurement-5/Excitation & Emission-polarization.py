@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from src.general.figure import set_figure
 from src.general.numerical.curve_functions import *
-from src.general.load_data.read_2d_mat_from_txt import *
+from src.general.load_data.load_data_from_txt import *
 
 
 def the_figure(ax):

@@ -1,25 +1,15 @@
-from PIL import Image
-import pytesseract
-import pandas as pd
+from src.general.load_data.save_read_data import *
 
-# 设置tesseract的路径（根据你的安装路径进行修改）
-pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+filepath = r"D:\ExpData\Fellows\WYQ\20250714_WYQ_SHIN\data\shin-8_0.txt"
+data = read_lines_txt(filepath, separator=' ', skip_lines=1, row_lines_names=0)
+wav = np.array(data["wav"])
+bgd = np.array(data["bgd"])
+ref = np.array(data["ref"])
+sp = np.array(data["sp"])
 
-# 打开图片
-image_path = r'C:\Users\a1033\Pictures\Acer\pic1.png'  # 替换为你的图片路径
-image = Image.open(image_path)
+scat = (sp - bgd) / (ref - bgd)
 
-# 识别图片中的中文文本
-text = pytesseract.image_to_string(image, lang='chi_sim')  # 使用简体中文
-
-# 将文本处理为行列表
-lines = text.splitlines()
-
-# 创建DataFrame
-df = pd.DataFrame(lines, columns=['识别文本'])
-
-# 保存为Excel文件
-output_path = 'output.xlsx'  # 替换为你想要的输出文件名
-df.to_excel(output_path, index=False)
-
-print("识别完成，结果已保存为Excel文件。")
+from matplotlib import pyplot as plt
+fig, ax = plt.subplots()
+ax.plot(wav, ref - bgd)
+plt.show()

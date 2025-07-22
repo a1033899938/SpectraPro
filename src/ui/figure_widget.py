@@ -6,8 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.patches import Rectangle
-from src.general.load_data import read_file
-from src.general.numerical import numerical_transform
+from src.ui import read_file
 from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
 
@@ -342,10 +341,10 @@ class FigureWidget(QWidget):
             face_color = (0.5, 0.1, 0.9, 0.6)
             if all(val is None for val in (self.rect_x_min, self.rect_y_min, self.rect_x_span, self.rect_y_span)):
                 self.rect_x_min, self.rect_y_min, self.rect_x_span, self.rect_y_span \
-                    = numerical_transform.transform_position_LimToSpan(self.canvas_origin_xylim[0],
-                                                                       self.canvas_origin_xylim[1],
-                                                                       self.canvas_origin_xylim[2],
-                                                                       self.canvas_origin_xylim[3])
+                    = [self.canvas_origin_xylim[0],
+                       self.canvas_origin_xylim[2],
+                       self.canvas_origin_xylim[1] - self.canvas_origin_xylim[0],
+                       self.canvas_origin_xylim[3] - self.canvas_origin_xylim[2]]
             self.rect = Rectangle((self.rect_x_min - self.rect_x_span * 0.2, self.rect_y_min), self.rect_x_span * 1.4,
                                   self.rect_y_span,
                                   linewidth=1, edgecolor='red',

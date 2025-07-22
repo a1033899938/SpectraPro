@@ -1,19 +1,10 @@
 import os
-import pprint
-import pprint
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.load_data import read_file
+from src.ui import read_file
 from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
 from src.general import save_subfig
-from matplotlib.lines import Line2D
-from scipy.optimize import curve_fit
-from src.general import sort_files
-import copy
-import re
-import pandas as pd
-import scipy.io as sio
 
 
 def gaussian(x, A, mu, sigma, C):

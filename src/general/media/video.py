@@ -1,5 +1,10 @@
-from moviepy.editor import VideoFileClip, ImageSequenceClip
+"""
+Author: Junjie-Xie
+Updated: 2025/07/18
+Functions: 将MP4视频文件转换为GIF动图（支持指定时间段、帧率调整、分辨率缩放，优化内存占用）
+"""
 
+from moviepy.editor import VideoFileClip, ImageSequenceClip
 
 def mp4_to_gif(input_path, output_path, start_time=0, end_time=None, fps=10, scale=0.5):
     """优化内存占用的MP4转GIF脚本"""

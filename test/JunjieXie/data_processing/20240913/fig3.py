@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.load_data import read_file
+from src.ui import read_file
 from src.general.figure import set_figure
 from src.ui.general_methods import GeneralMethods
 from src.general import save_subfig

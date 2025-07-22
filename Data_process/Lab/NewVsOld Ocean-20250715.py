@@ -4,14 +4,10 @@ Updated: 2025/7/16
 Functions: 
 """
 import h5py
-import os
 import matplotlib.pyplot as plt
-import numpy as np
 
 from src.general.figure import set_figure
-from src.my_style.my_mapping_para import *
 from src.general.load_data.read_name import *
-from src.general.numerical.save_read_data import *
 from src.my_style.my_mapping_para import *
 
 def the_figure1(ax, title):

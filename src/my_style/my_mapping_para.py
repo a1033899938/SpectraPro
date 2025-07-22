@@ -1,8 +1,4 @@
 from scipy.optimize import curve_fit
-from matplotlib import pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-from scipy.signal import find_peaks
-
 from src.general.numerical.curve_functions import *
 from src.general.numerical.edit_data import *
 
@@ -551,140 +547,28 @@ def triple_peaks_fitting_voigt_energy(x, y, ax=None, maxfev=10000):
 
     return fitting_paras
 
-def cascade_3d(X, Y, Z, ax, normalize=False, connect_peaks=False, find_peak_args=None, draw_polygon=False, alpha=0.5):
-    """
-    作三维瀑布图
-    :param X: 单副图的自变量
-    :param Y: 不同图之间的关系参数阵列，长度为图的数量（如时间，range(len(Z.shape[]))）
-    :param Z: 函数值矩阵，为单副图因变量的组合
-    :param ax:
-    :return:
-    """
-    x = X[0, :]
-    y = np.arange(np.shape(Y)[0])
-
-    # 存储每条曲线的最大值点
-    peak_x = []
-    peak_y = []
-    peak_z = []
-
-    # 设置find_peaks的默认参数
-    if find_peak_args is None:
-        find_peak_args = {'height': 0, 'prominence': 0.1}
-        # height: 设置峰值的最小高度阈值。只有高度大于或等于该值的峰值才会被检测到。
-        # prominence: 设置峰值的最小 “突出度”（prominence）。突出度表示峰值与其两侧最近的 “山谷”（局部最小值）之间的高度差。
-
-    if normalize is True:
-        # Z[73, :] = np.zeros_like(Z[0, :])
-        # Z[86, :] = np.zeros_like(Z[0, :])
-        Z = Z / np.max(Z)
-
-    for i in y:
-        # if np.max(Z[i]) > 0.5:
-        #     print(i)
-        ax.plot(Y[i], X[i], Z[i], color=plt.cm.viridis(i / len(y)),
-                 linestyle='-', linewidth=1, alpha=1)
-        # 绘制基线
-        ax.plot(Y[i], X[i], np.zeros_like(Z[i]), color='gray', alpha=1)
-
-        if draw_polygon:
-            polygon = [
-                [Y[i, 0], X[i, 0], 0],  # 左下
-                [Y[i, -1], X[i, -1], 0],  # 右下
-            ]
-            for j in range(len(x) - 1, -1, -1):  # 依次添加点，使得polygon成为一个完整的闭合多边形
-                polygon.append([Y[i, j], X[i, j], Z[i, j]])
-            ax.add_collection3d(Poly3DCollection([polygon], color=plt.cm.viridis(i / len(y)), alpha=alpha))
-
-        # 如果需要，连接各曲线的最大值点
-        if connect_peaks:
-            # 找出最大值点
-            peaks, _ = find_peaks(Z[i] / np.max(Z[i]), **find_peak_args)
-            peak_x.append(X[i][peaks[0]])
-            peak_y.append(Y[i][peaks[0]])
-            peak_z.append(Z[i][peaks[0]])
-            ax.plot(peak_y, peak_x, peak_z, 'ro-', linewidth=1, markersize=3, markeredgecolor='r', markerfacecolor='none', label='连接各曲线最大值')
-
-def cascade_2d(x, ys, *args, les=None, space=0.1, axis=0, figsize=(6, 10)):
-    if axis == 0:
-        pass
-    elif axis == 1:
-        ys = np.transpose(ys)
-    else:
-        print("error axis")
-
-    n_subplots = np.shape(ys)[0]
-    fig, axes = plt.subplots(
-        n_subplots, ncols=1,  # 垂直排列
-        sharex=True,  # 共享 X 轴
-        figsize=figsize,  # 画布尺寸（可调整）
-        gridspec_kw={"hspace": space}  # 减小子图间距
-    )
-
-    # 3. 逐个子图绘制数据
-    for i, ax in enumerate(axes):
-        y = ys[i, :]
-        ax.plot(x, y, color="black", linewidth=1.2)  # 绘制谱线
-        if args is not None:
-            for arg in args:
-                zs = arg
-                z = zs[i, :]
-                ax.plot(x, z, color="red", linewidth=1.2)
-
-
-        if les is not None:
-            # label
-            ax.text(
-                0.03, 0.85, f"{les[i]}",  # 位置：左上方
-                transform=ax.transAxes,  # 基于子图的相对坐标
-                fontsize=10,
-                fontweight="bold"
-            )
-
-        # 隐藏顶部/右侧边框，简化样式
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-        # ax.set_yticks([])  # 隐藏 Y 轴刻度（若需保留可自定义）
-
-    # 4. 统一设置 X 轴（仅最下方子图显示 X 轴）
-    # axes[-1].set_xlabel("Photon Energy (eV)", fontsize=12)  # X 轴标题
-    # axes[-1].set_xlim(1.3, 2.1)  # 统一 X 轴范围
-
-    # 5. 手动标注特征峰
-    # 示例：在第一个子图标注 IX 峰
-    # axes[0].scatter(1.4, generate_spectrum(np.array([1.4]), 293),
-    #                 color="red", label="IX", zorder=5)
-    # axes[0].text(1.42, 10, "IX", fontsize=9, color="red")
-
-    # 6. 显示图像
-    plt.tight_layout()
-    return fig, axes
-
-
-def peak_component_evolution(wav, sps, peak_wavs, ax, axis=0):
-    try:
-        if axis == 0:
-            pass
-        elif axis == 1:
-            sps = np.transpose(sps)
-        else:
-            print("axis error")
-
-        lines = np.shape(sps)[0]  # 光谱条数
-
-        peaks = np.zeros([len(peak_wavs), lines])  # 峰数
-        for i in range(lines):
-            sp = sps[i, :]
-            for j, peak_wav in enumerate(peak_wavs):
-                peak = find_peak_intensity(x=wav, y=sp, x1=peak_wav)
-                peaks[j, i] = peak
-
-        for j, peak_wav in enumerate(peak_wavs):
-            ax.plot(range(lines), peaks[j, :], label=peak_wav)
-    except Exception as e:
-        print(e)
-    return peaks
-
+# def poly5_lorentz():
+#     fig = plt.figure(figsize=(12, 8), dpi=100)
+#     ax = fig.add_subplot(121)
+#
+#     x = wav
+#     y = scats[-1, :]
+#     ax.plot(x, y)
+#     coefficients = np.polyfit(x, y, 5)  # 返回系数 [a, b, c, d]
+#     fitted_polynomial = np.poly1d(coefficients)
+#     ax.plot(x, fitted_polynomial(x), 'r--')
+#
+#     def my_curve(x, A, x0, gamma):
+#         return lorentzian(x, A, x0, gamma) + fitted_polynomial(x)
+#
+#     p0 = [0.0008, 600, 100]
+#     x = wav
+#     y = scats[10, :]
+#     popt, pcov = curve_fit(my_curve, x, y, p0=p0)
+#     A, x0, gamma = popt
+#     ax2 = fig.add_subplot(122)
+#     ax2.plot(x, y)
+#     ax2.plot(x, my_curve(x, A, x0, gamma))
 
 if __name__ == '__main__':
     x = np.arange(0, 6, 0.01)

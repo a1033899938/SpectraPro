@@ -1,11 +1,18 @@
 """
 Author: Junjie-Xie
 Updated: 2025/07/15
-Functions: 查找值在数组中的索引、查找y(x)曲线中x0位置的值y0、多列表、多列表排序
+Functions:
+    1. 查找值在数组中的索引（寻找与目标值最接近的位置）
+    2. 计算指定x位置附近的y值中位数（支持自定义窗口大小）
+    3. 提取数组指定范围内的子集（支持多维数组和任意轴）
+    4. 多列表排序（根据第一个列表对所有列表进行同步排序）
+    5. 文件名智能排序（按数字部分排序，支持整数和浮点数）
 """
 
 import numpy as np
 from typing import Union
+import copy
+import re
 
 def find_val_idx(x, x0):
     """
@@ -131,6 +138,22 @@ def sort_lists(list1, list2, *args):
     for arg in args:
         arg = list(arg)
     return list1, list2, *args
+
+def sort_files(file_names):
+    """对文件名列表进行排序"""
+    def sort_key(filename):
+        """定义排序键函数"""
+        # 提取文件名中的所有数字（包括整数和浮点数）
+        # \d+\.\d+ 匹配浮点数（例如 0.75），\d+ 匹配整数（例如 12、100）
+        numbers = re.findall(r'\d+\.\d+|\d+', filename)
+        # 将数字从字符串转换为浮点数或整数
+        numbers = [float(num) if '.' in num else int(num) for num in numbers]
+        return numbers
+    # 通过深复制确保副本完全独立，避免修改原始列表
+    file_names_sorted = copy.deepcopy(file_names)
+    # 使用sort方法，传入排序键
+    file_names_sorted.sort(key=sort_key)
+    return file_names_sorted
 
 if __name__ == '__main__':
     # 测试sort_lists

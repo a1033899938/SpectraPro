@@ -1,4 +1,4 @@
-from src.general.load_data.read_file import *
+from src.ui.read_file import *
 from src.ui.general_methods import GeneralMethods
 from src.general.figure import set_figure
 import matplotlib.pyplot as plt

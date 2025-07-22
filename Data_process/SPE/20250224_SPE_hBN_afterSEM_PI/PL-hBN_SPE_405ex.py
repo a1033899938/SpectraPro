@@ -1,14 +1,7 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-import numpy as np
 import os
 
-import spe_loader as sl
-from scipy.optimize import curve_fit
-
-from src.general import choose_range
-from src.general.load_data import read_file
-from src.ui.general_methods import GeneralMethods
+from src.ui import read_file
 from src.general.figure import set_figure
 
 

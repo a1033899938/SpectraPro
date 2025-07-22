@@ -6,7 +6,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.ticker import MaxNLocator
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtCore import Qt
-from src.general.numerical import numerical_transform
 from src.general.figure import set_figure
 
 
@@ -122,11 +121,10 @@ class HistogramWidget(QWidget):
             # set rect edge size and lim
             self.rect_edge_size = self.hist_x_span / 30
             self.rect_x_min, self.rect_y_min, self.rect_x_span, self.rect_y_span \
-                = numerical_transform.transform_position_LimToSpan(
-                                                                    self.hist_x_min,
-                                                                    self.hist_x_max,
-                                                                    self.hist_y_min,
-                                                                    self.hist_y_max)
+                = [ self.hist_x_min,
+                    self.hist_y_min,
+                    self.hist_x_max - self.hist_x_min,
+                    self.hist_y_max - self.hist_y_min]
 
             self.draw_rectangle()
 

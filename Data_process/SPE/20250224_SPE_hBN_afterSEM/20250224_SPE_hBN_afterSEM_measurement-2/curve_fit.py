@@ -187,19 +187,6 @@ if __name__ == '__main__':
         """
         return (A / np.pi) * (0.5 * gamma) / ((x - x0) ** 2 + (0.5 * gamma) ** 2)
 
-    def double_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2):
-        peak1 = lorentzian(x, A1, x1, gamma1)
-        peak2 = lorentzian(x, A2, x2, gamma2)
-        return peak1 + peak2
-
-
-    def triple_lorentzian(x, A1, x1, gamma1, A2, x2, gamma2, A3, x3, gamma3):
-        peak1 = lorentzian(x, A1, x1, gamma1)
-        peak2 = lorentzian(x, A2, x2, gamma2)
-        peak3 = lorentzian(x, A3, x3, gamma3)
-        return peak1 + peak2 + peak3
-
-
     import matplotlib.pyplot as plt
     import matplotlib.ticker as ticker
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection

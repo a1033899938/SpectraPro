@@ -1,6 +1,4 @@
-import numpy as np
-from src.general.numerical.save_read_data import *
-from matplotlib import pyplot as plt
+from src.general.load_data.save_read_data import *
 from src.general.figure.set_figure import *
 
 def the_figure(ax):

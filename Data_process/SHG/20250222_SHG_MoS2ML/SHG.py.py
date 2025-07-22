@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from src.general.load_data import read_file
+from src.ui import read_file
 from src.ui.general_methods import GeneralMethods
 from src.general import sort_files
 import re
