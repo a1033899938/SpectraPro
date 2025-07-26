@@ -185,6 +185,41 @@ def load_matrices_from_json(file_full_path):
 
     return {k: np.array(v) for k, v in data.items()}
 
+
+def read_row_txt(file_path, delimiter=None):
+    """
+    读取文本文件，将所有行的元素合并为一个一维列表返回
+
+    参数:
+        file_path (str): 要读取的文件路径
+        delimiter (str, optional): 分隔符，默认为None表示使用任意空白字符作为分隔符
+
+    返回:
+        list: 包含所有元素的一维列表，如果文件不存在则返回空列表
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            elements = []
+            for line in file:
+                # 去除首尾空白字符（包括换行符）
+                stripped_line = line.strip()
+                # 如果行不为空，则拆分并添加到元素列表
+                if stripped_line:
+                    if delimiter is None:
+                        # 用任意空白字符拆分
+                        line_elements = stripped_line.split()
+                    else:
+                        # 用指定分隔符拆分
+                        line_elements = stripped_line.split(delimiter)
+                    elements.extend(line_elements)  # 使用extend而非append合并到一维列表
+        return elements
+    except FileNotFoundError:
+        print(f"错误: 文件 '{file_path}' 不存在")
+        return []
+    except Exception as e:
+        print(f"读取文件时发生错误: {str(e)}")
+        return []
+
 if __name__ == "__main__":
     pass
     # save_lines_txt, 使用示例

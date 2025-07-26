@@ -96,7 +96,7 @@ def draw_cascade_3d(x, y, Z, ax: plt.axis, normalize=False, connect_peaks: bool=
             peak_z.append(Z[i][peaks[0]])
             ax.plot(peak_y, peak_x, peak_z, 'ro-', linewidth=1, markersize=3, markeredgecolor='r', markerfacecolor='none', label='连接各曲线最大值')
 
-def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, axis=0, figsize=(6, 10)):
+def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, axis=0, figsize=None):
     if axis == 0:
         pass
     elif axis == 1:
@@ -105,12 +105,39 @@ def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, a
         print("error axis")
 
     n_subplots = np.shape(ys)[0]
+
+    if figsize is None:
+        figsize = (6, 2*n_subplots)
+
     fig, axes = plt.subplots(
         n_subplots, ncols=1,  # 垂直排列
         sharex=True,  # 共享 X 轴
         figsize=figsize,  # 画布尺寸（可调整）
         gridspec_kw={"hspace": space}  # 减小子图间距
     )
+
+    # 待完成：可通过传入fig来作图
+    # # 1. 创建画布
+    # fig = plt.figure(figsize=figsize)
+    #
+    # # 2. 逐个添加子图并存储到列表中（确保可迭代）
+    # axes = []
+    # for i in range(n_subplots):
+    #     # 子图编号从1开始，格式为"总行数, 总列数, 当前索引"
+    #     ax = fig.add_subplot(n_subplots, 1, i + 1)  # 垂直排列（n行1列）
+    #     axes.append(ax)
+    #
+    # # 3. 共享X轴设置
+    # for ax in axes[:-1]:  # 除了最后一个子图，隐藏其他子图的x轴刻度
+    #     plt.setp(ax.get_xticklabels(), visible=False)
+    #
+    # # 4. 调整子图间距（替代gridspec_kw）
+    # fig.subplots_adjust(hspace=space)
+    #
+    # # 5. 现在可以像之前一样迭代axes了
+    # for i, ax in enumerate(axes):
+    #     ax.plot([1, 2, 3], [i + 1, i + 2, i + 3])  # 示例绘图
+    #     ax.set_title(f"子图 {i + 1}")
 
     # 3. 逐个子图绘制数据
     for i, ax in enumerate(axes):
@@ -152,6 +179,62 @@ def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, a
     plt.tight_layout()
     return fig, axes
 
+def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg=None, colors_group=None, space=0.1, axis=0, figsize=None): # (6, 10)
+
+    if len(xs_group) != len(ys_group):
+        raise (ValueError("xs_group and ys_group must have same length"))
+        return
+
+    n_subplots = len(ys_group)
+
+    if figsize is None:
+        figsize = (6, 2*n_subplots)
+
+    fig, axes = plt.subplots(
+        n_subplots, ncols=1,  # 垂直排列
+        sharex=True,  # 共享 X 轴
+        figsize=figsize,  # 画布尺寸（可调整）
+        gridspec_kw={"hspace": space}  # 减小子图间距
+    )
+
+    # 3. 逐个子图绘制数据
+    for i, ax in enumerate(axes):
+        xs = xs_group[i]
+        ys = ys_group[i]
+        les = les_group[i]
+        colors = colors_group[i]
+        if np.shape(xs) != np.shape(ys):
+            raise (ValueError("xs and ys must have same shape"))
+
+        if xs.ndim == 1:
+            x = xs
+            y = ys
+            gh = ax.plot(x, y, color="black", linewidth=1.2, label=les)  # 绘制谱线
+            if colors is not None:
+                gh[0].set_color(colors[0])
+        else:
+            for j in range(np.shape(xs)[0]):
+                x = xs[j, :]
+                y = ys[j, :]
+                gh = ax.plot(x, y, color="black", linewidth=1.2, label=les[j])  # 绘制谱线
+                if colors is not None:
+                    gh[0].set_color(colors[j])
+
+        if les_sg is not None:
+            # label
+            ax.text(
+                0.03, 0.85, f"{les_sg[i]}",  # 位置：左上方
+                transform=ax.transAxes,  # 基于子图的相对坐标
+                fontsize=10,
+                fontweight="bold"
+            )
+
+        # 隐藏顶部/右侧边框，简化样式
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
+    return fig, axes
 
 def peak_component_evolution(wav, sps, peak_wavs, ax, axis=0):
     try:
