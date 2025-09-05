@@ -31,7 +31,7 @@ for i, key in enumerate(keys):
     data_path = os.path.join(folder_path, key)
     if i == 0:
         readFile = read_file(data_path, strip=[42, 49], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         x = data['wavelength']
         y = data['intensity']
         fig = plt.figure(figsize=(8, 6))
@@ -41,12 +41,12 @@ for i, key in enumerate(keys):
 
     if key == 'qdot_white 029.spe':
         readFile = read_file(data_path, strip=[35, 53], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         wav = data['wavelength']
         sp = data['intensity']
     elif key == 'sio2_white 034.spe':
         readFile = read_file(data_path, strip=[35, 53], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         sub = data['intensity']
 
 fig = plt.figure(figsize=(8, 6))

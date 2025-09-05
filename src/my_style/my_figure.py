@@ -4,7 +4,7 @@ from src.general.figure.set_figure import *
 
 def the_graph(ax, title=''):
     set_label_and_title(ax, title=title, xlabel='Wavelength(nm)', ylabel='Intensity(cts)')
-    set_tick(ax, ticks_xlabel=np.arange(400, 1101, 100), show_xlabel_every_ticks=2, yaxis_use_log_scale=False) # Normalized
+    set_tick(ax, ticks_xlabel=np.arange(200, 1101, 100), show_xlabel_every_ticks=2, yaxis_use_log_scale=False) # Normalized
     set_legend(ax, font_size=12, location='best')
     set_scientific_y_ticks(ax)
     set_spines(ax)

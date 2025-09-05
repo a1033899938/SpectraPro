@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="MicroPythonTools">
-    <option name="activeStubsPackage" />
     <option name="increaseBaudrateForFileTransfers" value="false" />
     <option name="increasedFileTransferBaudrate" value="115200" />
     <option name="pluginEnabled" value="true" />
-    <option name="portName" value="COM6" />
+    <option name="portName" value="COM15" />
   </component>
 </project>

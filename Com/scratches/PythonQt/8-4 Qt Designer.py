@@ -41,7 +41,7 @@ app.exec() # PySide6 是 exec 而不是 exec_
 #         # 使用界面定义的控件，也是从ui里面访问
 #         self.ui.webview.load('http://www.baidu.com')
 #
-# app = QApplication([])
+# ESP32-Backup = QApplication([])
 # mainw = MainWindow()
 # mainw.show()
-# app.exec_()
+# ESP32-Backup.exec_()

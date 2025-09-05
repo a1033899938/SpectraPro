@@ -38,7 +38,7 @@ with h5py.File(filepath, "r") as f:
         raw = np.array(sp)
         raw = raw / sp_time
 
-        wav, bgd, ref, raw = choose_range(wav, bgd, ref, raw, x1=400, x2=900)
+        wav, bgd, ref, raw = choose_range(wav, bgd, ref, raw, x1=400, x2=1100)
         scat = (raw - bgd) / (ref - bgd)
 
         # 去除尖峰
@@ -48,56 +48,56 @@ with h5py.File(filepath, "r") as f:
         scats.append(scat)
 
 scats = np.array(scats)
-# 对最后一条看不见散射峰的曲线进行多项式拟合
-coefficients = np.polyfit(wav, scats[-1, :], 5)  # 返回系数 [a, b, c, d]
-fitted_polynomial = np.poly1d(coefficients)
-base_line = fitted_polynomial(wav)
-
-def my_curve(x, A, x0, sigma, a, b, c, d, e, f):
-    # 高斯部分
-    gaussian_part = gaussian(x, A, x0, sigma)
-
-    # 五阶多项式部分
-    poly_part = a + b * x ** 1 + c * x ** 2 + d * x ** 3 + e * x ** 4 + f * x ** 5
-
-    return gaussian_part + poly_part
-
-p0 = [0.0008, 600, 100] + coefficients.tolist()
-As = []
-xs = []
-ps = []
-for i in range(scats.shape[0]):
-    try:
-        print(f"iteration: {i} in {scats.shape[0]}")
-        x = wav
-        y = scats[i, :]
-        fig = plt.figure(figsize=(12, 8))
-        ax = fig.add_subplot(111)
-        ax.plot(x, y, 'b-')
-
-        popt, pcov = curve_fit(my_curve, x, y, p0=p0)
-        A, x0, gamma, a, b, c, d, e, f = popt
-        ax.plot(x, my_curve(x, *popt), 'r--')
-        As.append(A)
-        xs.append(x0)
-        ps.append(i)
-    except:
-        pass
-
-fig = plt.figure(figsize=(12, 8))
-ax1 = fig.add_subplot(121)
-ax2 = fig.add_subplot(122)
-ax1.plot(ps, As)
-ax2.plot(ps, xs)
+# # 对最后一条看不见散射峰的曲线进行多项式拟合
+# coefficients = np.polyfit(wav, scats[-1, :], 5)  # 返回系数 [a, b, c, d]
+# fitted_polynomial = np.poly1d(coefficients)
+# base_line = fitted_polynomial(wav)
+#
+# def my_curve(x, A, x0, sigma, a, b, c, d, e, f):
+#     # 高斯部分
+#     gaussian_part = gaussian(x, A, x0, sigma)
+#
+#     # 五阶多项式部分
+#     poly_part = a + b * x ** 1 + c * x ** 2 + d * x ** 3 + e * x ** 4 + f * x ** 5
+#
+#     return gaussian_part + poly_part
+#
+# p0 = [0.0008, 600, 100] + coefficients.tolist()
+# As = []
+# xs = []
+# ps = []
+# for i in range(scats.shape[0]):
+#     try:
+#         print(f"iteration: {i} in {scats.shape[0]}")
+#         x = wav
+#         y = scats[i, :]
+#         fig = plt.figure(figsize=(12, 8))
+#         ax = fig.add_subplot(111)
+#         ax.plot(x, y, 'b-')
+#
+#         popt, pcov = curve_fit(my_curve, x, y, p0=p0)
+#         A, x0, gamma, a, b, c, d, e, f = popt
+#         ax.plot(x, my_curve(x, *popt), 'r--')
+#         As.append(A)
+#         xs.append(x0)
+#         ps.append(i)
+#     except:
+#         pass
+#
+# fig = plt.figure(figsize=(12, 8))
+# ax1 = fig.add_subplot(121)
+# ax2 = fig.add_subplot(122)
+# ax1.plot(ps, As)
+# ax2.plot(ps, xs)
 
 
 # 时间序列图
-# fig = plt.figure(figsize=(12, 8), dpi=100)
-# ax = fig.add_subplot(111, projection='3d')
-# draw_cascade_3d(x=wav, y=range(np.shape(scats)[0]), Z=scats, ax=ax)
-# # ax.set_zlim([-0.0001, 0.00344])
-# # ax.set_zlim([-0.0001, 0.00101])
-# ax.set_zlim([-0.0001, 0.00095])
-# ax.view_init(elev=20, azim=0)
-# # the_cascade(ax)
+fig = plt.figure(figsize=(12, 8), dpi=100)
+ax = fig.add_subplot(111, projection='3d')
+draw_cascade_3d(x=wav, y=range(np.shape(scats)[0]), Z=scats, ax=ax)
+# ax.set_zlim([-0.0001, 0.00344])
+# ax.set_zlim([-0.0001, 0.00101])
+ax.set_zlim([-0.0001, 0.005])
+ax.view_init(elev=20, azim=0)
+# the_cascade(ax)
 plt.show()

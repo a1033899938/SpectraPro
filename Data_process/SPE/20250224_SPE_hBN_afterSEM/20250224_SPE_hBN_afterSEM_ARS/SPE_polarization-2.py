@@ -61,7 +61,7 @@ sps = []
 for file_path, file_name in zip(file_paths, file_names):
     i += 1
     readFile = read_file(file_path, strip=[39, 52], show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
 
@@ -183,7 +183,7 @@ sps = []
 for file_path, file_name in zip(file_paths, file_names):
     i += 1
     readFile = read_file(file_path, strip=[45, 56], show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
 

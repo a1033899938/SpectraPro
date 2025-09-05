@@ -37,11 +37,11 @@ legend_labels = []
 for file_path, file_name in zip(file_paths, file_names):
     if 'AuFilm_2' in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        ref = RF.data['intensity']
+        ref = RF.data0['intensity']
     elif 'AuNP' in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        sps.append(RF.data['intensity'])
-        wav = RF.data['wavelength']
+        sps.append(RF.data0['intensity'])
+        wav = RF.data0['wavelength']
         legend_labels.append(file_name)
 
 # sub = np.mean(subs, axis=0)

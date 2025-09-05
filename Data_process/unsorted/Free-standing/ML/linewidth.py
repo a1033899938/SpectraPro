@@ -23,7 +23,7 @@ ax = fig.add_subplot(111)
 le = ['Supported', 'Suspended']
 for file in files:
     readFile = read_file(file, strip=[45, 55], show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
     y = np.array(y)

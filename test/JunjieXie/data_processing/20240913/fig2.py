@@ -40,7 +40,7 @@ legend_text = texts
 
 for file_path, file_name in zip(file_paths, file_names):
     readFile = read_file(file_path, show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
 

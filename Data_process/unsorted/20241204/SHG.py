@@ -38,9 +38,9 @@ for file_path, file_name in zip(file_paths_sorted, file_names_sorted):
     num_file.append(numbers[-1])
     RF = read_file(file_path, strip=[197, 223], show_data_flag=False)
     # RF = read_file(file_path, strip=[194, 206], show_data_flag=False)
-    sp = RF.data['intensity']
+    sp = RF.data0['intensity']
     sps.append(sp)
-    wav = RF.data['wavelength']
+    wav = RF.data0['wavelength']
 
 
 # print(num_file)

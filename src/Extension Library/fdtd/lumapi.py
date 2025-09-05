@@ -44,10 +44,10 @@ if (platform.system() == 'Windows') or (platform.system() == 'Linux'):
 elif platform.system() == 'Darwin':
     LUMERICALDIR = os.path.abspath(INTEROPLIBDIR + "/../../../")
     INTEROPLIB = INTEROPLIBDIR + "/libinterop-api.1.dylib"
-    FDTD_SUFFIX = "/FDTD Solutions.app/Contents/MacOS"
-    MODE_SUFFIX = "/MODE Solutions.app/Contents/MacOS"
-    DEVC_SUFFIX = "/DEVICE.app/Contents/MacOS"
-    INTC_SUFFIX = "/INTERCONNECT.app/Contents/MacOS"
+    FDTD_SUFFIX = "/FDTD Solutions.ESP32-Backup/Contents/MacOS"
+    MODE_SUFFIX = "/MODE Solutions.ESP32-Backup/Contents/MacOS"
+    DEVC_SUFFIX = "/DEVICE.ESP32-Backup/Contents/MacOS"
+    INTC_SUFFIX = "/INTERCONNECT.ESP32-Backup/Contents/MacOS"
     MODERN_FDTDDIR = LUMERICALDIR + "/Contents/Applications" + FDTD_SUFFIX
     MODERN_MODEDIR = LUMERICALDIR + "/Contents/Applications" + MODE_SUFFIX
     MODERN_DEVCDIR = LUMERICALDIR + "/Contents/Applications" + DEVC_SUFFIX
@@ -373,11 +373,11 @@ def packMatrix(value):
     srcPtr = v.ctypes.data_as(POINTER(c_double))
     if v.dtype == complex:
         a = iapi.allocateComplexLumMatrix(dim, dl)
-        destPtr = a[0].val.matrixVal.data
+        destPtr = a[0].val.matrixVal.data0
         iapi.memmovePackComplexLumMatrix(destPtr, srcPtr, v.size)
     else:
         a = iapi.allocateLumMatrix(dim, dl)
-        destPtr = a[0].val.matrixVal.data
+        destPtr = a[0].val.matrixVal.data0
         memmove(destPtr, srcPtr, 8 * v.size)
 
     return a
@@ -394,12 +394,12 @@ def unpackMatrix(value):
     if lumatrix.mode == 1:
         r = np.empty(l, dtype="float64", order='F')
         destPtr = r.ctypes.data_as(POINTER(c_double))
-        memmove(destPtr, lumatrix.data, l * 8)
+        memmove(destPtr, lumatrix.data0, l * 8)
         r = r.reshape(dl, order='F')
     else:
         r = np.empty(l, dtype=complex, order='F')
         destPtr = r.ctypes.data_as(POINTER(c_double))
-        iapi.memmoveUnpackComplexLumMatrix(destPtr, lumatrix.data, l)
+        iapi.memmoveUnpackComplexLumMatrix(destPtr, lumatrix.data0, l)
         r = r.reshape(dl, order='F')
 
     return r

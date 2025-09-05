@@ -81,8 +81,8 @@ for i, folder_path in enumerate(folder_paths):
         else:
             strip = [181, 205]
         RF = read_file(file_path, strip=strip, show_data_flag=False)
-        sp = RF.data['intensity']
-        wav = RF.data['wavelength']
+        sp = RF.data0['intensity']
+        wav = RF.data0['wavelength']
 
         # 对光谱进行噪声去除
         # 设置一个阈值，用于判断数据的差异是否过大

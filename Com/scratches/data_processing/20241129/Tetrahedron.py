@@ -26,11 +26,11 @@ legend_labels = []
 for file_path, file_name in zip(file_paths, file_names):
     if 'sub(sio2)-1_DFS_30s' in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        sub = RF.data['intensity']
-        wav = RF.data['wavelength']
+        sub = RF.data0['intensity']
+        wav = RF.data0['wavelength']
     elif '30s' in file_name and 'sub' not in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        sps.append(RF.data['intensity'])
+        sps.append(RF.data0['intensity'])
         legend_labels.append(file_name)
 
 

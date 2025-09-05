@@ -79,8 +79,8 @@ class FigureWidget(QWidget):
     def deal_with_this_file(self, list_item):
         try:
             # read data and file name
-            self.list_item_name = list_item.data(0)
-            self.list_item_path = list_item.data(1)
+            self.list_item_name = list_item.data0(0)
+            self.list_item_path = list_item.data0(1)
 
             self.fig_title = self.list_item_name
 

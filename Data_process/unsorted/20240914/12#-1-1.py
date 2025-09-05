@@ -42,7 +42,7 @@ powers = [5, 10, 50, 100]
 
 for file_path, file_name in zip(file_paths, file_names):
     readFile = read_file(file_path, show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
 
     x = data['wavelength']
     y = data['intensity']
@@ -64,7 +64,7 @@ figure_ymax = np.array(figure_ymaxs).max()
 i = 0
 for file_path, file_name in zip(file_paths, file_names):
     readFile = read_file(file_path, show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
     y = y / 10  # 60s

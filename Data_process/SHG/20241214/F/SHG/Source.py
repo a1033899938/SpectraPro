@@ -26,10 +26,10 @@ file_name = 'source_800fs.spe'
 file_path = os.path.join(folder_path, file_name)
 
 RF = read_file(file_path, strip=[193, 217], show_data_flag=False)
-graph = RF.data['intensity']
-image = RF.data['intensity_image']
-strip = RF.data['strip']
-wav = RF.data['wavelength']
+graph = RF.data0['intensity']
+image = RF.data0['intensity_image']
+strip = RF.data0['strip']
+wav = RF.data0['wavelength']
 
 
 """Image"""

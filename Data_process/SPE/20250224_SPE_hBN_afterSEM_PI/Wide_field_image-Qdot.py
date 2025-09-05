@@ -32,7 +32,7 @@ for i, key in enumerate(keys):
     data_path = os.path.join(folder_path, key)
     if i == 0:
         readFile = read_file(data_path, strip=[49, 58], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         x = data['wavelength']
         y = data['strip']
         z = data['intensity_image']
@@ -43,7 +43,7 @@ for i, key in enumerate(keys):
         ax0.pcolor(x, y, z)
     elif i == 1:
         readFile = read_file(data_path, strip=[85, 90], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         x = data['wavelength']
         y = data['intensity']
         fig = plt.figure(figsize=(8, 6))
@@ -60,7 +60,7 @@ for i, key in enumerate(keys):
         the_figure1(ax1)
 
         readFile = read_file(data_path, strip=[50, 55], show_data_flag=False)
-        data = readFile.data
+        data = readFile.data0
         x = data['wavelength']
         y = data['intensity']
         ax.plot(x, y)

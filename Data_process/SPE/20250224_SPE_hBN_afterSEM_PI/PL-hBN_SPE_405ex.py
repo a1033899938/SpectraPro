@@ -32,7 +32,7 @@ for i, key in enumerate(keys):
     ax = fig.add_subplot(111)
     data_path = os.path.join(folder_path, key)
     readFile = read_file(data_path, strip=[43, 48], show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['wavelength']
     y = data['intensity']
     ax.plot(x, y)

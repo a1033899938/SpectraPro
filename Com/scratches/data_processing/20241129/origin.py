@@ -26,12 +26,12 @@ legend_labels = []
 for file_path, file_name in zip(file_paths, file_names):
     if '10s' in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        sps.append(RF.data['intensity'])
+        sps.append(RF.data0['intensity'])
         legend_labels.append(file_name)
     elif '30s' in file_name:
         RF = read_file(file_path, strip='all', show_data_flag=False)
-        sps.append(RF.data['intensity']/3)
-        wav = RF.data['wavelength']
+        sps.append(RF.data0['intensity'] / 3)
+        wav = RF.data0['wavelength']
         legend_labels.append(file_name)
 
 

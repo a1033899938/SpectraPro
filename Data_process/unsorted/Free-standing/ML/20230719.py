@@ -21,7 +21,7 @@ NA = 0.55
 
 for file in files:
     readFile = read_file(file, strip=[45, 56], show_data_flag=False)
-    data = readFile.data
+    data = readFile.data0
     x = data['strip']
     y = data['wavelength']
     z = data['intensity_image']

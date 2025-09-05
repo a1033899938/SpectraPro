@@ -30,14 +30,14 @@ for file_path, file_name in zip(file_paths, file_names):
     if 'White' in file_name:  # RCD
         RF = read_file(file_path, strip=[40, 67], show_data_flag=False)  # RCD
         if 'bgd' in file_name:
-            sp_ref = RF.data['intensity']
+            sp_ref = RF.data0['intensity']
         else:
-            sp_R = RF.data['intensity']
-            wav_RCD = RF.data['wavelength']
+            sp_R = RF.data0['intensity']
+            wav_RCD = RF.data0['wavelength']
     elif 'uW' in file_name:
         RF = read_file(file_path, strip=[49, 58], show_data_flag=False)  # PL
-        sp_PL = RF.data['intensity']
-        wav_PL = RF.data['wavelength']
+        sp_PL = RF.data0['intensity']
+        wav_PL = RF.data0['wavelength']
 
 
 # idx_low = find_nearest_idx(wav_RCD, 560)

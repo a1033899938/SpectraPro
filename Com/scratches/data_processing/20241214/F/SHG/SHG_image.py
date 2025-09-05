@@ -91,12 +91,12 @@ for i in range(4):
             else:
                 strip = [181, 205]
             RF = read_file(file_path, strip=strip, show_data_flag=False)
-            image = RF.data['intensity_image']
+            image = RF.data0['intensity_image']
             images.append(image)
-            sp = RF.data['intensity']
+            sp = RF.data0['intensity']
             sps.append(sp)
-            strip = RF.data['strip']
-            wav = RF.data['wavelength']
+            strip = RF.data0['strip']
+            wav = RF.data0['wavelength']
 
     for num, image, sp in zip(nums, images, sps):
         """Image"""

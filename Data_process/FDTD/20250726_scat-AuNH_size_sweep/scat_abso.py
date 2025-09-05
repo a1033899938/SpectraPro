@@ -32,7 +32,7 @@ for i, (key, value) in enumerate(data1.items()):
 
     if 'scat' in key:
         scat = np.array(value)
-        scat = scat / np.max(scat)
+        # scat = scat / np.max(scat)
         ax1.plot(wav, scat, label=le, color=MyColor.get_color("professional", num-1))
         if scats is None:
             scats = scat

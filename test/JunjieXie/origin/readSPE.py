@@ -36,7 +36,7 @@ for key, filename in zip(files, filenames):
     sp = sl.load_from_files([key])
     xdim = sp.xdim[0]
     ydim = sp.ydim[0]
-    intensity = np.array(sp.data)
+    intensity = np.array(sp.data0)
     intensity = np.squeeze(intensity)
     wavelength = sp.wavelength
     # wavelength = 1240/wavelength

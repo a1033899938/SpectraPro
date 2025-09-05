@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="NanoPhotonics" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="NanoPhotonics" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="SpectraPro" project-jdk-type="Python SDK" />
 </project>

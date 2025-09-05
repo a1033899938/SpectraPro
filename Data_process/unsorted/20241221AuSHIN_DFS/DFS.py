@@ -37,12 +37,12 @@ for file_path, file_name in zip(file_paths, file_names):
     if '_3' in file_name:
         if 'AuNP' in file_name:
             RF = read_file(file_path, strip='all', show_data_flag=False)
-            sps.append(RF.data['intensity'])
+            sps.append(RF.data0['intensity'])
             legend_labels.append(file_name)
         elif 'sub' in file_name:
             RF = read_file(file_path, strip='all', show_data_flag=False)
-            sub = RF.data['intensity']
-            wav = RF.data['wavelength']
+            sub = RF.data0['intensity']
+            wav = RF.data0['wavelength']
 
 # sub = np.mean(subs, axis=0)
 fig = plt.figure(figsize=(8, 6), dpi=100)
