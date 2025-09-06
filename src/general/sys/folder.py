@@ -10,9 +10,10 @@ def create_folder(path):
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
             print(f"创建文件夹: {path}")
+            return True
         else:
             print(f"文件夹已存在，跳过创建: {path}")
-        return True
+            return False
     except Exception as e:
         print(f"创建文件夹失败: {e}")
         return False

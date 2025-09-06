@@ -86,7 +86,6 @@ def save_lines_txt(data1: Union[np.ndarray, list], data2: Union[np.ndarray, list
 
             # 如number_of_placeholder = 2时，placeholder = '{} {}\n'
             placeholder = separator.join(['{}'] * number_of_placeholder) + '\n'
-            print(placeholder)
             # 打开文件并逐行写入数据
             with open(save_path, "w") as f:
                 if lines_names is not None:

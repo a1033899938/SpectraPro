@@ -70,6 +70,7 @@ class Serial_Client:
                         elif "CMD" in part:
                             cmd = part.replace("CMD:", "")
                     self._session_execute(cmd)
+                    self._write(f"SESSION:{session_num};STATUS:executed")
             except Exception as e:
                 print(f"Error(Serial_Client::_reading_thread): {str(e)}")
 

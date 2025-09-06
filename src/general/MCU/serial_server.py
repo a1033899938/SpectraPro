@@ -3,7 +3,7 @@ Author: Junjie-Xie
 Updated: 2025/8/8
 Functions: 
 """
-
+import numpy as np
 import serial
 import serial.tools.list_ports
 import threading
@@ -128,6 +128,7 @@ class Serial_Server:
                 self._create_reading_thread(port_name, recv_slot=self.serials[port_name]["recv_slot"])
 
             while True:
+                    #  自动采集时，注释掉
                     user_input = input("输入要发送的数据 (输入exit退出): \n")
                     if user_input.lower() == 'exit':
                         break
@@ -135,6 +136,19 @@ class Serial_Server:
                         # self._write("RS", user_input)
                         self._create_session(port_name="RS", data=user_input)
                         time.sleep(0.1)
+
+                    pass
+                    # # 自动采集代码（将此复制到光谱仪主函数处:DFxxx）
+                    # angles = np.arange(0, 180, 1)
+                    # for angle in angles:
+                    #     user_input = f"RS_R_298"
+                    #     self._create_session(port_name="RS", data=user_input)
+                    #     session_now = self.session_num
+                    #     while True:
+                    #         if self.sessions[session_now]["status"] == "executed":
+                    #             # 采集并保存
+                    #             pass
+                    #             break
 
         except KeyboardInterrupt as e:
             print(f"Error(Serial_Server::main_loop): 用户中断")
@@ -188,8 +202,8 @@ class Serial_Server:
         parts = recv.split(";")
         part0 = parts[0]
         part1 = parts[1]
-        session_num = part0.replace("SESSION:", "")
-        session_status = part1.replace("CMD:", "")
+        session_num = int(part0.replace("SESSION:", ""))
+        session_status = part1.replace("STATUS:", "")
 
         # 更新会话本地记录
         self.sessions[session_num].update({"status": session_status})
@@ -205,7 +219,7 @@ if __name__ == "__main__":
             print(port)
 
     comm = Serial_Server()
-    comm.connect("COM14", "RS")
+    comm.connect("COM14", "RS", recv_slot="ESP32")
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
     # comm._write("RS", "pcjun: hello PC")
     comm.main_loop()
