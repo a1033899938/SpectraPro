@@ -18,4 +18,4 @@ net.add_edge(3, 5)
 
 # 生成交互式HTML文件
 net.force_atlas_2based(gravity=-10)
-net.show("mind_map.html")
+net.show("mind_map.website")

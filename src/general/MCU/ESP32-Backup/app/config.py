@@ -5,10 +5,17 @@ class Config:
     def __init__(self):
         # 初始化UART配置参数
         self._uart_num = 2
-        self._uart_tx = 17
-        self._uart_rx = 16
+        self._uart_tx = 17  # 接CH340的RX
+        self._uart_rx = 16  # 接CH340的TX
         self._uart_baudrate = 115200
         self._uart_parity = 1  # 1=偶校验, 0=奇校验, None=无校验
+
+        # motor
+        self._stepper_motor_En = 26
+        self._stepper_motor_In1 = 27
+        self._stepper_motor_In2 = 14
+        self._stepper_motor_In3 = 12
+        self._stepper_motor_In4 = 13
 
         # 初始化LED配置参数
         self._led_pin = 2  # 默认使用板载LED

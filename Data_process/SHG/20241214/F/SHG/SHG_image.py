@@ -99,7 +99,7 @@ for i in range(4):
             wav = RF.data0['wavelength']
 
     for num, image, sp in zip(nums, images, sps):
-        """Image"""
+        """Images"""
         fig = plt.figure(figsize=(8, 6), dpi=100)
         ax = fig.add_subplot(111)
         # 使用 pcolor 绘制图像

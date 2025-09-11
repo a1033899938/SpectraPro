@@ -28,7 +28,7 @@ class Serial_Server:
         self.serials = {}
 
         self.sessions = {}
-        self.session_num = 0
+        self.session_num = -1
         self.response_received = threading.Event()  # 用于等待响应的事件。发送指令时将 session_id 加入 “待处理队列”，收到响应后会从队列中移除
 
     def connect(self, port, port_name=None, recv_slot=None,baudrate=115200):
@@ -127,35 +127,49 @@ class Serial_Server:
             for port_name in self.serials.keys():
                 self._create_reading_thread(port_name, recv_slot=self.serials[port_name]["recv_slot"])
 
-            while True:
-                    #  自动采集时，注释掉
-                    user_input = input("输入要发送的数据 (输入exit退出): \n")
-                    if user_input.lower() == 'exit':
-                        break
-                    else:
-                        # self._write("RS", user_input)
-                        self._create_session(port_name="RS", data=user_input)
-                        time.sleep(0.1)
+            # while True:
+            #         #  自动采集时，注释掉
+            #         user_input = input("输入要发送的数据 (输入exit退出): \n")
+            #         if user_input.lower() == 'exit':
+            #             break
+            #         else:
+            #             # self._write("RS", user_input)
+            #             self._create_session(port_name="RS", data=user_input)
+            #             time.sleep(0.1)
+            #
+            #         pass
+            #         # # 自动采集代码（将此复制到光谱仪主函数处:DFxxx）
+            #         # angles = np.arange(0, 180, 1)
+            #         # for angle in angles:
+            #         #     user_input = f"RS_R_298"
+            #         #     self._create_session(port_name="RS", data=user_input)
+            #         #     session_now = self.session_num
+            #         #     while True:
+            #         #         if self.sessions[session_now]["status"] == "executed":
+            #         #             # 采集并保存
+            #         #             pass
+            #         #             break
 
-                    pass
-                    # # 自动采集代码（将此复制到光谱仪主函数处:DFxxx）
-                    # angles = np.arange(0, 180, 1)
-                    # for angle in angles:
-                    #     user_input = f"RS_R_298"
-                    #     self._create_session(port_name="RS", data=user_input)
-                    #     session_now = self.session_num
-                    #     while True:
-                    #         if self.sessions[session_now]["status"] == "executed":
-                    #             # 采集并保存
-                    #             pass
-                    #             break
+            while True:
+                user_input = input("\n请输入命令: ").strip().lower()
+
+                if user_input == 'exit':
+                    print("正在退出程序...")
+                    break
+                elif user_input == 'test_rs':
+                    print("开始运行test_RS...")
+                    self.test_RS()
+                    print("test_RS运行完成")
+                else:
+                    print(f"未知命令: {user_input}，请输入 'test_rs' 或 'exit'")
 
         except KeyboardInterrupt as e:
             print(f"Error(Serial_Server::main_loop): 用户中断")
         finally:
-            for port_name in self.serials.keys():
-                self.disconnect(port_name)
-            print_title("主循环结束, 已断开通信")
+            # for port_name in self.serials.keys():
+            #     self.disconnect(port_name)
+            # print_title("主循环结束, 已断开通信")
+            pass
 
     def _reading_thread(self, port_name, recv_slot):
         while True:
@@ -169,6 +183,7 @@ class Serial_Server:
 
     """create session"""
     def _create_session(self, port_name, data):
+        self.session_num += 1
         self.sessions[self.session_num] = {
             "command": data,
             "time": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
@@ -183,7 +198,6 @@ class Serial_Server:
         if self._write(port_name, formatted_data):
             self.sessions[self.session_num].update({"status": "sent"})
         print(self.sessions[self.session_num])
-        self.session_num += 1
 
     """recv event"""
     def find_recv_slot(self, recv_slot):
@@ -209,6 +223,14 @@ class Serial_Server:
         self.sessions[session_num].update({"status": session_status})
 
         # print(self.sessions[session_num])
+
+    def test_RS(self):
+        for _ in range(180):
+            self._create_session(port_name="RS", data="RS_R_2980")
+            while True:
+                if self.sessions[self.session_num]["status"] == "executed":
+                    break
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":

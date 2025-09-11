@@ -27,7 +27,7 @@ f = h5py.File(file_path, "r")
 #                             linewidth=3, tick_pad=5, direction='in')
 #         set_figure.set_scientific_y_ticks(ax[i], sci_fontsize=15, sci_fontweight='bold')
 #
-#         """save image data"""
+#         """save Images data"""
 #         sys_path = r'D:\GitProject\SpectraPro\test\Data_process'
 #         save_path = os.path.join(sys_path, node_path.lstrip('/'))
 #         save_name = f'{key}.npz'

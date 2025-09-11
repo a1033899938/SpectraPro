@@ -58,7 +58,6 @@ class Serial_Client:
             print(f"Error(Serial_Client::_read): {str(e)}")
 
     def _reading_thread(self):
-        print("Serial Client thread started")
         while True:
             try:
                 recv = self._read()

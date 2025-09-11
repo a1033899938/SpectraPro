@@ -1,15 +1,14 @@
 # LED硬件控制模块
 from machine import Pin
-from app.logger import print_level
+import time
 
-class LEDController:
+class LED:
     """LED控制器，封装LED相关操作"""
     
     def __init__(self, pin):
         self.led = Pin(pin, Pin.OUT)
         self.led.off()  # 初始状态关闭
         self.status = False  # False=关闭, True=开启
-        print_level(1, "init", "LED控制器初始化完成")
         
     def on(self):
         """点亮LED"""

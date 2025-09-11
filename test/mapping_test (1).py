@@ -71,9 +71,9 @@ with h5py.File(datapath1, "r") as f:
     #     img = data[key]
     #     img = np.asarray(img)
     #     if data[key].ndim == 2:
-    #         img = Image.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
+    #         img = Images.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
     #     elif data[key].ndim == 3:
-    #         img = Image.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
+    #         img = Images.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
     #     else:
     #         print(f"图像 {i} 的维度不支持：{img.shape}")
     #

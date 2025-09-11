@@ -56,7 +56,7 @@ class HistogramWidget(QWidget):
             self.dragging_xmax = False
             self.dragging_xmid = False
             self.start_xmid_pos = None
-            self.figure_show_flag = 'image'
+            self.figure_show_flag = 'Images'
 
             layout = QVBoxLayout()
             layout.addWidget(self.canvas)
@@ -238,7 +238,7 @@ class HistogramWidget(QWidget):
             set_figure.set_label_and_title(self.figure_ax, title=self.figure_title)
             set_figure.set_tick(self.figure_ax, xbins=6, ybins=10)
 
-            # if self.figure_show_flag == 'Image&Graph':
+            # if self.figure_show_flag == 'Images&Graph':
             #     self.figure_ax.add_patch(self.figure_rect)
 
             self.figure_canvas.draw()

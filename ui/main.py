@@ -163,9 +163,9 @@ class MyMainWindow(QMainWindow):
 
             # right_hbox2
             self.layoutComboBox = QComboBox(self)
-            self.layoutComboBox.addItem("Image")
+            self.layoutComboBox.addItem("Images")
             self.layoutComboBox.addItem("Graph")
-            self.layoutComboBox.addItem("Image&Graph")
+            self.layoutComboBox.addItem("Images&Graph")
             self.layoutComboBox.currentIndexChanged.connect(self.figureWidget.toggle_image_and_graph)
             self.layoutComboBox.setFixedHeight(self.base_button_height)
             self.layoutComboBox.setFixedWidth(self.base_button_height*3)
@@ -311,7 +311,7 @@ class MyMainWindow(QMainWindow):
     #             self.roiLowerSpinBox.setEnabled(False)
     #             self.show_roi_flag = False
     #         else:
-    #             if self.draw_rect_flag is True and self.show_flag == 'image':
+    #             if self.draw_rect_flag is True and self.show_flag == 'Images':
     #                 self.roiUpperSpinBox.setEnabled(True)
     #                 self.roiLowerSpinBox.setEnabled(True)
     #                 self.show_roi_flag = True

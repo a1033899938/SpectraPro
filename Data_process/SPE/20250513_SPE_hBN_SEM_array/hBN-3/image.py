@@ -29,7 +29,7 @@ with h5py.File(datapath1, "r") as f:
 
         # if save_fig == 1:
         #     save_name = os.path.dirname(datapath1)
-        #     save_name = os.path.join(save_name, fr'image\{key}.png')
+        #     save_name = os.path.join(save_name, fr'Images\{key}.png')
         #     img.save(save_name)
 
         # 可选：使用 matplotlib 显示图像

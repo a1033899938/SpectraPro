@@ -103,9 +103,9 @@ np.save(os.path.join(os.path.dirname(datapath1), fr'm2\mapping_505.npy'), mappin
 #         img = data[key]
 #         img = np.asarray(img)
 #         if data[key].ndim == 2:
-#             img = Image.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
+#             img = Images.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
 #         elif data[key].ndim == 3:
-#             img = Image.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
+#             img = Images.fromarray(img.astype(np.uint8))  # 转换为 PIL 图像
 #         else:
 #             print(f"图像 {i} 的维度不支持：{img.shape}")
 #

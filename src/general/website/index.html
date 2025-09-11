@@ -1,0 +1,108 @@
+<!DOCPTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hushu Group</title>
+        <link rel="stylesheet", href="style.css">
+    </head>
+    <body>
+<!--  所有内容  -->
+<!--1.区块元素与行内元素-->
+<!--区块元素：独占一整行。如h1、h2、p-->
+<!--行内元素：按照内容多少来占空间（如标签）-->
+
+<!--2.标签：粗体和斜体、建立链接-->
+<!--粗体：strong-->
+<!--斜体：em-->
+<!--链接：a-->
+<!--引用：blockquote-->
+<!--换行：br-->
+<!--图片：img-->
+
+
+<!--3.清单、列表、无序清单-->
+<!--清单：ordered list，前面为序号-->
+<!--列表：list-->
+<!--无序清单：unordered list，前面为圆点-->
+
+<!--4.html结构-->
+<!--header：包含网站Logo等首页相关资讯-->
+<!--nav：网站导览列或主选单-->
+<!--main：网页主要内容-->
+<!--section：区块-->
+<!--div：区域-->
+<!--foot：页尾-->
+
+        <header>
+            <button class="menu">
+                &#9776;
+            </button>
+            <h1>xmulogo</h1>
+            <ul>
+                <li><a href="#">ABOUT</a> </li>
+                <li><a href="#">HOME</a></li>
+                <li><a href="#">PRODUCT</a></li>
+                <li><a href="#">PRICING</a></li>
+            </ul>
+        </header>
+        <nav>网站导览列或主选单</nav>
+        <main>网页主要内容
+            <section class="news">
+                <h2>分块1</h2>
+                <p>分块1</p>
+                <a>分块1</a>
+            </section>
+            <section class="papers">分块2</section>
+            <section class="slogan">
+                <h1>h1</h1>
+                <h2>h2</h2>
+                <p><strong>这是粗体</strong></p>
+                <p><em>这是斜体</em></p>
+                <p><a href="#">这是网页链接</a> </p>
+                <ol>
+                    <li>列表内容1</li>
+                    <li>列表内容2</li>
+                    <li>列表内容3</li>
+                </ol>
+
+                <blockquote cite="https://www.xmu.edu.cn/">在这里,<br>引用别人的话</blockquote>
+<!--                <img src="Images/XMU.jpg" alt="图片无法正常显示时出现">-->
+            </section>
+            <section class="shop">
+                <img src="Images/HLS.png">
+                <div class="info">
+                    div 1
+                </div>
+            </section>
+
+            <section class="product">
+                <div>
+                    <img src="Images/xjj.png" alt="谢俊杰">
+                    <h3>谢俊杰</h3>
+                    <p>唱跳rap乒乓球</p>
+                </div>
+                <div class="zkx">
+                    <img src="Images/zkx.png" alt="郑可心">
+                    <h3>郑可心</h3>
+                    <p>唱跳rap乒乓球</p>
+                </div>
+                <div>
+                    <img src="Images/ljk.png" alt="李晋柯">
+                    <h3>李晋柯</h3>
+                    <p>唱跳rap乒乓球</p>
+                </div>
+            </section>
+
+            <section class="newsletter">
+                <p>欢迎订阅本栏目</p>
+                <form>
+                    <input class="type_line" type="email" placeholder="请输入您的email账号"required>
+                    <button class="button" type="submit">发送</button>
+                </form>
+            </section>
+        </main>
+        <footer>这里是页尾</footer>
+        <script src="script.js"></script>
+    </body>
+</html>

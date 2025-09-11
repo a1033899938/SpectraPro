@@ -276,8 +276,8 @@ except Exception as e:
 
 """processing——末"""
 
-    # for image in thumb_images:
-    #     """Image——始
+    # for Images in thumb_images:
+    #     """Images——始
     #     """
     #     nFig = 0
     #     nSubplot = 0
@@ -285,7 +285,7 @@ except Exception as e:
     #     j = 0
     #     for key in particles:
     #         try:
-    #             NP_image = f[f'/ParticleScannerScan_{num}/{key}/CWL.thumb_image_{image}']
+    #             NP_image = f[f'/ParticleScannerScan_{num}/{key}/CWL.thumb_image_{Images}']
     #             NP_image = np.array(NP_image)
     #             if (nSubplot % 12) == 0:
     #                 Fig, ax = plt.subplots(3, 4, figsize=(12, 8), tight_layout=True)
@@ -296,10 +296,10 @@ except Exception as e:
     #             i = (nSubplot % 12) // 4
     #             j = (nSubplot % 12) % 4
     #             ax[i][j].imshow(NP_image)
-    #             ax[i, j].set_title(f'{key}-CWL.thumb_image_{image}')
+    #             ax[i, j].set_title(f'{key}-CWL.thumb_image_{Images}')
     #             nSubplot += 1
     #             extent = full_extent(ax[i, j]).transformed(Fig.dpi_scale_trans.inverted())
-    #             savename_image = savepath_image + f'/{key}-CWL.thumb_image_{image}.png'
+    #             savename_image = savepath_image + f'/{key}-CWL.thumb_image_{Images}.png'
     #             plt.savefig(savename_image, bbox_inches=extent)
     #         except KeyError as e:
     #             print(e)
@@ -307,7 +307,7 @@ except Exception as e:
     #     #             print(e)
     #     #             pass
     #     # plt.show()
-    #     """Image——末
+    #     """Images——末
     #     """
 
 print('All Processing==========completed')
@@ -394,8 +394,8 @@ print('All Processing==========completed')
     #         slide = prs.slides.add_slide(prs.slide_layouts[6])  # 使用空白布局
     #         items = []
     #     try:
-    #         for image, row_image in zip(thumb_images, rows_image):
-    #             image_path = savepath_image + f'/{key}-CWL.thumb_image_{image}.png'
+    #         for Images, row_image in zip(thumb_images, rows_image):
+    #             image_path = savepath_image + f'/{key}-CWL.thumb_image_{Images}.png'
     #             # 计算图片在当前幻灯片中的位置
     #             row = row_image
     #             print(row)

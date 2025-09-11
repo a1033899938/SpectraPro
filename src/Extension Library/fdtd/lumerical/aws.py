@@ -394,7 +394,7 @@ def _construct_parameters(name=None, license_file_content=None, key_pair_name=No
 def initialize_virtual_private_cloud(name, license_file, ami_id, lic_ami_id, key_pair_name=None):
     """
     Updates an existing virtual private cloud (VPC) with the provided license file, key pair and Amazon machine
-    image (AMI) identifiers. A license server with the provided license file is launched automatically. If the
+    Images (AMI) identifiers. A license server with the provided license file is launched automatically. If the
     VPC contains a running license server, it must be stopped beforehand.
 
     :param name:          Base name used to generate the VPC and its associated resources.
@@ -423,7 +423,7 @@ def initialize_virtual_private_cloud(name, license_file, ami_id, lic_ami_id, key
     if not _is_name_valid(lic_ami_id):
         logger.error('The provided license server AMI ID is invalid.')
         return
-    command = 'aws ec2 describe-images --image-ids {0} --query Images[*].[State]'.format(lic_ami_id)
+    command = 'aws ec2 describe-images --Images-ids {0} --query Images[*].[State]'.format(lic_ami_id)
     shell_output = _shell_command(command)
     if 'available' not in shell_output:
         logger.error('The provided license server AMI (ID:{0}) could not be found.'.format(lic_ami_id))
@@ -432,7 +432,7 @@ def initialize_virtual_private_cloud(name, license_file, ami_id, lic_ami_id, key
     if not _is_name_valid(ami_id):
         logger.error('The provided compute instance AMI ID is invalid.')
         return
-    command = 'aws ec2 describe-images --image-ids {0} --query Images[*].[State]'.format(ami_id)
+    command = 'aws ec2 describe-images --Images-ids {0} --query Images[*].[State]'.format(ami_id)
     shell_output = _shell_command(command)
     if 'available' not in shell_output:
         logger.error('The provided compute instance AMI (ID:{0}) could not be found.'.format(ami_id))

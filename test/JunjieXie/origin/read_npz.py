@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # plot_lines_from_data(lines_data)
 
     loaded = np.load(npz_file_path)
-    image_data = loaded['image']
+    image_data = loaded['Images']
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.imshow(image_data)

@@ -215,7 +215,7 @@ class SuperOptimization(object):
             self.plotter.set_legend(self.fom_names)
 
             self.plotter.update_gradient(self)
-            self.plotter.draw_and_save()                    #< Finally, refresh the screen and save the image
+            self.plotter.draw_and_save()                    #< Finally, refresh the screen and save the Images
 
             for optimization in self.optimizations:
                 optimization.save_index_to_vtk(self.optimizer.iteration)

@@ -8,7 +8,7 @@ from matplotlib.animation import FileMovieWriter
 from matplotlib.cbook import flatten
 
 class SnapShots(FileMovieWriter):
-    ''' Grabs the image information from the figure and saves it as a movie frame. '''
+    ''' Grabs the Images information from the figure and saves it as a movie frame. '''
 
     supported_formats = ['png', 'jpeg', 'pdf']
 

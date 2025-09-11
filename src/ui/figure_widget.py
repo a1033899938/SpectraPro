@@ -57,7 +57,7 @@ class FigureWidget(QWidget):
             self.spin_box_min = None
             self.spin_box_max = None
 
-            self.show_flag = 'image'
+            self.show_flag = 'Images'
             self.draw_rect_flag = False
             self.ax2 = None
         except Exception as e:
@@ -109,12 +109,12 @@ class FigureWidget(QWidget):
     def show_figue(self):
         try:
             if self.filetype == '.spe' or self.filetype == '.mat':
-                if self.show_flag == 'image':
+                if self.show_flag == 'Images':
                     self.show_image(self.data, fig_title=self.fig_title)
                     self.histogramWidget.show_hist()
                 elif self.show_flag == 'graph':
                     self.show_graph(self.data, fig_title=self.fig_title)
-                elif self.show_flag == 'Image&Graph':
+                elif self.show_flag == 'Images&Graph':
                     self.show_image(self.data, fig_title=self.fig_title)
                     self.histogramWidget.show_hist()
                     self.show_graph(self.data, fig_title=self.fig_title)
@@ -166,7 +166,7 @@ class FigureWidget(QWidget):
             x = np.array(x)
             y = np.array(y)
 
-            if self.show_flag == 'Image&Graph':
+            if self.show_flag == 'Images&Graph':
                 self.ax2.clear()
                 self.ax2.plot(x, y)
                 self.ax2.set_xlim([x.min(), x.max()])
@@ -180,7 +180,7 @@ class FigureWidget(QWidget):
                 self.ax.set_ylim([y.min(), y.max()])
                 set_figure.set_label_and_title(self.ax, title=fig_title)
                 set_figure.set_tick(self.ax, xbins=6, ybins=10)
-            if self.show_flag != 'Image&Graph':
+            if self.show_flag != 'Images&Graph':
                 self.canvas_origin_xylim = [x.min(), x.max(), y.min(), y.max()]
             else:
                 self.canvas_origin_xylim2 = [x.min(), x.max(), y.min(), y.max()]
@@ -280,17 +280,17 @@ class FigureWidget(QWidget):
         try:
             if index == 0 or index == 1 or index == 2:
                 if index == 0:
-                    if self.show_flag == 'Image&Graph':
+                    if self.show_flag == 'Images&Graph':
                         self.ax.remove()
                         self.ax2.remove()
                         self.ax = self.fig.add_subplot(111)
 
-                    self.show_flag = 'image'
+                    self.show_flag = 'Images'
                     self.read_data()
                     self.show_figue()
                     self.histogramWidget.show_hist()
                 elif index == 1:
-                    if self.show_flag == 'Image&Graph':
+                    if self.show_flag == 'Images&Graph':
                         self.ax.remove()
                         self.ax2.remove()
                         self.ax = self.fig.add_subplot(111)
@@ -300,7 +300,7 @@ class FigureWidget(QWidget):
                     self.read_data()
                     self.show_figue()
                 elif index == 2:
-                    self.show_flag = 'Image&Graph'
+                    self.show_flag = 'Images&Graph'
                     self.ax.remove()
                     self.ax = self.fig.add_subplot(211)
                     self.ax2 = self.fig.add_subplot(212)
@@ -322,7 +322,7 @@ class FigureWidget(QWidget):
     def toggle_show_rect(self):
         try:
             if self.show_flag == 'graph':
-                print("Only for image or Image&Graph.")
+                print("Only for Images or Images&Graph.")
                 return
             if not self.draw_rect_flag:
                 self.draw_rect_flag = True
@@ -362,7 +362,7 @@ class FigureWidget(QWidget):
             self.parent.receive_spinbox_value_from_figure(value, tag='max')
             self.spin_box_max = value
             self.read_data()  # reload data for showing graph with new strip range
-            if self.show_flag == 'graph' or self.show_flag == "Image&Graph":
+            if self.show_flag == 'graph' or self.show_flag == "Images&Graph":
                 self.show_graph(self.data, fig_title=self.fig_title)
             self.pass_parameters_to_hist(self.data, self.ax, self.canvas, self.canvas_xylim, self.canvas_origin_xylim,
                                          self.show_flag, self.rect)
@@ -379,7 +379,7 @@ class FigureWidget(QWidget):
             self.parent.receive_spinbox_value_from_figure(value, tag='min')
             self.spin_box_min = value
             self.read_data()  # reload data for showing graph with new strip range
-            if self.show_flag == 'graph' or self.show_flag == "Image&Graph":
+            if self.show_flag == 'graph' or self.show_flag == "Images&Graph":
                 self.show_graph(self.data, fig_title=self.fig_title)
             self.pass_parameters_to_hist(self.data, self.ax, self.canvas, self.canvas_xylim, self.canvas_origin_xylim,
                                          self.show_flag, self.rect)

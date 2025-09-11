@@ -11,11 +11,11 @@ class Config:
         self._uart_parity = 1  # 1=偶校验, 0=奇校验, None=无校验
 
         # motor
-        self._stepper_motor_En = 13
-        self._stepper_motor_In1 = 12
+        self._stepper_motor_En = 26
+        self._stepper_motor_In1 = 27
         self._stepper_motor_In2 = 14
-        self._stepper_motor_In3 = 27
-        self._stepper_motor_In4 = 26
+        self._stepper_motor_In3 = 12
+        self._stepper_motor_In4 = 13
 
         # 初始化LED配置参数
         self._led_pin = 2  # 默认使用板载LED

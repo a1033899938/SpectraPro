@@ -1,5 +1,5 @@
 """
-作用：ESP32-Backup 上电后首先执行的脚本，用于底层初始化
+作用：ESP32 上电后首先执行的脚本，用于底层初始化
 内容：
 1.硬件初始化（如禁用不必要的外设、设置引脚模式）
 2.网络预配置（如启动 WiFi 接入点模式）
@@ -17,18 +17,10 @@ import machine
 import time
 from app.main import main
 
-print("Here's ESP32-Backup!")
-
 # 初始化LED指示灯
 led = machine.Pin(2, machine.Pin.OUT)
-print("boot")
 
 led.on()  # 上电亮灯表示启动中
-print("led on-boot")
-
-# 延时确保硬件就绪
 time.sleep(1)
-led.off()  # 启动完成熄灯
-print("led off-boot")
 
 main()

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - 我的网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        /* 头部样式 */
+        header {
+            background: #35424a;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* 导航样式 */
+        nav {
+            background: #e8491d;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: #c13b16;
+        }
+
+        /* 主内容区域 */
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .about-content {
+            text-align: center;
+        }
+
+        .about-content h2 {
+            color: #35424a;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+
+        .about-content p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-align: left;
+        }
+
+        .team-section {
+            margin-top: 40px;
+        }
+
+        .team-member {
+            display: inline-block;
+            width: 200px;
+            margin: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background: #35424a;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 网站头部 -->
+    <header>
+        <h1>关于我们</h1>
+    </header>
+
+    <!-- 导航菜单 -->
+    <nav>
+        <ul>
+            <li><a href="index.html">首页</a></li>
+            <li><a href="about.html">关于</a></li>
+            <li><a href="services.html">服务</a></li>
+            <li><a href="contact.html">联系</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <div class="about-content">
+            <h2>🌟 我们的故事</h2>
+
+            <p>欢迎来到我们的网站！我们是一家充满激情和创造力的团队，致力于为客户提供最优质的服务。</p>
+
+            <p>成立于2023年，我们从一个小小的想法开始，逐渐发展成为今天的样子。我们的使命是通过创新的解决方案，让每个人的生活变得更加美好。</p>
+
+            <p>我们相信：<strong>诚信、创新、合作、卓越</strong>是我们成功的基石。每一天，我们都在努力超越昨天的自己。</p>
+
+            <div class="team-section">
+                <h3>👥 我们的团队</h3>
+
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="团队成员1">
+                    <h4>张三</h4>
+                    <p>创始人 & CEO</p>
+                </div>
+
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="团队成员2">
+                    <h4>李四</h4>
+                    <p>技术总监</p>
+                </div>
+
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="团队成员3">
+                    <h4>王五</h4>
+                    <p>设计主管</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <h3>📈 我们的成就</h3>
+                <p>• 服务超过1000+满意客户</p>
+                <p>• 完成200+成功项目</p>
+                <p>• 获得行业多项奖项认可</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2023 我的网站. 版权所有.</p>
+        <p>联系我们: contact@example.com | 电话: 123-456-7890</p>
+    </footer>
+</body>
+</html>

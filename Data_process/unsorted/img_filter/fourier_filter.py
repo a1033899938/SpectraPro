@@ -1,5 +1,5 @@
 # import tifffile as tf
-# from PIL import Image
+# from PIL import Images
 import matplotlib.image as mpimg
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 filepath = r"D:\ExpData\ps_sphere.jpg"
 
 # img = tf.imread(filepath)
-# img = Image.open(filepath)
+# img = Images.open(filepath)
 img = mpimg.imread(filepath)
 
 # 打印图片信息

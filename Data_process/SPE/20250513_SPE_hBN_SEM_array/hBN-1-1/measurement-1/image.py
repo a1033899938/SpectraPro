@@ -42,4 +42,4 @@ with h5py.File(datapath1, "r") as f:
         #     ax0.set_xlabel('')
         #     ax0.set_ylabel('')
         #
-        #     fig0.savefig(os.path.join(os.path.dirname(datapath1), fr'image\{key}.png'))
+        #     fig0.savefig(os.path.join(os.path.dirname(datapath1), fr'Images\{key}.png'))
