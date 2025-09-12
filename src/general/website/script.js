@@ -1,4 +1,4 @@
-alert("Hi~大家好")
+// alert("Hi~大家好")
 let closet = 26;/*变量*/
 const pant = 5.1415926 /*常量*/
 
@@ -65,15 +65,32 @@ function creat_element() {
     const new_element = document.createElement("li");
     // new_element.textContent = type_line.value;/*只能插入纯文字,功能有限*/
     new_element.innerHTML = `
-        <input type="checkbox" class="打勾方块">
+        <input class="cb" type="checkbox" class="打勾方块">
         <label>${type_line.value}</label>
         <button class="ljt">🚮</button>
     `
     zkx.append(new_element);
     type_line.value = "";
-    const ljt = document.querySelector(".ljt");
+
+    const ljt = new_element.querySelector(".ljt");
+    const cb = new_element.querySelector(".cb")
+
     ljt.addEventListener("click", function() {
         new_element.remove();
+    })
+
+    cb.addEventListener("change", function () {
+        if (cb.checked) {
+            new_element.remove()
+            new_element.style.textDecoration = "line-through";
+            new_element.style.color = "#999";
+            zkx.append(new_element);
+        } else {
+            new_element.remove()
+            new_element.style.textDecoration = "none";
+            new_element.style.color = "";
+            zkx.prepend(new_element);
+        }
     })
 }
 
@@ -86,3 +103,91 @@ type_line.addEventListener("keyup", function(e) {
 
 
 button.addEventListener("click", creat_element)
+
+
+
+
+class Carousel {
+    constructor() {
+        this.carousel = document.querySelector('.carousel');
+        this.slides = document.querySelectorAll('.carousel-slide');
+        this.indicators = document.querySelectorAll('.indicator');
+        this.prevBtn = document.querySelector('.carousel-prev');
+        this.nextBtn = document.querySelector('.carousel-next');
+        this.currentIndex = 0;
+        this.interval = null;
+        this.autoPlayDelay = 5000; // 5秒自动切换
+
+        this.init();
+    }
+
+    init() {
+        // 创建指示器
+        this.createIndicators();
+
+        // 添加事件监听
+        this.prevBtn.addEventListener('click', () => this.prevSlide());
+        this.nextBtn.addEventListener('click', () => this.nextSlide());
+
+        // 指示器点击
+        document.querySelectorAll('.indicator').forEach((indicator, index) => {
+            indicator.addEventListener('click', () => this.goToSlide(index));
+        });
+
+        // 自动播放
+        this.startAutoPlay();
+
+        // 鼠标悬停暂停
+        this.carousel.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.carousel.addEventListener('mouseleave', () => this.startAutoPlay());
+    }
+
+    createIndicators() {
+        const indicatorsContainer = document.querySelector('.carousel-indicators');
+        indicatorsContainer.innerHTML = '';
+
+        this.slides.forEach((_, index) => {
+            const indicator = document.createElement('div');
+            indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+            indicator.addEventListener('click', () => this.goToSlide(index));
+            indicatorsContainer.appendChild(indicator);
+        });
+    }
+
+    goToSlide(index) {
+        this.slides[this.currentIndex].classList.remove('active');
+        document.querySelectorAll('.indicator')[this.currentIndex].classList.remove('active');
+
+        this.currentIndex = index;
+
+        this.slides[this.currentIndex].classList.add('active');
+        document.querySelectorAll('.indicator')[this.currentIndex].classList.add('active');
+    }
+
+    nextSlide() {
+        const nextIndex = (this.currentIndex + 1) % this.slides.length;
+        this.goToSlide(nextIndex);
+    }
+
+    prevSlide() {
+        const prevIndex = (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+        this.goToSlide(prevIndex);
+    }
+
+    startAutoPlay() {
+        this.stopAutoPlay();
+        this.interval = setInterval(() => this.nextSlide(), this.autoPlayDelay);
+    }
+
+    stopAutoPlay() {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+    }
+}
+
+// 初始化轮播器
+document.addEventListener('DOMContentLoaded', () => {
+    new Carousel();
+});

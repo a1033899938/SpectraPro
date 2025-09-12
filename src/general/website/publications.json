@@ -1,0 +1,24 @@
+{
+    "id": 1,
+    "name": "胡树",
+    "title": "教授、博士生导师",
+    "email": "shuhu@xmu.edu.cn",
+    "research": "纳米光学; 表面等离激元光学; 谱学方法及仪器; 单光子光电器件; 光与物质相互作用",
+    "education": "厦门大学博士; 剑桥大学物理系博士后",
+    "image": "Images/Members/Shu-Hu.png",
+    "bio": "主要从事纳米光学; 谱学方法及仪器领域的研究...",
+    "publications": [
+          {
+            "id": 1,
+            "title": "Robust consistent single quantum dot strong coupling in plasmonic nanocavities.",
+            "link": "https://www.nature.com/articles/s41467-024-51170-7",
+            "image": "Images/Publicaitons/Shu-Hu/Hu-1.png"
+          },
+          {
+            "id": 2,
+            "title": "Alchemically-glazed plasmonic nanocavities using atomic layer metals: controllably synergizing catalysis and plasmonics.",
+            "link": "https://www.nature.com/articles/s41467-025-58578-9",
+            "image": "Images/Publicaitons/Shu-Hu/Hu-2.png"
+          }
+    ]
+}

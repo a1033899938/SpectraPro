@@ -4,55 +4,65 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Hushu Group</title>
-        <link rel="stylesheet", href="style.css">
+        <link rel="stylesheet", href="css/base.css">
+        <link rel="stylesheet", href="css/header.css">
+        <link rel="stylesheet", href="css/nav.css">
+        <link rel="stylesheet", href="css/carousel.css">
     </head>
+
     <body>
-<!--  所有内容  -->
-<!--1.区块元素与行内元素-->
-<!--区块元素：独占一整行。如h1、h2、p-->
-<!--行内元素：按照内容多少来占空间（如标签）-->
-
-<!--2.标签：粗体和斜体、建立链接-->
-<!--粗体：strong-->
-<!--斜体：em-->
-<!--链接：a-->
-<!--引用：blockquote-->
-<!--换行：br-->
-<!--图片：img-->
-
-
-<!--3.清单、列表、无序清单-->
-<!--清单：ordered list，前面为序号-->
-<!--列表：list-->
-<!--无序清单：unordered list，前面为圆点-->
-
-<!--4.html结构-->
-<!--header：包含网站Logo等首页相关资讯-->
-<!--nav：网站导览列或主选单-->
-<!--main：网页主要内容-->
-<!--section：区块-->
-<!--div：区域-->
-<!--foot：页尾-->
-
         <header>
+            <h1 class="xmu_logo">xmulogo</h1>
+            <h1 class="group_name">Hu Research Group</h1>
             <button class="menu">
                 &#9776;
             </button>
-            <h1>xmulogo</h1>
-            <ul>
-                <li><a href="#">ABOUT</a> </li>
-                <li><a href="#">HOME</a></li>
-                <li><a href="#">PRODUCT</a></li>
-                <li><a href="#">PRICING</a></li>
-            </ul>
         </header>
-        <nav>网站导览列或主选单</nav>
-        <main>网页主要内容
+
+        <nav>
+            <ul>
+                <li><a href="#"><strong>Home</strong></a></li>
+                <li><a href="#"><strong>Research</strong></a></li>
+                <li><a href="#"><strong>Members</strong></a></li>
+                <li><a href="#"><strong>Publication</strong></a></li>
+                <li><a href="#"><strong>Gallery</strong></a></li>
+                <li><a href="#"><strong>News</strong></a></li>
+                <li><a href="#"><strong>Lab Tour</strong></a></li>
+                <li><a href="#"><strong>Links</strong></a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section class="carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide active">
+                        <img src="Images/Group/2025-1.jpg" alt="Group Image 1">
+                        <div class="slide-caption">
+                            <h3>2025年春-1</h3>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="Images/Group/2025-2.jpg" alt="Group Image 2">
+                        <div class="slide-caption">
+                            <h3>2025年春-2</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 导航按钮 -->
+                <button class="carousel-prev">&#10094;</button>
+                <button class="carousel-next">&#10095;</button>
+
+                <!-- 指示器 -->
+                <div class="carousel-indicators"></div>
+            </section>
+
             <section class="news">
                 <h2>分块1</h2>
                 <p>分块1</p>
                 <a>分块1</a>
             </section>
+
             <section class="papers">分块2</section>
             <section class="slogan">
                 <h1>h1</h1>
@@ -102,7 +112,22 @@
                 </form>
             </section>
         </main>
-        <footer>这里是页尾</footer>
+        <footer>
+            <h6>
+                Contact
+            </h6>
+            <div class="address">
+                <p><strong>Address:</strong></p>
+                <p>Room 610, Physics and Electrical Engineering Building</p>
+                <p>Haiyun Park, No.1 Cengcuo'an West Road</p>
+                <p>Siming District, Xiamen City</p>
+                <p>Fujian Province, 361000, China</p>
+                <p><strong>地址：</strong></p>
+                <p>中国福建省厦门市思明区曾厝垵西路1号</p>
+                <p>海韵园物理与电气工程学院大楼610室</p>
+                <p>邮编：361000</p>
+            </div>
+        </footer>
         <script src="script.js"></script>
     </body>
 </html>
