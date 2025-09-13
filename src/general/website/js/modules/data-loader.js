@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import { CONFIG } from '../general/config.js';
 
 export class DataLoader {
     constructor() {

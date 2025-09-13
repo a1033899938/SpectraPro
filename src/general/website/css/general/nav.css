@@ -1,13 +1,7 @@
 /* ===== nav ===== */
-nav {
+#nav {
     position: relative;
     height: 60px;
-    width: 100%;
-
-    display: flex;
-    align-items: center;/*垂直居中*/
-
-    background-color: #ACACA2CC;
 }
 
 nav ul{
@@ -47,11 +41,10 @@ nav ul li a {
 
     border-radius: 20px;
     transition: background-color 0.3s, transform 0.2s;
-    color: white;
 }
 
 nav ul li a:hover {
-    background-color: #c13b12cc;
+    background-color: #333333;
     transform: translateY(-2px);
     text-decoration: underline;
 }

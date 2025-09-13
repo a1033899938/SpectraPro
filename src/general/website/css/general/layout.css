@@ -1,0 +1,13 @@
+/* ===== 布局结构 ===== */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;/*垂直居中*/
+
+    /*background-color: #B02425;*/
+    /*color: #B7B7B7;*/
+}

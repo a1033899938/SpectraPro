@@ -1,0 +1,92 @@
+/* ===== header ===== */
+#header {
+    position: relative;
+    height:100px;
+    padding: 10px 40px;
+
+    justify-content: flex-start;
+    gap: 20px;
+
+    background-image: url("../../Images/Background/Wave.jpg");
+    background-size: contain;
+
+    transition: all 0.5s ease;
+}
+
+/*Logo*/
+.xmu_logo {
+    width: 80px; /* 调整logo大小 */
+    height: 80px;
+    text-indent: -9999px;/*文字缩排。设为-9999把文字移走*/
+
+    line-height: 80px;
+
+    background-image: url("../../Images/Background/XMU_logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    flex-shrink: 0;/* 防止logo被压缩 */
+
+    margin-left: 0;
+    transition: all 0.5s ease;
+}
+
+.group_name {
+    margin: 0;
+    font-size: 60px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;/* 不换行 */
+    opacity: 1;
+    width: auto;
+    overflow: hidden;
+
+    max-width: 1000px; /* 或一个足够大的值 */
+    transition: all 0.5s ease, max-width 0.5s ease; /* 确保max-width也有过渡 */
+}
+
+.menu {
+    /* 初始隐藏但保留位置，便于过渡 */
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none; /* 隐藏时不响应点击 */
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    padding-right: 0;
+    border: none;
+    background-color: transparent;
+    font-size: 50px;
+    font-family: "Arial";
+    color: white;
+    cursor: pointer;
+    z-index: 999;
+
+    transition: all 0.5s ease;
+}
+
+@media screen and (max-width: 850px) {
+    .group_name {
+        opacity: 0;
+        transform: scale(0.8);
+        max-width: 0;
+        width: 0;
+    }
+
+    .menu {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+    }
+
+    #header {
+        padding: 10px 20px;
+        justify-content: center;
+    }
+
+    /* 核心：通过margin-left自动填充左侧空间，实现居中 */
+    .xmu_logo {
+        margin-left: 0; /* 左侧自动填充，Logo会向右移动 */
+        margin-right: 0; /* 右侧自动填充，确保完全居中 */
+    }
+}

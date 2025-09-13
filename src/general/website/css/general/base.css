@@ -1,0 +1,82 @@
+/* ===== 基础重置和变量 ===== */
+:root {
+    --primary-color: #35424a;
+    --secondary-color: #e8491d;
+    --background-color: #B02425;
+    --text-color: #ffffff;
+
+    --white: #ffffff;
+    --gray: #ACACA2CC;
+    --spacing: 20px;
+}
+
+* {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--white);
+}
+
+main {
+    color: var(--text-color);
+    background-color: var(--white);
+}
+
+div {
+    color: var(--text-color);
+    background-color: var(--white);
+}
+
+ul {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+ol {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+footer {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+a {
+    color: var(--text-color);
+}
+
+p {
+    color: var(--text-color);
+}
+
+h1 {
+    color: var(--text-color);
+}
+
+h2 {
+    color: var(--text-color);
+}
+
+h3 {
+    color: var(--text-color);
+}
+
+h4 {
+    color: var(--text-color);
+}
+
+h5 {
+    color: var(--text-color);
+}
+
+h6 {
+    color: var(--text-color);
+}

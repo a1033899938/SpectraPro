@@ -1,0 +1,33 @@
+#footer {
+    height: 150px;
+    /*justify-content: center;*/
+    padding-left: 500px;
+    font-size: 14px;
+    line-height: 1.8em;/*1.8倍*/
+}
+
+.address-container {
+    display: flex;
+    flex-direction: column;
+
+    font-size: 5px;
+    font-family: Arial, sans-serif;
+    line-height: 1;
+
+    color: white;
+    background-color: var(--background-color);
+}
+
+.address-container h6 {
+    font-size: 2.5em;
+    line-height: 2;
+}
+
+.address-container strong {
+    font-size: 1.5em;
+}
+
+.address-container p {
+    font-size: 1.5em;
+    margin: 5px 0;
+}

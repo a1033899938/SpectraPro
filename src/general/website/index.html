@@ -1,25 +1,31 @@
-<!DOCPTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Hushu Group</title>
-        <link rel="stylesheet", href="css/base.css">
-        <link rel="stylesheet", href="css/header.css">
-        <link rel="stylesheet", href="css/nav.css">
-        <link rel="stylesheet", href="css/carousel.css">
+        <title id="Site-title">Hushu Group</title>
+        <link rel="stylesheet" href="css/general/base.css">
+        <link rel="stylesheet" href="css/general/layout.css">
+        <link rel="stylesheet" href="css/general/header.css">
+        <link rel="stylesheet" href="css/general/nav.css">
+        <link rel="stylesheet" href="css/general/main.css">
+        <link rel="stylesheet" href="css/general/footer.css">
+
+        <link rel="stylesheet" href="css/index/carousel.css">
     </head>
 
     <body>
-        <header>
+        <!--标题, Logo-->
+        <header id="header" class="container">
             <h1 class="xmu_logo">xmulogo</h1>
-            <h1 class="group_name">Hu Research Group</h1>
+            <h2 class="group_name">Hu Research Group</h2>
             <button class="menu">
                 &#9776;
             </button>
         </header>
 
-        <nav>
+        <!--导航栏-->
+        <nav id="nav" class="container">
             <ul>
                 <li><a href="#"><strong>Home</strong></a></li>
                 <li><a href="#"><strong>Research</strong></a></li>
@@ -32,7 +38,9 @@
             </ul>
         </nav>
 
-        <main>
+        <!--主要内容-->
+        <main id="main" class="container">
+            <!--轮播器-->
             <section class="carousel">
                 <div class="carousel-container">
                     <div class="carousel-slide active">
@@ -57,77 +65,29 @@
                 <div class="carousel-indicators"></div>
             </section>
 
-            <section class="news">
-                <h2>分块1</h2>
-                <p>分块1</p>
-                <a>分块1</a>
-            </section>
+            <section class="Research focus">
+                <div class="research-focus left">
 
-            <section class="papers">分块2</section>
-            <section class="slogan">
-                <h1>h1</h1>
-                <h2>h2</h2>
-                <p><strong>这是粗体</strong></p>
-                <p><em>这是斜体</em></p>
-                <p><a href="#">这是网页链接</a> </p>
-                <ol>
-                    <li>列表内容1</li>
-                    <li>列表内容2</li>
-                    <li>列表内容3</li>
-                </ol>
+                </div>
 
-                <blockquote cite="https://www.xmu.edu.cn/">在这里,<br>引用别人的话</blockquote>
-<!--                <img src="Images/XMU.jpg" alt="图片无法正常显示时出现">-->
-            </section>
-            <section class="shop">
-                <img src="Images/HLS.png">
-                <div class="info">
-                    div 1
-                </div>
-            </section>
+                <div class="research-focus right">
 
-            <section class="product">
-                <div>
-                    <img src="Images/xjj.png" alt="谢俊杰">
-                    <h3>谢俊杰</h3>
-                    <p>唱跳rap乒乓球</p>
                 </div>
-                <div class="zkx">
-                    <img src="Images/zkx.png" alt="郑可心">
-                    <h3>郑可心</h3>
-                    <p>唱跳rap乒乓球</p>
-                </div>
-                <div>
-                    <img src="Images/ljk.png" alt="李晋柯">
-                    <h3>李晋柯</h3>
-                    <p>唱跳rap乒乓球</p>
-                </div>
-            </section>
-
-            <section class="newsletter">
-                <p>欢迎订阅本栏目</p>
-                <form>
-                    <input class="type_line" type="email" placeholder="请输入您的email账号"required>
-                    <button class="button" type="submit">发送</button>
-                </form>
             </section>
         </main>
-        <footer>
-            <h6>
-                Contact
-            </h6>
-            <div class="address">
-                <p><strong>Address:</strong></p>
-                <p>Room 610, Physics and Electrical Engineering Building</p>
-                <p>Haiyun Park, No.1 Cengcuo'an West Road</p>
-                <p>Siming District, Xiamen City</p>
-                <p>Fujian Province, 361000, China</p>
-                <p><strong>地址：</strong></p>
-                <p>中国福建省厦门市思明区曾厝垵西路1号</p>
-                <p>海韵园物理与电气工程学院大楼610室</p>
-                <p>邮编：361000</p>
+
+        <footer id="footer" class="container">
+            <div class="address-container">
+                <h6><strong>Contact</strong></h6>
+                <p>Address: </p>
+                <p>Room 610, Department of Physics, Xiamen University, Xiamen 36100, China</p>
+                <p>(福建省厦门市思明区曾厝垵西路1号 海韵园物机大楼610室)</p>
+                <p>Postcode: 361008</p>
+                <p>Tel: 86-xxx xxxx xxxx</p>
+                <p>Email: shuhu@xmu.edu.cn</p>
             </div>
         </footer>
-        <script src="script.js"></script>
+
+        <script type="module" src="js/general/main.js"></script>
     </body>
 </html>

@@ -1,0 +1,91 @@
+{
+  "siteInfo": {
+    "title": "Hushu Group2134",
+    "logoText": "xmulogo",
+    "groupName": "Hu Research Group"
+  },
+  "navigation": [
+    {"name": "Home", "link": "#"},
+    {"name": "Research", "link": "#"},
+    {"name": "Members", "link": "#"},
+    {"name": "Publication", "link": "#"},
+    {"name": "Gallery", "link": "#"},
+    {"name": "News", "link": "#"},
+    {"name": "Lab Tour", "link": "#"},
+    {"name": "Links", "link": "#"}
+  ],
+  "carousel": [
+    {
+      "imgSrc": "Images/Group/2025-1.jpg",
+      "altText": "Group Image 1",
+      "caption": "2025年春-1"
+    },
+    {
+      "imgSrc": "Images/Group/2025-2.jpg",
+      "altText": "Group Image 2",
+      "caption": "2025年春-2"
+    }
+  ],
+  "members": [
+    {
+      "name": "谢俊杰",
+      "imgSrc": "Images/xjj.png",
+      "altText": "谢俊杰",
+      "desc": "唱跳rap乒乓球"
+    },
+    {
+      "name": "郑可心",
+      "imgSrc": "Images/zkx.png",
+      "altText": "郑可心",
+      "desc": "唱跳rap乒乓球"
+    },
+    {
+      "name": "李晋柯",
+      "imgSrc": "Images/ljk.png",
+      "altText": "李晋柯",
+      "desc": "唱跳rap乒乓球"
+    }
+  ],
+  "contact": {
+    "title": "Contact",
+    "englishAddress": [
+      "Room 610, Physics and Electrical Engineering Building",
+      "Haiyun Park, No.1 Cengcuo'an West Road",
+      "Siming District, Xiamen City",
+      "Fujian Province, 361000, China"
+    ],
+    "chineseAddress": [
+      "中国福建省厦门市思明区曾厝垵西路1号",
+      "海韵园物理与电气工程学院大楼610室",
+      "邮编：361000"
+    ]
+  },
+  "otherSections": {
+    "news": {
+      "title": "分块1",
+      "content": "分块1",
+      "linkText": "分块1"
+    },
+    "papers": "分块2",
+    "slogan": {
+      "h1": "h1",
+      "h2": "h2",
+      "boldText": "这是粗体",
+      "italicText": "这是斜体",
+      "linkText": "这是网页链接",
+      "linkHref": "#",
+      "listItems": ["列表内容1", "列表内容2", "列表内容3"],
+      "quoteText": "在这里,\n引用别人的话",
+      "quoteSource": "https://www.xmu.edu.cn/"
+    },
+    "shop": {
+      "imgSrc": "Images/HLS.png",
+      "infoText": "div 1"
+    },
+    "newsletter": {
+      "promptText": "欢迎订阅本栏目",
+      "inputPlaceholder": "请输入您的email账号",
+      "buttonText": "发送"
+    }
+  }
+}
