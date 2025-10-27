@@ -179,7 +179,7 @@ def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, a
     plt.tight_layout()
     return fig, axes
 
-def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg=None, colors_group=None, space=0.1, axis=0, figsize=None): # (6, 10)
+def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg=None, colors_group=None, space=0.1, axis=0, figsize=None, dpi=100): # (6, 10)
 
     if len(xs_group) != len(ys_group):
         raise (ValueError("xs_group and ys_group must have same length"))
@@ -194,7 +194,8 @@ def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg
         n_subplots, ncols=1,  # 垂直排列
         sharex=True,  # 共享 X 轴
         figsize=figsize,  # 画布尺寸（可调整）
-        gridspec_kw={"hspace": space}  # 减小子图间距
+        gridspec_kw={"hspace": space},  # 减小子图间距
+        dpi=dpi
     )
 
     # 3. 逐个子图绘制数据
@@ -206,7 +207,7 @@ def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg
         if np.shape(xs) != np.shape(ys):
             raise (ValueError("xs and ys must have same shape"))
 
-        if xs.ndim == 1:
+        if len(xs_group) == 1:
             x = xs
             y = ys
             gh = ax.plot(x, y, color="black", linewidth=1.2, label=les)  # 绘制谱线
@@ -214,8 +215,8 @@ def draw_cascade_group_2d(xs_group: list, ys_group: list, les_group=None, les_sg
                 gh[0].set_color(colors[0])
         else:
             for j in range(np.shape(xs)[0]):
-                x = xs[j, :]
-                y = ys[j, :]
+                x = xs[j]
+                y = ys[j]
                 gh = ax.plot(x, y, color="black", linewidth=1.2, label=les[j])  # 绘制谱线
                 if colors is not None:
                     gh[0].set_color(colors[j])

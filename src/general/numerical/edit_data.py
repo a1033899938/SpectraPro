@@ -155,6 +155,41 @@ def sort_files(file_names):
     file_names_sorted.sort(key=sort_key)
     return file_names_sorted
 
+def sort_by_number(key):
+    # 使用正则表达式提取数字部分
+    numbers = re.findall(r'\d+', key)
+    # 如果有数字，返回第一个数字作为整数用于排序
+    if numbers:
+        return int(numbers[0])
+    # 没有数字的键放在最后
+    return float('inf')
+
+def sort_key_middle_number(key, prefix, suffix):
+    prefix_len = len(prefix)
+    suffix_len = len(suffix)
+
+    # 检查字符串长度是否足够同时去除前缀和后缀
+    if len(key) < prefix_len + suffix_len:
+        return float('inf')  # 长度不足的放最后
+
+    # 去除前缀和后缀，获取中间部分
+    middle_part = key[prefix_len: len(key) - suffix_len]
+
+    # 尝试将中间部分转换为整数
+    try:
+        return int(middle_part)
+    except ValueError:
+        return float('inf')  # 无法转换为整数的放最后
+
+def sort_by_middle_number(keys, prefix, suffix, reverse=False):
+    sorted_keys = sorted(keys, key=lambda k: sort_key_middle_number(k, prefix, suffix), reverse=reverse)
+    return sorted_keys
+
+def sort_by_end_number(keys, suffix_len, reverse=False):
+    sorted_keys = sorted(keys, key=lambda x: int(x[len(x)-suffix_len:]))
+    return sorted_keys
+
+
 if __name__ == '__main__':
     # 测试sort_lists
     x = [2, 3, 1, 4]

@@ -35,12 +35,12 @@ def mp4_to_gif(input_path, output_path, start_time=0, end_time=None, fps=10, sca
 
 # 示例用法
 if __name__ == "__main__":
-    input_mp4 = r"D:\ExpData\temp20250516\Automation\video\server.mp4"
-    output_gif = r"D:\ExpData\temp20250516\Automation\video\server.gif"
+    input_mp4 = r"C:\Users\a1033\Desktop\website.mp4"
+    output_gif = r"C:\Users\a1033\Desktop\website.gif"
 
     mp4_to_gif(
         input_mp4, output_gif,
         scale=0.3,  # 重要：缩小至30%
-        fps=8,  # 降低帧率
-        end_time=6  # 缩短时长
+        fps=10,  # 降低帧率
+        end_time=20  # 缩短时长
     )

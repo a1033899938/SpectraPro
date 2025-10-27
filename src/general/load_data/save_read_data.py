@@ -110,6 +110,7 @@ def read_lines_txt(file_path, separator=' ', skip_lines=0, row_lines_names=None)
     """
 
     data_columns = []
+    lines_names = None
     with open(file_path, "r") as f:
         if row_lines_names is not None:
             # 通过字符化只显示可见字符, 再通过分割符分割行
@@ -140,14 +141,14 @@ def read_lines_txt(file_path, separator=' ', skip_lines=0, row_lines_names=None)
         # 使用读取的列名作为键
         if len(lines_names) != len(data_columns):
             raise ValueError(f"列名数量({len(lines_names)})与数据列数({len(data_columns)})不一致")
-            print("使用默认键名 data1, data2, ...")
+            # print("使用默认键名 data1, data2, ...")
             return {f'data{i + 1}': data for i, data in enumerate(data_columns)}
         else:
             print(f"使用第{row_lines_names}行:{[line_name for line_name in lines_names]},作为键名")
             return {name: data for name, data in zip(lines_names, data_columns)}
     else:
         # 使用默认键名 data1, data2, ...
-        print("使用默认键名 data1, data2, ...")
+        # print("使用默认键名 data1, data2, ...")
         return {f'data{i + 1}': data for i, data in enumerate(data_columns)}
 
 def save_matrices_json(matrices, save_full_path, comfirm_all_overwrite=False):

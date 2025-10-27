@@ -1,6 +1,7 @@
 import h5py
 import os
 
+
 def delete_h5_group(file_path, group_rel_path):
     print("危险操作：此操作将永久删除HDF5文件中的Group及其所有内容")
     confirmation = input("输入 'go' 继续，其他输入取消：")
@@ -98,28 +99,91 @@ def copy_group_between_files(source_file_path, source_path, target_file_path, ta
         print(f"错误: 文件未找到 - 源文件: {source_file_path}, 目标文件: {target_file_path}")
     except PermissionError:
         print(f"错误: 权限不足，无法访问文件 - 源文件: {source_file_path}, 目标文件: {target_file_path}")
-    except h5py.H5Error as h5_err:
-        print(f"HDF5 操作错误: {h5_err}")
     except ValueError as val_err:
         print(f"值错误: {val_err}")
     except Exception as e:
         print(f"未知错误: {e}")
 
+
+import h5py
+
+
+def rename_h5_object(file_path, old_path, new_path):
+    """
+    修改HDF5文件中Group或Dataset的名称
+
+    参数:
+        file_path (str): HDF5文件路径
+        old_path (str): 原对象（Group或Dataset）的路径
+        new_path (str): 新对象的路径
+    """
+    print("危险操作：此操作可能覆盖目标HDF5文件中的现有内容")
+    confirmation = input("输入 'go' 继续，其他输入取消：")
+    if confirmation.lower() != 'go':
+        print("操作已取消")
+        return
+
+    # 验证路径格式（确保以 '/' 开头，避免相对路径问题）
+    if not old_path.startswith('/'):
+        old_path = '/' + old_path
+    if not new_path.startswith('/'):
+        new_path = '/' + new_path
+
+    # 检查新旧路径是否相同
+    if old_path == new_path:
+        print("原路径与新路径相同，无需修改")
+        return
+
+    try:
+        with h5py.File(file_path, 'r+') as f:
+            # 检查原路径是否存在
+            if old_path not in f:
+                raise ValueError(f"路径 '{old_path}' 不存在于文件中")
+
+            # 检查新路径是否已存在
+            if new_path in f:
+                raise ValueError(f"路径 '{new_path}' 已存在，无法重命名（避免覆盖）")
+
+            # 获取原对象
+            old_obj = f[old_path]
+
+            # 复制原对象到新路径（h5py的copy方法会自动处理Group的递归复制）
+            f.copy(old_obj, new_path)
+
+            # 删除原对象
+            del f[old_path]
+
+            # 判断对象类型并输出结果
+            obj_type = "Group" if isinstance(old_obj, h5py.Group) else "Dataset"
+            print(f"成功将{obj_type} '{old_path}' 重命名为 '{new_path}'")
+
+    except FileNotFoundError:
+        print(f"错误：文件 '{file_path}' 未找到")
+    except PermissionError:
+        print(f"错误：没有权限操作文件 '{file_path}'")
+    except ValueError as e:
+        print(f"错误：{e}")
+    except Exception as e:
+        print(f"操作失败：{e}")
+
 if __name__ == '__main__':
     pass
-    # source_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9.h5"
-    # source_path = "LumeneraCamera"
-    # target_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9-final.h5"
-    # target_path = "LumeneraCamera"
-    # copy_group_between_files(source_file, source_path, target_file, target_path)
+    filepath = r"E:\Data\ExpData\SPE\20251015_HQ-hBN_PDMSvsTap\measurement-1_basic_PL.h5"
+    del_groups = ["HQ-PDMS10times-hBN_1$_p1_scan_z_0", "HQ-PDMS10times-hBN_2-1$_p1_scan_z_0", "HQ-PDMS10times-hBN_2-2$_p1_scan_z_0", "HQ-PDMS10times-hBN_3$_p1_scan_z_0",
+                  "HQ-PDMS10times-hBN_3woSEM$_p1_scan_z_0", "HQ-PDMS10times-hBN_sub_p1_scan_z_0", "HQ-allTap-hBN_1$_p1_scan_z_0", "HQ-allTap-hBN_2$_p1_scan_z_0", "HQ-allTap-hBN_3$_p1_scan_z_0"]
 
-    # h5_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9.h5"
-    # source_path = 'OceanOpticsSpectrometer/hBN_afterSEM_mapping_3'
-    # target_path = 'OceanOpticsSpectrometer/hBN_afterSEM_mapping_0'
-    # move_h5_group(h5_file, source_path, target_path)
+    for del_group in del_groups:
+        del_group = f"OceanOpticsSpectrometer/{del_group}"
+        delete_h5_group(filepath, del_group)
 
-    # h5_file = r"D:\ExpData\SPE\20250224_SPE_hBN_afterSEMprocess\measurement-9\20250224_SPE_hBN_afterSEM_measurement-9(1).h5"
-    # delete_h5_group(h5_file, "OceanOpticsSpectrometer/hBN_afterSEM_mapping_1")
-    # delete_h5_group(h5_file, "OceanOpticsSpectrometer/hBN_afterSEM_mapping_4")
-    # delete_h5_group(h5_file, "nplab_log")
-    # delete_h5_group(h5_file, "hBN_afterSEM_mapping_4")
+
+
+
+    # old_path = "OceanOpticsSpectrometer/HQ-PDMS10times-hBN_1$_p7_scan_z_450ex-50uW_0"
+    # new_path = "OceanOpticsSpectrometer/HQ-PDMS10times-hBN_1$_p6_scan_z_450ex-50uW_0"
+    # rename_h5_object(filepath, old_path, new_path)
+    #
+    # old_path = "OceanOpticsSpectrometer/HQ-PDMS10times-hBN_1$_p7_scan_z_450ex-50uW_1"
+    # new_path = "OceanOpticsSpectrometer/HQ-PDMS10times-hBN_1$_p7_scan_z_450ex-50uW_0"
+    # rename_h5_object(filepath, old_path, new_path)
+

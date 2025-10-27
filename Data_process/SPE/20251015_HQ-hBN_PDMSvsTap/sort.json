@@ -1,0 +1,202 @@
+{
+    "HQ-PDMS-hBN w/. exposure 1$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-PDMS10times-hBN_1$_p1_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p2_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p3_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p4_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p5_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p6_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p7_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p8_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_1$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-PDMS10times-hBN_1$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-PDMS-hBN w/. exposure 2-1$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-PDMS10times-hBN_2-1$_p1_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p2_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p3_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p4_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p5_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p6_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p7_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p8_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-1$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-PDMS10times-hBN_2-1$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-PDMS-hBN w/. exposure 2-2$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-PDMS10times-hBN_2-2$_p1_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p2_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p3_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p4_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p5_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p6_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p7_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p8_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_2-2$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-PDMS10times-hBN_2-2$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-PDMS-hBN w/. exposure 3$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-PDMS10times-hBN_3$_p1_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p2_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p3_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p4_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p5_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p6_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p7_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p8_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_3$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-PDMS10times-hBN_3$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-PDMS-hBN w/o exposure":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-PDMS10times-hBN_woSEM$_p10_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p11_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p12_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p1_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p2_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p3_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p4_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p5_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p6_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p7_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p8_scan_z_450ex-50uW_0",
+                            "HQ-PDMS10times-hBN_woSEM$_p9_scan_z_450ex-50uW_1"
+                        ],
+                "number":
+                        ["HQ-PDMS10times-hBN_woSEM$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "PDMS-sub w/. exposure":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "PDMS10times-sub_p1_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p2_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p3_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p4_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p5_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p6_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p7_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p8_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["PDMS10times-sub_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "PDMS-sub w/o exposure":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "PDMS10times-sub_woSEM_p1_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_woSEM_p2_scan_z_450ex-50uW_0",
+                            "PDMS10times-sub_woSEM_p3_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["PDMS10times-sub_woSEM_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-Tap-hBN w/. exposure 1$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-Tap-hBN_1$_p1_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p2_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p3_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p4_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p5_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p6_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p7_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p8_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_1$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-Tap-hBN_1$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-Tap-hBN w/. exposure 2$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-Tap-hBN_2$_p1_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_2$_p2_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_2$_p3_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-Tap-hBN_2$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-Tap-hBN w/. exposure 3$":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-Tap-hBN_3$_p1_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p2_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p3_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p4_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p5_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p6_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p7_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p8_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_3$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-Tap-hBN_3$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            },
+    "HQ-Tap-hBN w/o exposure":
+            {
+                "type": "group",
+                "keys":
+                        [
+                            "HQ-Tap-hBN_woSEM$_p1_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p2_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p3_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p4_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p5_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p6_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p7_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p8_scan_z_450ex-50uW_0",
+                            "HQ-Tap-hBN_woSEM$_p9_scan_z_450ex-50uW_0"
+                        ],
+                "number":
+                        ["HQ-Tap-hBN_woSEM$_p", "_scan_z_450ex-50uW_0"],
+                "subnum": 2
+            }
+}

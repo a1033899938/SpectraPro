@@ -1,22 +1,10 @@
-import re
+import numpy as np
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsEllipseItem
+M = np.zeros((4,4)) # NB M is never a matrix; that would create issues, as then all the vectors must be matrices
+M[0:3, 0:3] = [[1,2,3],[4,5,6],[7,8,9]] # We calibrate the conversion of displacements and store it
+M[3, 0:3] = 99 # Ensure that the datum pixel transforms to here.
+M[3, 3] = 1.0
 
-
-def extract_session_cmd(input_str):
-    # 正则表达式模式：匹配SESSION:数字;CMD:任意字符;END格式
-    # \d+ 匹配一个或多个数字
-    # .*? 非贪婪匹配任意字符（直到遇到;END为止）
-    pattern = r"SESSION:\d+;CMD:.*?;END"
-
-    # 查找所有匹配的部分
-    matches = re.findall(pattern, input_str)
-
-    return matches
-
-
-# 示例用法
-if __name__ == "__main__":
-    test_str = "这是一段包含目标内容的文本SESSION:123;CMD:hello world;END这里是其他内容SESSION:456;CMD:test;END结尾部分"
-
-    result = extract_session_cmd(test_str)
-    print(result)
-    # 输出: ['SESSION:123;CMD:hello world;END', 'SESSION:456;CMD:test;END']
+a = [[1,2,3],[4,5,6]]
+print(a)
+print(np.shape(a))
