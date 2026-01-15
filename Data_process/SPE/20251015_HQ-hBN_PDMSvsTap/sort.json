@@ -129,7 +129,7 @@
                         ["PDMS10times-sub_woSEM_p", "_scan_z_450ex-50uW_0"],
                 "subnum": 2
             },
-    "HQ-Tap-hBN w/. exposure 1$":
+    "HQ-Tape-hBN w/. exposure 1$":
             {
                 "type": "group",
                 "keys":
@@ -148,7 +148,7 @@
                         ["HQ-Tap-hBN_1$_p", "_scan_z_450ex-50uW_0"],
                 "subnum": 2
             },
-    "HQ-Tap-hBN w/. exposure 2$":
+    "HQ-Tape-hBN w/. exposure 2$":
             {
                 "type": "group",
                 "keys":
@@ -161,7 +161,7 @@
                         ["HQ-Tap-hBN_2$_p", "_scan_z_450ex-50uW_0"],
                 "subnum": 2
             },
-    "HQ-Tap-hBN w/. exposure 3$":
+    "HQ-Tape-hBN w/. exposure 3$":
             {
                 "type": "group",
                 "keys":
@@ -180,7 +180,7 @@
                         ["HQ-Tap-hBN_3$_p", "_scan_z_450ex-50uW_0"],
                 "subnum": 2
             },
-    "HQ-Tap-hBN w/o exposure":
+    "HQ-Tape-hBN w/o exposure":
             {
                 "type": "group",
                 "keys":

@@ -186,7 +186,7 @@ def quatra_peaks_fitting(x, y, ax=None, maxfev=800, if_x_unit_energy=False):
         y_fit3 = lorentzian(x, A3, x3, gamma3)
         y_fit4 = gaussian(x, A4, x4, gamma4)
 
-        ax.plot(x, y_fit, 'r-', label='Global Lorentzian-Gaussian Fit')
+        ax.plot(x, y_fit, 'r--', label='Global Lorentzian-Gaussian Fit')
         ax.plot(x, y_fit1, 'b--', label='Peak 1 (Lorentzian Component)')
         ax.plot(x, y_fit2, 'g--', label='Peak 1 (Lorentzian  Component)')
         ax.plot(x, y_fit3, 'm--', label='Peak 3 (Lorentzian Component)')
@@ -299,7 +299,7 @@ def quatra_peaks_fitting2(x, y, ax=None, maxfev=800, if_x_unit_energy=False):
         y_fit3 = lorentzian(x, A3, x3, gamma3)
         y_fit4 = lorentzian(x, A4, x4, gamma4)
 
-        ax.plot(x, y_fit, 'r-', label='Global Lorentzian-Gaussian Fit')
+        ax.plot(x, y_fit, 'r--', label='Global Lorentzian-Gaussian Fit')
         ax.plot(x, y_fit1, 'b--', label='Peak 1 (Lorentzian Component)')
         ax.plot(x, y_fit2, 'g--', label='Peak 1 (Lorentzian  Component)')
         ax.plot(x, y_fit3, 'm--', label='Peak 3 (Lorentzian Component)')

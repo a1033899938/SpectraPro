@@ -2,6 +2,27 @@ import numpy as np
 
 from src.general.figure.set_figure import *
 
+def single_axis_scan_graph(ax, title=''):
+    set_label_and_title(ax, title=title, xlabel='Wavelength(nm)', ylabel='Intensity(a.u.)')
+    set_tick(ax, ticks_xlabel=np.arange(400, 1101, 200), show_xlabel_every_ticks=4) # Normalized
+    set_legend(ax, font_size=12, location='best')
+    set_spines(ax)
+    plt.tight_layout()
+
+def single_axis_scan_result_var_wav(ax, title=''):
+    set_label_and_title(ax, title=title, xlabel='Wavelength(nm)', ylabel='Position(um)')
+    set_tick(ax, ticks_xlabel=np.arange(400, 1101, 200), show_xlabel_every_ticks=4)  # Normalized
+    set_legend(ax, font_size=12, location='best')
+    set_spines(ax)
+    plt.tight_layout()
+
+def single_axis_scan_result_var_pos(ax, title=''):
+    set_label_and_title(ax, title=title, xlabel='Position(um)', ylabel='Intensity(a.u.)')
+    set_tick(ax, show_xlabel_every_ticks=5)  # Normalized
+    set_legend(ax, font_size=12, location='best')
+    set_spines(ax)
+    plt.tight_layout()
+
 def the_graph1(ax, title=''):
     set_label_and_title(ax, title=title, xlabel='Wavenumber(cm^-1)', ylabel='Intensity(cts)')
     set_tick(ax, ticks_xlabel=np.arange(200, 4001, 200), show_xlabel_every_ticks=2, yaxis_use_log_scale=False) # Normalized
@@ -28,24 +49,25 @@ def the_graph3(ax, title=''):
 
 def the_graph4(ax, title=''):
     set_label_and_title(ax, title=title, xlabel='Wavelength(nm)', ylabel='Intensity(cts)')
-    set_tick(ax, ticks_xlabel=np.arange(500, 960, 100), show_xlabel_every_ticks=2, yaxis_use_log_scale=False) # Normalized
-    set_legend(ax, font_size=12, location='best')
+    set_tick(ax, ticks_xlabel=np.arange(450, 950, 100), show_xlabel_every_ticks=2, yaxis_use_log_scale=False) # Normalized
+    # set_legend(ax, font_size=12, location='best')
     set_scientific_y_ticks(ax)
     set_spines(ax)
     plt.tight_layout()
 
 def the_mapping(ax, cbar):
     set_label_and_title(ax, title='Mapping', xlabel='X', ylabel='Y', colorbar=cbar, colorbar_label='Intensity(cts)')
-    set_tick(ax, colorbar=cbar) # Normalized
+    # set_tick(ax, colorbar=cbar) # Normalized
     set_legend(ax)
     set_spines(ax)
     plt.tight_layout()
 
-def the_cascade_3d(ax):
-    set_label_and_title(ax, title='Mapping', xlabel='Wavlength(nm)', ylabel='Time(s)', zlabel='Intensity(cts)', mode='3d')
-    set_tick(ax, mode='3d')  # Normalized
+def the_cascade_3d(ax, title="Mapping"):
+    set_label_and_title(ax, title=title, xlabel='z', ylabel='Wavlength(nm)', zlabel='Intensity(cts)', mode='3d', zlabel_rotation=90)
+    set_tick(ax, mode='3d', ticks_ylabel=np.arange(400, 1100, 200), show_ylabel_every_ticks=2)  # Normalized
     set_legend(ax)
     set_spines(ax)
+    ax.view_init(elev=30, azim=30)
     plt.tight_layout()
 
 def the_cascade_2d(axes, title):

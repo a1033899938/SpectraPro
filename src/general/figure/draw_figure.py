@@ -89,12 +89,31 @@ def draw_cascade_3d(x, y, Z, ax: plt.axis, normalize=False, connect_peaks: bool=
 
         # 如果需要，连接各曲线的最大值点
         if connect_peaks:
-            # 找出最大值点
-            peaks, _ = find_peaks(Z[i] / np.max(Z[i]), **find_peak_args)
-            peak_x.append(X[i][peaks[0]])
-            peak_y.append(Y[i][peaks[0]])
-            peak_z.append(Z[i][peaks[0]])
-            ax.plot(peak_y, peak_x, peak_z, 'ro-', linewidth=1, markersize=3, markeredgecolor='r', markerfacecolor='none', label='连接各曲线最大值')
+            # # 找出最大值点
+            # peaks, _ = find_peaks(Z[i], height=np.max(Z[i]) * 0.1,  # 降低高度阈值
+            #                          distance=5,                 # 减小最小间距
+            #                          prominence=np.max(Z[i]) * 0.05)
+            # if len(peaks) == 0:
+            #     print(f"警告: 在第 {i} 条曲线上未找到峰值")
+            #     continue  # 跳过这条曲线
+            # peak_x.append(X[i][peaks[0]])
+            # peak_y.append(Y[i][peaks[0]])
+            # peak_z.append(Z[i][peaks[0]])
+            if connect_peaks:
+                # 直接寻找最大值点
+                max_index = np.argmax(Z[i])
+
+                # 检查最大值是否有效（避免全是NaN或零的情况）
+                if Z[i][max_index] > 0:  # 可以根据实际情况调整阈值
+                    peak_x.append(X[i][max_index])
+                    peak_y.append(Y[i][max_index])
+                    peak_z.append(Z[i][max_index] + 0.01)
+                else:
+                    print(f"警告: 在第 {i} 条曲线上未找到有效最大值")
+                    continue  # 跳过这条曲线
+
+    if connect_peaks:
+        ax.plot(peak_y, peak_x, peak_z, 'ro-', linewidth=1, markersize=3, markeredgecolor='r', markerfacecolor='none')
 
 def draw_cascade_2d(x: np.ndarray, ys: np.ndarray, *args, les=None, space=0.1, axis=0, figsize=None):
     if axis == 0:

@@ -29,7 +29,12 @@ def gaussian(x, A, mu, sigma):
     :param sigma: 标准差 (FWHM≈2.3548*sigma)
     :return:
     """
-    """高斯峰函数：A-振幅，x0-中心位置，sigma-标准差（半高宽≈2.3548*sigma）"""
+    """高斯峰函数：A-振幅，x0-中心位置，sigma-标准差（半高宽 ≈ 2√(2ln2)*sigma ≈ 2.3548*sigma），全宽 ≈ 2*sigma"""
+    # fwhm = 2 * np.sqrt(2 * np.log(2)) * sigma  # 半高全宽
+    # fwtm = 2 * np.sqrt(2 * np.log(10)) * sigma  # 1/10高度全宽 (FWTM)
+    # full_width = 2 * sigma  # 标准差全宽
+    # theoretical_range = 6 * sigma  # 3σ范围（覆盖99.7%）
+
     return A * np.exp(- (x - mu) ** 2 / (2 * sigma ** 2))
 
 def lorentzian(x, A, x0, gamma):
@@ -57,6 +62,12 @@ def voigt(x, A, mu, sigma, gamma):
 
     z = (x - mu + 1j * gamma) / (sigma * np.sqrt(2))
     return A * np.real(wofz(z)) / (sigma * np.sqrt(2 * np.pi))
+
+def power_law_fit(x, A, x0):
+    return A / (x - x0)**2
+
+def mono_exp(t, I0, tau, B):
+    return I0 * np.exp(-t / tau) + B
 
 """物理模型函数"""
 def power_saturation(P, P_sat, I_inf):

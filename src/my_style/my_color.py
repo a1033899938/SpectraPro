@@ -101,15 +101,20 @@ class MyColor:
 
 # 使用示例
 if __name__ == "__main__":
-    # 获取整个专业色系
-    pro_colors = MyColor.get_color_series("professional")
+    # # 获取整个专业色系
+    # pro_colors = MyColor.get_color_series("professional")
+    #
+    # # 获取深色渐变系列的第5个颜色
+    # dark_color = MyColor.get_color("dark_gradient", 4)
+    #
+    # # 新增一个金属色系后直接使用
+    # MyColor.metal = ["#D4AF37", "#C0C0C0", "#9E9E9E"]
+    # metal_color = MyColor.get_color("metal", 1)
 
-    # 获取深色渐变系列的第5个颜色
-    dark_color = MyColor.get_color("dark_gradient", 4)
-
-    # 新增一个金属色系后直接使用
-    MyColor.metal = ["#D4AF37", "#C0C0C0", "#9E9E9E"]
-    metal_color = MyColor.get_color("metal", 1)
+    import numpy as np
+    import math
+    # colors = [(1,0,0, i) for i in np.arange(0, 1.1, 0.1)]
+    colors = plt.get_cmap("Reds")(np.linspace(1, 0.1, 10))
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -117,7 +122,7 @@ if __name__ == "__main__":
     for i in range(10):
         x = np.arange(400, 1001, 200)
         y = np.random.randn(len(x))
-        a = ax.plot(x, y)
-        a[0].set_color(pro_colors[i])
+        a = ax.plot(x, y, color=colors[i], label="\u03C4")
+    ax.legend()
     plt.show()
 

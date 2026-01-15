@@ -18,7 +18,6 @@ from matplotlib import ticker
 from matplotlib.ticker import MultipleLocator
 from matplotlib.ticker import FixedLocator, FixedFormatter, NullFormatter
 
-
 def set_label_and_title(ax, mode='2d', colorbar=None,
                         title='default title', xlabel='Wavelength(nm)', ylabel='Intensity(cts)', zlabel='Intensity(cts)', colorbar_label='Colorbar',
                         title_fontsize=32, label_fontsize=30, colorbar_fontsize=30,
@@ -140,6 +139,7 @@ def set_label_and_title(ax, mode='2d', colorbar=None,
 """设置刻度的参数"""
 def set_tick(ax, mode='2d', colorbar=None,
              xbins=10, ybins=10, zbins = 10, show_xlabel_every_ticks=None, show_ylabel_every_ticks=None, show_zlabel_every_ticks=None,
+             x_tick_integer=False, y_tick_integer=False,
              hide_tick=None, hide_tick_label=None,
              fontsize=20, fontweight='bold',
              linewidth=3, linelength=7, direction='in',
@@ -231,21 +231,12 @@ def set_tick(ax, mode='2d', colorbar=None,
         if change_ticks_ylabel is not None:
             ax.set_yticklabels(change_ticks_ylabel)
 
-        # if show_xlabel_every_ticks:
-        #     # 打印默认的 Locator 和 Formatter 类型
-        #     ticks = ax.get_xticks()
-        #     tickslabels = ax.get_xticklabels()
-        #     ax.xaxis.set_major_locator(FixedLocator(ticks))  # 固定刻度位置
-        #     new_labels = [label.get_text() if i % show_xlabel_every_ticks == 0 else "" for i, label in enumerate(tickslabels)]
-        #     ax.set_xticklabels(new_labels)
-        #
-        # if show_ylabel_every_ticks:
-        #     # 打印默认的 Locator 和 Formatter 类型
-        #     ticks = ax.get_yticks()
-        #     tickslabels = ax.get_yticklabels()
-        #     ax.yaxis.set_major_locator(FixedLocator(ticks))  # 固定刻度位置
-        #     new_labels = [label.get_text() if i % show_ylabel_every_ticks == 0 else "" for i, label in enumerate(tickslabels)]
-        #     ax.set_yticklabels(new_labels)
+        if x_tick_integer is True:
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+            ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%d'))
+        if y_tick_integer is True:
+            ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            ax.yaxis.set_major_formatter(plt.FormatStrFormatter('%d'))
 
         # 替换原有的 show_xlabel_every_ticks 和 show_ylabel_every_ticks 逻辑
         if show_xlabel_every_ticks:
@@ -418,6 +409,7 @@ def set_spines(ax, bottom_linewidth=3, left_linewidth=3, right_linewidth=3, top_
 
 
 def set_legend(ax, legend_labels = None, order=None,
+               bbox_to_anchor=None,
                font_size=18, fontfamily='Arial', fontweight='bold',
                location='upper right', ncol=1,
                columnspacing=1.0, handletextpad=0.8):
@@ -458,19 +450,9 @@ def set_legend(ax, legend_labels = None, order=None,
             handles = [handles[i] for i in order]
             legend_labels = [labels[i] for i in order]
 
-        if isinstance(location, str):
-            legend = ax.legend(handles, legend_labels, loc=location, prop=legend_font_dict, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
-        elif isinstance(location, tuple):
-            legend = ax.legend(handles, legend_labels, loc='upper right', prop=legend_font_dict, bbox_to_anchor=location, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
-        else:
-            raise TypeError('location must be str or turple')
+        legend = ax.legend(handles, legend_labels, loc=location, prop=legend_font_dict, bbox_to_anchor=bbox_to_anchor, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
     else:
-        if isinstance(location, str):
-            legend = ax.legend(legend_labels, loc=location, prop=legend_font_dict, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
-        elif isinstance(location, tuple):
-            legend = ax.legend(legend_labels, loc='upper right', prop=legend_font_dict, bbox_to_anchor=location, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
-        else:
-            raise TypeError('location must be str or turple')
+        legend = ax.legend(legend_labels, loc=location, prop=legend_font_dict, bbox_to_anchor=bbox_to_anchor, frameon=False, ncol=ncol, columnspacing=columnspacing, handletextpad=handletextpad)
     return legend
 
 

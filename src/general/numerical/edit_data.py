@@ -13,6 +13,7 @@ import numpy as np
 from typing import Union
 import copy
 import re
+from scipy import signal
 
 def find_val_idx(x, x0):
     """
@@ -25,6 +26,41 @@ def find_val_idx(x, x0):
     idx = np.argmin(np.abs(x - x0))
     return idx
 
+def argmedian(arr):
+    arr = np.asarray(arr)
+    # 计算中位数
+    median_val = np.median(arr)
+    # 找第一个等于中位数的索引
+    median_idx = np.argmin(np.abs(arr - median_val))
+
+    return median_idx
+
+def calc_pearson(spec1, spec2):
+    return np.corrcoef(spec1, spec2)[0, 1]
+
+def cal_error(s1, s2, func="SAM"):
+    try:
+        if func == "SAM":
+            s1_norm = s1 / (np.linalg.norm(s1))
+            s2_norm = s2 / (np.linalg.norm(s2))
+
+            cos_sim = np.dot(s1_norm, s2_norm)
+
+            cos_sim = np.clip(cos_sim, -1.0, 1.0)
+
+            angle = np.arccos(cos_sim)
+
+            rst = angle
+        elif func == "s1-s2":
+            rst = np.mean(np.array(s1) - np.array(s2))
+        elif func == "residual":
+            baseline = signal.medfilt(s1, kernel_size=11)
+            rst = np.mean(np.abs(np.array(s2) - np.array(baseline)))
+    except FloatingPointError:
+        # 求和过程中溢出（如数值过大），直接返回inf
+        return np.inf
+
+    return rst
 
 def calculate_median_y_near_x0(
         x: np.ndarray,  # 波长数组（自变量）
@@ -185,9 +221,24 @@ def sort_by_middle_number(keys, prefix, suffix, reverse=False):
     sorted_keys = sorted(keys, key=lambda k: sort_key_middle_number(k, prefix, suffix), reverse=reverse)
     return sorted_keys
 
-def sort_by_end_number(keys, suffix_len, reverse=False):
-    sorted_keys = sorted(keys, key=lambda x: int(x[len(x)-suffix_len:]))
-    return sorted_keys
+def sort_by_end_number(keys, suffix_len=None, reverse=False):
+    # sorted_keys = sorted(keys, key=lambda x: int(x[len(x)-suffix_len:]))
+    def extract_number(key):
+        if suffix_len is not None:
+            # 固定长度：直接截取最后suffix_len个字符
+            num_str = key[-suffix_len:]
+        else:
+            # 自动检测：从末尾提取连续数字
+            num_str = ''
+            for char in reversed(key):
+                if char.isdigit():
+                    num_str = char + num_str
+                else:
+                    break
+            if not num_str:
+                return -1  # 如果没有数字，返回-1放在最前面
+        return int(num_str)
+    return sorted(keys, key=extract_number, reverse=reverse)
 
 
 if __name__ == '__main__':

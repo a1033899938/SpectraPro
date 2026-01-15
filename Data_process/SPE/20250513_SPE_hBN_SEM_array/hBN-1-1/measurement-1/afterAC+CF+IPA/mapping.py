@@ -41,7 +41,6 @@ with h5py.File(datapath1, "r") as f:
     row1 = data[row1_key]
     column_keys_of_row1 = row1.keys()
 
-
     bgd = np.array(data[f'x-0/{mapping_name[:-2]}-x0-y0'].attrs['background'])
     bgd_time = data[f'x-0/{mapping_name[:-2]}-x0-y0'].attrs['background_int'] / 1000
     wav = np.array(data[f'x-0/{mapping_name[:-2]}-x0-y0'].attrs['wavelengths'])
